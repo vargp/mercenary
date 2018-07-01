@@ -51,6 +51,7 @@ function testgenerate(){
     
     bscore = 50;
     
+    // elefant
     
 }
 
