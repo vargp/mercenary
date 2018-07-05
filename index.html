@@ -40,6 +40,7 @@ and open the template in the editor.
                 <div class="stats" id="hpval">12</div>
                 <div class="stats" id="takedmg">12</div>
                 
+                
                 <div id ="idetext" class="cardtext"> Confront: gain 1 Credit. <br> Audire erroribus consetetur te per. Zril aeterno ne duo. Adipiscing eloquentiam usu ne. Volutpat abhorreant assueverit ei sea. </div>
                 
                 
@@ -49,6 +50,8 @@ and open the template in the editor.
     </div>
         
         <img id="slash" src="img/blood.png"></div>
+        <img id="goldbag" src="img/gold.png"></div>
+        <div id="goldval">25</div>
         
     <div class ="areadiv" id="hand">
         <p class ="areacaption">Available Now</p>
@@ -132,11 +135,40 @@ and open the template in the editor.
     
     <div class="hintdiv">test</div>
     
+    <div class ="areadiv" id="commander">
+        <div class ="areatitle" >Choose a Commander!</div> 
+        <div class ="smccont" id="commlist">
+            
+        </div>
+    </div>
+    
+    <div class ="areadiv" id="choosable">
+        <div class ="areatitle" id="spend">Spend Your Gold!</div> 
+        <div class ="areacaption" id="buycap">You still have: 50 Gold</div><br><br>
+        <div class ="smccont" id="basicbuy">
+            
+        </div>
+        <div class ="smccont" id="buy">
+            
+        </div>
+        <br>
+        <div class ="areacaption" id="reminder">The second row will reset after you choose!</div>
+        <br><br>
+    </div>
+    
+    <div class ="areadiv" id="buydeck">
+        <div class ="areatitle" id="thisdeck">Cards In Your Deck</div> 
+        <div class ="smccont" id="seedeck">
+            
+        </div>
+    </div>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>    
     <script src="js/display.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/cardgen.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/carddetails.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/engine.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/panels.js" type="text/javascript" charset="utf-8"></script>
     </body>
 </html>

@@ -10,11 +10,14 @@ var dragid = 0;
 var dontshow = false;
 var enemies = new Array();
 var hold = false;
-var commander;
+var commander = 0;
 
 $( document ).ready(function() {
         
         cardbyid.push(new Object());
+        
+        choosecomm();
+        
         arrange();
         startgame();
     
@@ -35,10 +38,8 @@ $('body').on( "mouseenter", "card", function( event ) {
 
 function testgenerate(){
     
-    generate (3, "#game");
-    commander = 1;
-     
-    
+    // commander = 1;
+         
     generate (2, "#enc1");
     generate (2, "#enc2");
     generate (2, "#enc3");
@@ -87,6 +88,8 @@ function arrange(){
     
     $("#sort").css("display", "none");
     $("#dead").css("display", "none");
+    $("#choosable").css("display", "none");
+    $("#buydeck").css("display", "none");
     $("#takedmg").css("display", "none");
     $("#slash").css("display", "none");
     $("#logarea").css("top", "340px");
@@ -114,16 +117,36 @@ function arrange(){
         
     $("#button").css("top", "20px");
     $("#button").css("left", "1255px");
+    $("#commander").css("top", "20px");
+    $("#commander").css("left", "600px");
+    $("#commander").css("max-width", "500px");
+    
+    $("#choosable").css("top", "20px");
+    $("#choosable").css("left", "480px");
+    $("#choosable").css("max-width", "730px");
+    $("#buycap").css("width", "700px");
+    $("#buycap").css("text-align", "center");
+    $("#basicbuy").css("left", "120px");
+    $("#reminder").css("width", "700px");
+    $("#reminder").css("text-align", "center");
+    $("#areatitle").css("width", "480px");
+    $("#spend").css("width", "700px");
+    $("#thisdeck").css("width", "700px");
+    $("#buydeck").css("top", "420px");
+    $("#buydeck").css("left", "480px");
+    $("#buydeck").css("max-width", "730px");
         
     //$("#button").css("top", "520px");
     //$("#button").css("left", "600px");
     
-    var str = '<div class="cardf" id="endturn"><img class="smallcard" src="img/endturn.jpg"></div>';
-    $("#game").append(str);
     
     //cheat
-    testgenerate();
-        
+    //testgenerate();
+    
+    //var str = '<div class="cardf" id="endturn"><img class="smallcard" src="img/endturn.jpg"></div>';
+    var str = '<div class="cardf" id="chosen"><img class="smallcard" src="img/ready.jpg"></div>';
+    $("#game").append(str);
+    
     showbscore();
     
     $("#enc1").css("height", "305px");
@@ -197,6 +220,8 @@ function startgame(){
     
 }
 
+
+
 $( "div" ).on( "mouseenter", ".cardc", function( event ) {
     
     event.stopImmediatePropagation();
@@ -240,14 +265,26 @@ function showcard(lapid){
     $("#slash").css("display", "none");
     $(".cardtitle").text(cid.title);
     $(".cardtrait").text(cid.trait);
-    $(".percent").text(cid.perc);
     $(".cardtext").html(cid.text);
-    $("#dmgval").html(cid.dmg);
-    $("#hpval").html(cid.hp);
     $("#takedmg").html(cid.hp);
+        
+    if ("dmg" in cid){
+        $("#dmgval").css("display", "inline-block");
+        $("#damage").css("display", "inline-block");
+        $("#health").css("display", "inline-block");
+        $("#dmgval").html(cid.dmg);
+        $("#hpval").html(cid.hp);
+        $("#hpval").css("display", "inline-block");
+    } else {
+        $("#dmgval").css("display", "none");
+        $("#hpval").css("display", "none");
+        $("#damage").css("display", "none");
+        $("#health").css("display", "none");
+    }
     
     if ("perc" in cid){
         $(".percent").css("display", "inline-block");
+        $(".percent").text(cid.perc);
     } else {
         $(".percent").css("display", "none");
     }
@@ -261,6 +298,7 @@ function showcard(lapid){
             textcol = "rgb(0, 0, 0)";
             break;
         case "monst":
+        case "buy":    
             textshad = "rgba(0, 0, 0, 1) 1px 1px 3px";
             textcol = "rgb(255, 255, 255)";
             break;
@@ -274,5 +312,14 @@ function showcard(lapid){
     $(".percent").css("color", textcol);
     $(".stats").css("text-shadow", textshad);
     $(".stats").css("color", textcol);
+    
+    if ((cid.place=="#basicbuy") || (cid.place=="#buy")){
+        $("#goldbag").css("display", "inline-block");
+        $("#goldval").css("display", "inline-block");
+        $("#goldval").text(cid.cost);
+    } else {
+        $("#goldval").css("display", "none");
+        $("#goldbag").css("display", "none");
+    }
     
 };
