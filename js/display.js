@@ -4,20 +4,12 @@
  * and open the template in the editor.
  */
 
-var cardbyid = new Array();
-var hanylapvan = 0;
-var dragid = 0;
-var dontshow = false;
-var enemies = new Array();
-var hold = false;
-var commander = 0;
+
 
 $( document ).ready(function() {
         
         cardbyid.push(new Object());
-        
-        choosecomm();
-        
+                
         arrange();
         startgame();
     
@@ -36,25 +28,6 @@ $('body').on( "mouseenter", "card", function( event ) {
     
 });
 
-function testgenerate(){
-    
-    // commander = 1;
-         
-    generate (2, "#enc1");
-    generate (2, "#enc2");
-    generate (2, "#enc3");
-    
-    for (let i = 1; i < 20; i++) { 
-        generate (1, "#deck");
-    }
-    
-    sortdeck();
-    
-    bscore = 50;
-    
-    // elefant
-    
-}
 
 function hidegame(){
     
@@ -96,12 +69,17 @@ function arrange(){
     $("#logarea").css("left", "1255px");
     $("#button").css("top", "20px");
     $("#button").css("left", "1255px");
+    $("#button").css("white-space", "nowrap");
     $("#hand").css("top", "340px");
     $("#hand").css("left", "445px");
     $("#indeck").css("top", "605px");
     $("#indeck").css("left", "20px");
     $("#forkeep").css("top", "170px");
     $("#forkeep").css("left", "1255px");
+    $("#inf").css("top", "170px");
+    $("#inf").css("left", "1500px");
+    $("#inf").css("min-width", "120px");
+    $("#inf").css("display", "none");
     $("#keep").css("height", "105px");
     $("#en1").css("top", "20px");
     $("#en1").css("left", "445px");
@@ -111,10 +89,13 @@ function arrange(){
     $("#en3").css("left", "985px");
     
     $("#battlescore").css("top", "130px");
-    $("#battlescore").css("left", "1275px");
+    $("#battlescore").css("left", "1276px");
     $("#winbattle").css("top", "130px");
-    $("#winbattle").css("left", "1275px");
-        
+    $("#winbattle").css("left", "1276px");
+    $("#wave").css("top", "114px");
+    $("#wave").css("left", "1468px");
+    $("#wave").css("display", "none");
+    
     $("#button").css("top", "20px");
     $("#button").css("left", "1255px");
     $("#commander").css("top", "20px");
@@ -140,30 +121,24 @@ function arrange(){
     //$("#button").css("left", "600px");
     
     
-    //cheat
-    //testgenerate();
-    
     //var str = '<div class="cardf" id="endturn"><img class="smallcard" src="img/endturn.jpg"></div>';
     var str = '<div class="cardf" id="chosen"><img class="smallcard" src="img/ready.jpg"></div>';
     $("#game").append(str);
     
-    showbscore();
+    
     
     $("#enc1").css("height", "305px");
     $("#en1").css("width", "240px");
     $("#enc1").css("max-width", "250px");
-    $('#enc1 img:first').attr("class", "doublecard");
-    
+        
     $("#enc2").css("height", "305px");
     $("#en2").css("width", "240px");
     $("#enc2").css("max-width", "250px");
-    $('#enc2 img:first').attr("class", "doublecard");
-    
+        
     $("#enc3").css("height", "305px");
     $("#en3").css("width", "240px");
     $("#enc3").css("max-width", "250px");
-    $('#enc3 img:first').attr("class", "doublecard");
-    
+        
     enemies[1] = $("#enc1");
     enemies[2] = $("#enc2");
     enemies[3] = $("#enc3");
@@ -174,8 +149,13 @@ function arrange(){
                 $(".cardc[id=\""+dragid+"\"]").draggable( "option", "revertDuration", 0 );
                 $(".cardc[id=\""+dragid+"\"]").draggable( "option", "revert", true );
                 $(".cardc[id=\""+dragid+"\"]").addClass("attacking");
-                cardbyid[dragid].place="#keep";
+                $(".cardc[id=\""+dragid+"\"]").removeClass("tokeep");
+                cardbyid[dragid].place="#"+enemies[i].attr("id");
                 enemies[i].append(ui.draggable);
+				if (cardbyid[enemies[i].children()[0].id].type == "fray"){
+					curfray -= cardbyid[dragid].dmg;
+					console.log("fraybe drag");
+				}
                 //$('#keep').append($(".cardc[id=\""+dragid+"\"]"));
 
             }
@@ -188,6 +168,7 @@ function arrange(){
             $(".cardc[id=\""+dragid+"\"]").draggable( "option", "revert", true );
             $(".cardc[id=\""+dragid+"\"]").addClass("tokeep");
             cardbyid[dragid].place="#keep";
+            $(".cardc[id=\""+dragid+"\"]").removeClass("attacking");
             $('#keep').append(ui.draggable);
             //$('#keep').append($(".cardc[id=\""+dragid+"\"]"));
             
@@ -195,7 +176,7 @@ function arrange(){
     });
       
     $( "#hand" ).droppable({
-        accept: ".tokeep",
+        accept: ".tokeep, .attacking",
         drop: function( event, ui ) {
             $(".cardc[id=\""+dragid+"\"]").draggable( "option", "revertDuration", 0 );
             $(".cardc[id=\""+dragid+"\"]").draggable( "option", "revert", true );
@@ -211,16 +192,42 @@ function arrange(){
 
 function startgame(){
     
-    rollchance();
+    choosecomm();
+    
+    recruit = 1;
+    generate (1, "#basicbuy");
+    generate (5, "#basicbuy");
+    generate (5, "#basicbuy");
+    generate (5, "#basicbuy");
+    generate (5, "#info");
+        
+    startingdeck();
     sortdeck();
     
-    $("#avnow").children().each(function() {
-        makedrag($(this));
-    });
+    $("#seedeck").append($("#deck").children(".cardc"));
     
 }
 
-
+function startingdeck(){
+    
+    
+    for (let i = 1; i <= 6; i++) {
+        // cheat
+        startcards[i] = 4;
+    }
+    
+    recruit = 1;
+    for (let i = 1; i <= 6; i++) {
+        generate (1, "#deck");
+    }
+    for (let i = 1; i <= 6; i++) {
+        recruit = startcards[i];
+        generate (1, "#deck");
+        recruit ++;
+    }
+    recruit = 0;
+    
+}
 
 $( "div" ).on( "mouseenter", ".cardc", function( event ) {
     
@@ -267,7 +274,8 @@ function showcard(lapid){
     $(".cardtrait").text(cid.trait);
     $(".cardtext").html(cid.text);
     $("#takedmg").html(cid.hp);
-        
+    
+    //writelog(("dmg" in cid)+" "+lapid+ "<br>");
     if ("dmg" in cid){
         $("#dmgval").css("display", "inline-block");
         $("#damage").css("display", "inline-block");
@@ -275,6 +283,16 @@ function showcard(lapid){
         $("#dmgval").html(cid.dmg);
         $("#hpval").html(cid.hp);
         $("#hpval").css("display", "inline-block");
+		if (cid.xp[1]){
+			$("#damage").html("DMG*");
+		} else {
+			$("#damage").html("DMG");
+		}
+		if (cid.xp[2]){
+			$("#health").html("HP*");
+		} else {
+			$("#health").html("HP");
+		}
     } else {
         $("#dmgval").css("display", "none");
         $("#hpval").css("display", "none");
@@ -285,6 +303,9 @@ function showcard(lapid){
     if ("perc" in cid){
         $(".percent").css("display", "inline-block");
         $(".percent").text(cid.perc);
+		if (cid.xp[3]){
+			$(".percent").text(cid.perc+"*");
+		} 
     } else {
         $(".percent").css("display", "none");
     }
@@ -299,6 +320,11 @@ function showcard(lapid){
             break;
         case "monst":
         case "buy":    
+        case "heal": 
+        case "fray": 
+        case "region":
+        case "adv":
+        case "disadv":
             textshad = "rgba(0, 0, 0, 1) 1px 1px 3px";
             textcol = "rgb(255, 255, 255)";
             break;
@@ -321,5 +347,34 @@ function showcard(lapid){
         $("#goldval").css("display", "none");
         $("#goldbag").css("display", "none");
     }
+	
+    if (cid.type == "fray"){
+        if (curfray > 0){
+                $(".cardtext").html("The Monsters will gain<br>"+curfray+" Battlescore.");
+        } else {
+                $(".cardtext").html("You will gain<br>"+Math.abs(curfray)+" Battlescore.");
+        }
+
+    }
+    if (cid.type == "heal"){
+        $(".cardtext").html("Units assigned here will<br>regain "+healval[battlenum]+" Health each.");
+    }
+    
+    if (cid.what == "info"){
+        var infotext;
+        infotext = "This is your #"+battlenum+" battle.<br><br>";
+        infotext += "Gold: "+gold;
+        infotext += "<br>Fame: "+fame;
+        $(".cardtext").html(infotext);
+    }
+    
+    if (parseInt($(".cardtext").css("height")) < 55){
+        $(".cardtext").css("top", "398px");
+    } else if (parseInt($(".cardtext").css("height")) < 100){
+        $(".cardtext").css("top", "390px");
+    } else {
+        $(".cardtext").css("top", "374px");
+    }
+    
     
 };

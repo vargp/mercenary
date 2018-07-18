@@ -195,7 +195,7 @@ div::-webkit-scrollbar {
 }
 
 .cardc.hide {
-  opacity: 0;
+  opacity: 0.5;
 }
 
 #indeck {
@@ -257,6 +257,7 @@ div::-webkit-scrollbar {
     font-size: 22px;
     line-height: 26px;
     text-align: center;
+    height: auto;
 }
 
 .cardtrait {
@@ -503,6 +504,31 @@ div::-webkit-scrollbar {
     top: -10px;
     left: 0px;
     position: static;
+    z-index: 110;
+    padding: 15px;
+}
+
+#wave {
+    font-family: 'Pirata One', cursive;
+    text-align: center;
+    width: 150px;
+    white-space: nowrap;
+    color: #b11;  
+    font-size: 26px;
+    
+    text-shadow: rgb(0, 0, 0) 0px 2px 5px,
+                 rgb(0, 0, 0) 2px 0px 5px,
+                 rgb(0, 0, 0) -2px 0px 5px,
+                 rgb(0, 0, 0) 0px -2px 5px,
+                 rgb(0, 0, 0) 0px 2px 2px,
+                 rgb(0, 0, 0) 2px 0px 2px,
+                 rgb(0, 0, 0) -2px 0px 2px,
+                 rgb(0, 0, 0) 0px -2px 2px,
+                 rgb(0, 0, 0) 0px 0px 15px,
+                 rgba(0, 0, 0, 0.9) 2px 2px 2px;
+    top: -10px;
+    left: 0px;
+    position: absolute;
     z-index: 110;
     padding: 15px;
 }

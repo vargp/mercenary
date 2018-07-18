@@ -8,6 +8,7 @@ var testgen = 1;
 var testengen = 1;
 var comgen = 1;
 var recruit = 0;
+var adadraw = 0;
 
 var generate = (mit, hova) => {
     
@@ -33,11 +34,11 @@ var generate = (mit, hova) => {
     var laphuz;
     var numgen;
     var drawcard;
-    var sumchar;
+    var sumcard;
     var hanylapos;
     var cardtext = "";
     
-    
+    cardbyid[hanylapvan].temp = false;
 
     
     var mifele = mit;
@@ -46,11 +47,11 @@ var generate = (mit, hova) => {
         case 1:
             // char
             
-            sumchar = char.length-2;
-            numgen = Math.floor((Math.random() * sumchar) + 2);
+            sumcard = char.length-2;
+            numgen = Math.floor((Math.random() * sumcard) + 2);
             
             if (recruit > 0){
-                numgen = 1;
+                numgen = recruit;
             }
             
             // cheat
@@ -65,9 +66,13 @@ var generate = (mit, hova) => {
             break;
         case 2:
             // enemy
-            sumchar = en.length-1;
-            numgen = Math.floor((Math.random() * sumchar) + 1);
-            drawcard = en[numgen];
+            sumcard = en.length-1;
+            numgen = Math.floor((Math.random() * sumcard) + 1);
+            
+            //cheat
+             numgen = 3;
+            
+            drawcard = en[numgen];            
             cardbyid[hanylapvan].illus = "en";
             break;
         case 3:
@@ -91,11 +96,29 @@ var generate = (mit, hova) => {
             cardbyid[hanylapvan].illus = "bu";
             cardbyid[hanylapvan].cost = drawcard.cost;
             break;
+        case 6:
+            // region
+            sumcard = reg.length-1;
+            numgen = Math.floor((Math.random() * sumcard) + 1);
+            drawcard = reg[numgen];          
+            cardbyid[hanylapvan].illus = "reg"; 
+            break;
+        case 7:
+            // adv & disadv
             
+            numgen = adadraw;
+            drawcard = ada[numgen];          
+            cardbyid[hanylapvan].illus = "ada"; 
+            cardbyid[hanylapvan].temp = true;
+            cardbyid[hanylapvan].baseperc = drawcard.perc;
+            cardbyid[hanylapvan].perc = cardbyid[hanylapvan].baseperc;
+            break;
     }
     
     
+    cardbyid[hanylapvan].what = drawcard.what;
     cardbyid[hanylapvan].type = drawcard.type;
+    cardbyid[hanylapvan].trig = drawcard.trig;
     
     if (numgen < 10){
         cardbyid[hanylapvan].illus += "0";
@@ -103,19 +126,33 @@ var generate = (mit, hova) => {
     cardbyid[hanylapvan].illus += numgen;
     console.log(cardbyid[hanylapvan].illus);
     
+    cardbyid[hanylapvan].assign = 0;
+    cardbyid[hanylapvan].assist = 0;
     
     cardbyid[hanylapvan].title = drawcard.title;
     cardbyid[hanylapvan].text = drawcard.text;
+    cardbyid[hanylapvan].abnum = numgen;
     cardbyid[hanylapvan].place = hova;
     cardbyid[hanylapvan].trait = drawcard.trait.toUpperCase();
     
-    if (cardbyid[hanylapvan].type == "buy"){
-        
-    } else {
+	cardbyid[hanylapvan].xp = new Array();
+	cardbyid[hanylapvan].xp[1] = false;
+	cardbyid[hanylapvan].xp[2] = false;
+	cardbyid[hanylapvan].xp[3] = false;
+	
+    if ("dmg" in drawcard){
         cardbyid[hanylapvan].basedmg = drawcard.dmg;
         cardbyid[hanylapvan].basehp = drawcard.hp;    
+        if (cardbyid[hanylapvan].type == "monst"){
+            cardbyid[hanylapvan].basedmg += monplusdmg[battlenum];
+            cardbyid[hanylapvan].basehp += monplushp[battlenum];
+        }
         cardbyid[hanylapvan].dmg = cardbyid[hanylapvan].basedmg;
         cardbyid[hanylapvan].hp = cardbyid[hanylapvan].basehp;
+	
+		 
+    } else {
+        
     }
     
     
