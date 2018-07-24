@@ -70,7 +70,7 @@ var generate = (mit, hova) => {
             numgen = Math.floor((Math.random() * sumcard) + 1);
             
             //cheat
-             numgen = 3;
+            // numgen = 3;
             
             drawcard = en[numgen];            
             cardbyid[hanylapvan].illus = "en";
@@ -100,8 +100,13 @@ var generate = (mit, hova) => {
             // region
             sumcard = reg.length-1;
             numgen = Math.floor((Math.random() * sumcard) + 1);
+            
+            //cheat
+            //numgen = 5;
+            
             drawcard = reg[numgen];          
             cardbyid[hanylapvan].illus = "reg"; 
+            cardbyid[hanylapvan].fmod = drawcard.fmod;
             break;
         case 7:
             // adv & disadv

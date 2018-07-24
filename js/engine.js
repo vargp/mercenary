@@ -19,6 +19,7 @@ var hanylapvan = 0;
 var dragid = 0;
 var dontshow = false;
 var enemies = new Array();
+var battles = new Array();
 var hold = false;
 var commander = 0;
 var gold = 100;
@@ -28,6 +29,8 @@ var maxwave = 10;
 var battlenum = 1;
 var curfray;
 var enemytype;
+var actheal;
+var retaliate = true;
 
 $(document).on( "click", "#endturn", function( event ) {
     
@@ -53,7 +56,7 @@ function discard(){
 
 function endofturn(){
     
-    
+    trigger(10);
     
     $("#deck").append($(".cardc.attacking"));
     
@@ -223,57 +226,55 @@ function nextstep() {
             delay = 2400;
         }
     } else if (cardbyid[enemies[fight].children()[0].id].type == "fray"){
-		$(".cardc").css("box-shadow", "0 0 10px 2px #000");
-		$(".cardc[id=\""+enemies[fight].children()[0].id+"\"]").css("box-shadow", "0 0 6px 3px gold");
+        $(".cardc").css("box-shadow", "0 0 10px 2px #000");
+        $(".cardc[id=\""+enemies[fight].children()[0].id+"\"]").css("box-shadow", "0 0 6px 3px gold");
+        
+        if (curfray > 0){
+            writelog("<br><font color=\"orange\">The Monsters gain "+curfray+" Battlescore.</font>");
+        } else {
+            writelog("<br><font color=\"orange\">You gain "+Math.abs(curfray)+" Battlescore.</font>"); 
+        }
+        
+        trigger (7);
         fight ++;
-		if (curfray > 0){
-			writelog("<br><font color=\"orange\">The Monsters gain "+curfray+" Battlescore.</font>");
-		} else {
-			writelog("<br><font color=\"orange\">You gain "+Math.abs(curfray)+" Battlescore.</font>"); 
-		}
-		console.log("fray volt, fight ++");
-		bscore -= curfray;
-		curfray = frayval[battlenum];
-		showbscore();
-		attack = 0;
-		delay = 1200;
+        console.log("fray volt, fight ++");
+        bscore -= curfray;
+        curfray = frayval[battlenum];
+        showbscore();
+        attack = 0;
+        delay = 1200;
         
     } else if (cardbyid[enemies[fight].children()[0].id].type == "heal"){
 		
-		$(".cardc").css("box-shadow", "0 0 10px 2px #000");
-        
-		if (enemies[fight].children()[attack] != undefined){
-			$(".cardc[id=\""+enemies[fight].children()[attack].id+"\"]").css("box-shadow", "0 0 6px 3px gold");
-			showcard(enemies[fight].children()[attack].id);
-			var hpdiff = cardbyid[enemies[fight].children()[attack].id].basehp - cardbyid[enemies[fight].children()[attack].id].hp;
-			if (hpdiff >= healval[battlenum]){
-				cardbyid[enemies[fight].children()[attack].id].hp += healval[battlenum];
-				hpdiff = healval[battlenum];
-			} else {
-				cardbyid[enemies[fight].children()[attack].id].hp += hpdiff;
-			}
-			
-			$("#hpval").html(cardbyid[enemies[fight].children()[attack].id].hp);
-			$("#takedmg").css("display", "inline-block");
-			$("#takedmg").addClass("damage");
-			setTimeout(function(){
-				$("#takedmg").css("display", "none");
-			}, 1000);
-			delay = 1200;
-			writelog("<br><card id=\"" + enemies[fight].children()[attack].id + "\">" + cardbyid[enemies[fight].children()[attack].id].title + "</card> <font color=\"Aqua\">regained "+hpdiff+" Health.</font>");
-		}
-		if (attack == 2){
-			attack = 0;
-			fight ++;
-			console.log("heal volt, fight ++");
-		}
+        $(".cardc").css("box-shadow", "0 0 10px 2px #000");
+
+        if (enemies[fight].children()[attack] != undefined){
+            $(".cardc[id=\""+enemies[fight].children()[attack].id+"\"]").css("box-shadow", "0 0 6px 3px gold");
+            showcard(enemies[fight].children()[attack].id);
+
+            heal(enemies[fight].children()[attack].id, healval[battlenum]);
+
+            $("#hpval").html(cardbyid[enemies[fight].children()[attack].id].hp);
+            $("#takedmg").css("display", "inline-block");
+            $("#takedmg").addClass("damage");
+            setTimeout(function(){
+                    $("#takedmg").css("display", "none");
+            }, 1000);
+            delay = 1200;
+            writelog("<br><card id=\"" + enemies[fight].children()[attack].id + "\">" + cardbyid[enemies[fight].children()[attack].id].title + "</card> <font color=\"Aqua\">regained "+actheal+" Health.</font>");
+        }
+        if (attack == 2){
+            attack = 0;
+            fight ++;
+            console.log("heal volt, fight ++");
+        }
 		
         
     } else if (cardbyid[enemies[fight].children()[0].id].hp <= 0){
-		attack = 0;
-		fight ++;
-		console.log("szörny halott, fight ++");
-	}
+        attack = 0;
+        fight ++;
+        console.log("szörny halott, fight ++");
+    }
     
     attack++;
     
@@ -292,7 +293,19 @@ function nextstep() {
     
 }
 
+function heal(who, amount) {
+    
+    actheal = cardbyid[who].basehp - cardbyid[who].hp;
+    if (actheal >= amount){
+        actheal = amount;
+    }
+    cardbyid[who].hp += actheal;
+    
+}
+
 function combat() {
+    
+    retaliate = true;
     
     showcard(attacked);
     $(".cardc").css("box-shadow", "0 0 10px 2px #000");
@@ -307,22 +320,32 @@ function combat() {
         $(".cardc[id=\""+attacked+"\"]").css("box-shadow", "0 0 6px 3px red");
         $(".cardc[id=\""+attmonst+"\"]").css("box-shadow", "0 0 6px 3px gold");
         slash();
+        trigger(3);
     }, 200);
     
-        
     setTimeout(function(){
         showcard(attmonst);
-        
-        cardbyid[attmonst].hp -= cardbyid[attacked].dmg;
-        writelog("<br><card id=\"" + attacked + "\">" + cardbyid[attacked].title + "</card><font color=\"springgreen\"> attacks <card id=\"" + attmonst + "\">" + cardbyid[attmonst].title + "</card></font>!");
-        //writelog("<br><card id=\"" + attmonst + "\">" + cardbyid[attmonst].title + "</card> took "+cardbyid[attacked].dmg+" damage!");
-        writelog("<br>Damage: "+cardbyid[attacked].dmg+" Health.</font>");
-        $("#hpval").html(cardbyid[attmonst].hp);
         $(".cardc[id=\""+attmonst+"\"]").css("box-shadow", "0 0 6px 3px red");
         $(".cardc[id=\""+attacked+"\"]").css("box-shadow", "0 0 6px 3px gold");
         
-        slash();
+        if (retaliate){
+            
+            cardbyid[attmonst].hp -= cardbyid[attacked].dmg;
+            writelog("<br><card id=\"" + attacked + "\">" + cardbyid[attacked].title + "</card><font color=\"springgreen\"> attacks <card id=\"" + attmonst + "\">" + cardbyid[attmonst].title + "</card></font>!");
+            //writelog("<br><card id=\"" + attmonst + "\">" + cardbyid[attmonst].title + "</card> took "+cardbyid[attacked].dmg+" damage!");
+            writelog("<br>Damage: "+cardbyid[attacked].dmg+" Health.</font>");
+            $("#hpval").html(cardbyid[attmonst].hp);
+            
+            slash();
+            trigger (5);
+        
+        } else {
+            writelog("<br><card id=\"" + attacked + "\">" + cardbyid[attacked].title + "</card><font color=\"springgreen\"> can't retaliate!");
+        }
+        
     }, 1300);
+    
+    
     
     setTimeout(checkdead, 2000, attacked, 0);
     setTimeout(checkdead, 2000, attmonst, attacked);
@@ -429,6 +452,22 @@ var trigger = (trig) => {
             trigassigned(trig);
             trighand(trig);
             break;
+        case 3:
+            if (cardbyid[attmonst].trig == 3){
+                monsteff(attmonst);
+            }
+            break;
+        case 5:
+            if (cardbyid[attacked].trig == 5){
+                uniteff(attacked);
+            }
+            break;
+        case 7:
+            trigfray(trig);
+            break;
+        case 10:
+            trighand(trig);
+            break;
     }
     
     
@@ -442,6 +481,19 @@ trigassigned = (trig) => {
                     uniteff(enemies[i].children()[j].id);
                 }
             }
+        }
+    }
+};
+
+trigfray = (trig) => {
+    if (enemies[fight].children()[1] != undefined){
+        if (cardbyid[enemies[fight].children()[1].id].trig == trig){
+            uniteff(enemies[fight].children()[1].id);
+        }
+    }
+    if (enemies[fight].children()[2] != undefined){
+        if (cardbyid[enemies[fight].children()[2].id].trig == trig){
+            uniteff(enemies[fight].children()[2].id);
         }
     }
 };
@@ -478,10 +530,24 @@ function startbattle(){
     
     writelog("<br><font color=\"orchid\">Battle starts.</font>");
     
-    maxwave = 2;
+    showgame();
+    $("#inf").css("left", "1500px");
+    $("#wave").css("display", "inline-block");
+	
+    $("#wave").html("Wave "+curwave+" / "+maxwave);
+    
+    $("#game").append($(".cardc[id=\""+bfield+"\"]"));
+    var str = '<div class="cardf" id="endturn"><img class="smallcard" src="img/endturn.jpg"></div>';
+    $("#game").append(str);
+    
+    $("#enc1").empty();
+    $("#enc2").empty();
+    $("#enc3").empty();
+    
+    maxwave = cardbyid[bfdetails].waves;
     curwave = 0;
     curfray = frayval[battlenum];
-    bscore = 50;
+    bscore = cardbyid[bfdetails].bsbase;
     showbscore();
     
     adadraw = 1;
@@ -524,5 +590,19 @@ function endbattle(){
     });
     
     sortdeck();
+    
+    battlenum ++;
+    
+    if (bscore >= 50){
+        gold += cardbyid[bfdetails].gold;
+        fame += cardbyid[bfdetails].fame;
+        writelog("<br><font color=\"orchid\">Victory! You won the battle.</font>");
+    } else {
+        gold += cardbyid[bfdetails].goldlose;
+        fame += cardbyid[bfdetails].famelose;
+        writelog("<br><font color=\"orchid\">Retreat! You lost the battle.</font>");
+    }
+    
+    buycards();
     
 }

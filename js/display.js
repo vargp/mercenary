@@ -65,6 +65,7 @@ function arrange(){
     $("#buydeck").css("display", "none");
     $("#takedmg").css("display", "none");
     $("#slash").css("display", "none");
+    $("#battles").css("display", "none");
     $("#logarea").css("top", "340px");
     $("#logarea").css("left", "1255px");
     $("#button").css("top", "20px");
@@ -101,19 +102,28 @@ function arrange(){
     $("#commander").css("top", "20px");
     $("#commander").css("left", "600px");
     $("#commander").css("max-width", "500px");
+    $("#battles").css("top", "20px");
+    $("#battles").css("left", "600px");
+    $("#battles").css("max-width", "500px");
+    $("#battle1").css("max-width", "240px");
+    $("#battle2").css("max-width", "240px");
+    $("#battle3").css("max-width", "240px");
+    $("#battle1").addClass("bbox");
+    $("#battle2").addClass("bbox");
+    $("#battle3").addClass("bbox");
     
     $("#choosable").css("top", "20px");
     $("#choosable").css("left", "480px");
     $("#choosable").css("max-width", "730px");
     $("#buycap").css("width", "700px");
     $("#buycap").css("text-align", "center");
-    $("#basicbuy").css("left", "120px");
+    $("#basicbuy").css("left", "60px");
     $("#reminder").css("width", "700px");
     $("#reminder").css("text-align", "center");
     $("#areatitle").css("width", "480px");
     $("#spend").css("width", "700px");
     $("#thisdeck").css("width", "700px");
-    $("#buydeck").css("top", "420px");
+    $("#buydeck").css("top", "460px");
     $("#buydeck").css("left", "480px");
     $("#buydeck").css("max-width", "730px");
         
@@ -142,6 +152,9 @@ function arrange(){
     enemies[1] = $("#enc1");
     enemies[2] = $("#enc2");
     enemies[3] = $("#enc3");
+    battles[1] = $("#battle1");
+    battles[2] = $("#battle2");
+    battles[3] = $("#battle3");
 
     for (let i = 1; i < 4; i++) { 
         enemies[i].droppable({
@@ -200,11 +213,12 @@ function startgame(){
     generate (5, "#basicbuy");
     generate (5, "#basicbuy");
     generate (5, "#info");
-        
+    recruit = 8;
+    generate (5, "#basicbuy");    
     startingdeck();
     sortdeck();
     
-    $("#seedeck").append($("#deck").children(".cardc"));
+    
     
 }
 
@@ -213,7 +227,7 @@ function startingdeck(){
     
     for (let i = 1; i <= 6; i++) {
         // cheat
-        startcards[i] = 4;
+        // startcards[i] = 7;
     }
     
     recruit = 1;
@@ -328,6 +342,10 @@ function showcard(lapid){
             textshad = "rgba(0, 0, 0, 1) 1px 1px 3px";
             textcol = "rgb(255, 255, 255)";
             break;
+        case "comm":
+            textcol = "rgb(59, 56, 14)";
+            textshad = "rgba(155, 150, 18, 1) 1px 1px 3px";
+            break;
     }
     
     $(".cardtext").css("text-shadow", textshad);
@@ -362,9 +380,39 @@ function showcard(lapid){
     
     if (cid.what == "info"){
         var infotext;
-        infotext = "This is your #"+battlenum+" battle.<br><br>";
-        infotext += "Gold: "+gold;
-        infotext += "<br>Fame: "+fame;
+        
+        if (bfdetails > 0){
+            infotext = "This is your #"+battlenum+" battle.<br>";
+            infotext += "Gold Reward: "+cardbyid[bfdetails].gold+" ("+cardbyid[bfdetails].goldlose+")<br>";
+            infotext += "Fame Reward: "+cardbyid[bfdetails].fame+" ("+cardbyid[bfdetails].famelose+")<br>";
+        } else {
+            infotext = "This will be your #"+battlenum+" battle.<br>";
+        }
+        infotext += "Current Gold: "+gold;
+        infotext += "<br>Current Fame: "+fame;
+        $(".cardtext").html(infotext);
+    }
+    
+    if (cid.what == "battinf"){
+        var infotext;
+        switch(cid.montype){
+            case 1:
+                infotext = "Enemy: Orcs";
+                break;
+            case 2:
+                infotext = "Enemy: Beasts";
+                break;
+            case 3:
+                infotext = "Enemy: Undead";
+                break;
+            case 4:
+                infotext = "Enemy: Demons";
+                break;
+        }
+        infotext += "<br>Waves: "+cid.waves;
+        infotext += "<br>Starting Battlescore: "+cid.bsbase;
+        infotext += "<br>Gold Reward: "+cid.gold+" ("+cid.goldlose+")";
+        infotext += "<br>Fame Reward: "+cid.fame+" ("+cid.famelose+")";
         $(".cardtext").html(infotext);
     }
     
@@ -372,8 +420,10 @@ function showcard(lapid){
         $(".cardtext").css("top", "398px");
     } else if (parseInt($(".cardtext").css("height")) < 100){
         $(".cardtext").css("top", "390px");
+    } else if (parseInt($(".cardtext").css("height")) < 106){
+        $(".cardtext").css("top", "380px");
     } else {
-        $(".cardtext").css("top", "374px");
+        $(".cardtext").css("top", "368px");
     }
     
     

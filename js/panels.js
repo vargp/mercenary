@@ -6,6 +6,8 @@
 
 var secmon;
 var thirmon;
+var bfield = 0;
+var bfdetails = 0;
 
 function choosecomm(){
     
@@ -39,6 +41,12 @@ $('#buy, #basicbuy').on( "click", ".cardc", function( event ) {
         if (cardbyid[$(this).attr("id")].place == "#buy"){
             $("#seedeck").append($(this));
             cardbyid[$(this).attr("id")].place = "#deck";
+            var data = cardbyid[$(this).attr("id")].what+cardbyid[$(this).attr("id")].abnum+"*";
+            $.ajax({
+                type: 'POST',
+                url: "savedata2.php",
+                data: data
+              });
         }
         if ($(this).attr("id") == RecNum){
             // Ardent Recruit
@@ -57,8 +65,14 @@ $(document).on( "click", "#chosen", function( event ) {
     if (commander > 0){
         $(".cardc").removeClass("selected");
         $("#commander").css("display", "none");
-        buycards();
         
+        buycards();
+        var data = cardbyid[commander].what+cardbyid[commander].abnum+"*";
+        $.ajax({
+            type: 'POST',
+            url: "savedata2.php",
+            data: data
+          });
     }
     
 });
@@ -67,31 +81,98 @@ $(document).on( "click", "#buydone", function( event ) {
     
     
     $("#choosable").css("display", "none");
-    $("#buydeck").css("display", "none");
-    showgame();
-    $("#inf").css("left", "1500px");
-    $("#wave").css("display", "inline-block");
-	
-    $("#wave").html("Wave "+curwave+" / "+maxwave);
-	
-    $("#deck").append($("#seedeck").children(".cardc"));
-        
-    generate(6, "#game");
+       	 
+    
     $("#buydone").remove();
-    var str = '<div class="cardf" id="endturn"><img class="smallcard" src="img/endturn.jpg"></div>';
+    var str = '<div class="cardf" id="endreg"><img class="smallcard" src="img/ready.jpg"></div>';
     $("#game").append(str);
     
-    $("#enc1").empty();
-    $("#enc2").empty();
-    $("#enc3").empty();
-    
-    startbattle();
-    
+    regions();
     
 });
 
+function regions(){
+    
+    var basicfame;
+    var modif;
+    $(".bbox").css("box-shadow", "0 0 0 black");
+    
+    $("#battles").css("display", "inline-block");
+ 
+    for (let i = 1; i < 4; i++) {
+        basicfame = battlenum + 5;
+        battles[i].empty();
+        generate(6, battles[i]);
+        console.log("***** "+cardbyid[hanylapvan].title);
+        console.log("basicfame: "+basicfame);
+        basicfame += cardbyid[hanylapvan].fmod;
+        console.log("after fmod: "+basicfame);
+        recruit = 7;
+        generate (5, battles[i]);
+        cardbyid[hanylapvan].montype = Math.floor((Math.random() * 4) + 1);
+        modif =  3 - Math.floor((Math.random() * 5) + 1);
+        cardbyid[hanylapvan].waves = wavesnum[battlenum] + modif;
+        basicfame += modif;
+        console.log(modif+" waves, basicfame: "+basicfame);
+        modif =  3 - Math.floor((Math.random() * 5) + 1);
+        cardbyid[hanylapvan].bsbase = bsbase[battlenum] + (modif * frayval[battlenum]);
+        basicfame -= modif;
+        console.log(modif*frayval[battlenum]+" battlescore, basicfame: "+basicfame);
+        modif =  3 - Math.floor((Math.random() * 5) + 1);
+        cardbyid[hanylapvan].gold = goldbase[battlenum] + (modif * 20);
+        basicfame -= modif;
+        console.log(modif*20+" gold, basicfame: "+basicfame);
+        modif =  2 - Math.floor((Math.random() * 3) + 1);
+        cardbyid[hanylapvan].gold = cardbyid[hanylapvan].gold + (modif * 5);
+        modif =  3 - Math.floor((Math.random() * 5) + 1);
+        cardbyid[hanylapvan].goldlose = cardbyid[hanylapvan].gold-30 + (modif * 5);
+        if (cardbyid[hanylapvan].goldlose < 0){
+            cardbyid[hanylapvan].goldlose = 0;
+        }
+        modif =  2 - Math.floor((Math.random() * 3) + 1);
+        basicfame += modif;
+        console.log(modif+" rand mod, basicfame: "+basicfame);
+        cardbyid[hanylapvan].fame = basicfame;
+        modif =  2 - Math.floor((Math.random() * 3) + 1);
+        cardbyid[hanylapvan].famelose = cardbyid[hanylapvan].fame-4 + modif;
+        if (cardbyid[hanylapvan].famelose < 0){
+            cardbyid[hanylapvan].famelose = 0;
+        }
+    }
+    
+    recruit = 0;
+}
+
+$(document).on( "click", ".bbox", function( event ) {
+    
+    $(".bbox").css("box-shadow", "0 0 0 black");
+    $(this).css("box-shadow", "0 0 6px 3px gold");
+    bfield = $(this).children()[0].id;
+    bfdetails = $(this).children()[1].id;
+    console.log(bfield);
+    
+});
+
+$(document).on( "click", "#endreg", function( event ) {
+    
+    if (bfield > 0){
+        $("#battles").css("display", "none");
+        $("#endreg").remove();
+        $("#deck").append($("#seedeck").children(".cardc"));
+        $("#buydeck").css("display", "none");
+        startbattle();
+    }
+    
+});
+
+
 function buycards(){
     
+    hidegame();
+    bfield = 0;
+    bfdetails = 0;
+    $("#seedeck").append($("#deck").children(".cardc"));
+        
     $("#inf").css("display", "inline-block");
     $("#inf").css("left", "1255px");
     $("#wave").css("display", "none");
@@ -117,6 +198,7 @@ function resetbuy(){
         generate (1, "#buy");
     }
     $("#buy, #basicbuy").children().each(function() {
+        $(this).removeClass("hide");
         if (cardbyid[$(this).attr("id")].cost > gold){
             $(this).addClass("hide");
         }
@@ -221,8 +303,11 @@ function mongen(){
     recruit = 0;
     
     $('#enc1 img:first').attr("class", "doublecard");
+    $('#enc1 div:first').css("height", "184px");
     $('#enc2 img:first').attr("class", "doublecard");
+    $('#enc2 div:first').css("height", "184px");
     $('#enc3 img:first').attr("class", "doublecard");
+    $('#enc3 div:first').css("height", "184px");
 	
     if (curwave > maxwave){
         $("#enc1").empty();
