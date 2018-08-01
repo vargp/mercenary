@@ -534,3 +534,64 @@ div::-webkit-scrollbar {
     z-index: 110;
     padding: 15px;
 }
+
+.endim{
+    display: none;
+    height:100%;
+    width:100%;
+    position: relative;
+    text-align: center;
+    left:0;
+    top:0;
+    z-index:6000;
+    
+}
+
+.endimage{
+    position: absolute;
+    vertical-align: middle;
+    display: block;
+    top: 20px;
+    left: 450px;
+    
+    -webkit-box-shadow: 0px 0px 44px 24px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 44px 24px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 44px 24px rgba(0,0,0,0.75);
+}
+
+.endtext{
+    display: none;
+}
+
+.gratu{
+    font-size: 100px;
+    top: 125px;
+    color: gold;
+}
+
+.score{
+    font-size: 50px;
+    top: 240px;
+    color: gold;
+}
+
+.rectext{
+    font-size: 35px;
+    top: 430px;
+    left: 350px;
+    color: red;
+}
+
+.newrec{
+    font-size: 35px;
+    top: 520px;
+    left: 350px;
+    color: red;
+}
+
+.record{
+    font-size: 35px;
+    top: 475px;
+    left: 350px;
+    color: gold;
+}

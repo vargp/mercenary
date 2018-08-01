@@ -9,6 +9,7 @@ var testengen = 1;
 var comgen = 1;
 var recruit = 0;
 var adadraw = 0;
+var bossnum = 0;
 
 var generate = (mit, hova) => {
     
@@ -55,7 +56,7 @@ var generate = (mit, hova) => {
             }
             
             // cheat
-            //numgen = testgen;
+            //numgen = 9;
             //testgen++;
             
             drawcard = char[numgen];
@@ -70,7 +71,7 @@ var generate = (mit, hova) => {
             numgen = Math.floor((Math.random() * sumcard) + 1);
             
             //cheat
-            // numgen = 3;
+            // numgen = 6;
             
             drawcard = en[numgen];            
             cardbyid[hanylapvan].illus = "en";
@@ -86,6 +87,15 @@ var generate = (mit, hova) => {
             break;
         case 4:
             // skill
+            sumcard = skill.length-1;
+            numgen = Math.floor((Math.random() * sumcard) + 1);
+            //cheat
+            // numgen = 10;
+            drawcard = skill[numgen];          
+            cardbyid[hanylapvan].illus = "sk"; 
+            cardbyid[hanylapvan].baseperc = drawcard.perc;
+            cardbyid[hanylapvan].perc = cardbyid[hanylapvan].baseperc;
+            cardbyid[hanylapvan].cost = drawcard.cost;
             break;
         case 5:
             // buyable
@@ -102,7 +112,7 @@ var generate = (mit, hova) => {
             numgen = Math.floor((Math.random() * sumcard) + 1);
             
             //cheat
-            //numgen = 5;
+            numgen = 2;
             
             drawcard = reg[numgen];          
             cardbyid[hanylapvan].illus = "reg"; 
@@ -117,6 +127,13 @@ var generate = (mit, hova) => {
             cardbyid[hanylapvan].temp = true;
             cardbyid[hanylapvan].baseperc = drawcard.perc;
             cardbyid[hanylapvan].perc = cardbyid[hanylapvan].baseperc;
+            break;
+        case 8:
+            // boss
+            numgen = bossnum;
+                        
+            drawcard = boss[numgen];            
+            cardbyid[hanylapvan].illus = "boss";
             break;
     }
     
@@ -138,17 +155,17 @@ var generate = (mit, hova) => {
     cardbyid[hanylapvan].text = drawcard.text;
     cardbyid[hanylapvan].abnum = numgen;
     cardbyid[hanylapvan].place = hova;
-    cardbyid[hanylapvan].trait = drawcard.trait.toUpperCase();
+    cardbyid[hanylapvan].trait = drawcard.trait;
     
-	cardbyid[hanylapvan].xp = new Array();
-	cardbyid[hanylapvan].xp[1] = false;
-	cardbyid[hanylapvan].xp[2] = false;
-	cardbyid[hanylapvan].xp[3] = false;
+    cardbyid[hanylapvan].xp = new Array();
+    cardbyid[hanylapvan].xp[1] = false;
+    cardbyid[hanylapvan].xp[2] = false;
+    cardbyid[hanylapvan].xp[3] = false;
 	
     if ("dmg" in drawcard){
         cardbyid[hanylapvan].basedmg = drawcard.dmg;
         cardbyid[hanylapvan].basehp = drawcard.hp;    
-        if (cardbyid[hanylapvan].type == "monst"){
+        if (cardbyid[hanylapvan].what == "monst"){
             cardbyid[hanylapvan].basedmg += monplusdmg[battlenum];
             cardbyid[hanylapvan].basehp += monplushp[battlenum];
         }
