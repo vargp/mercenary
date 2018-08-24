@@ -34,6 +34,9 @@ $('#commlist').on( "click", ".cardc", function( event ) {
 
 $(document).on( "click", "#chosen", function( event ) {
     
+    $("#battlescore").css("display", "none");
+    $("#winbattle").css("display", "none");
+    
     if (commander > 0){
         $(".cardc").removeClass("selected");
         $("#commander").css("display", "none");
@@ -104,7 +107,7 @@ function resetbuy(){
     $("#buycap").html("You still have: "+gold+" Gold");
     $("#buy").empty();
     for (let i = 1; i < 7; i++) { 
-        var skillchance = Math.floor((Math.random() * 4) + 1);
+        var skillchance = Math.floor((Math.random() * 5) + 1);
         if (skillchance == 1){
             generate (4, "#buy");
         } else {
@@ -260,6 +263,7 @@ function regions(){
     $("#battles").css("display", "inline-block");
  
     for (let i = 1; i < 4; i++) {
+        recruit = 0;
         basicfame = battlenum + 5;
         battles[i].empty();
         generate(6, battles[i]);
@@ -301,9 +305,10 @@ function regions(){
         if (cardbyid[hanylapvan].famelose < 0){
             cardbyid[hanylapvan].famelose = 0;
         }
+        
     }
     
-    recruit = 0;
+    
 }
 
 $(document).on( "click", ".bbox", function( event ) {
@@ -330,24 +335,19 @@ $(document).on( "click", "#endreg", function( event ) {
 
 function mongen(){
         
-	secmon = false;
-	thirmon = false;
-	var mone;
-    
+    secmon = false;
+    thirmon = false;
+    var mone;
+        
     // first panel
     
     if ($("#enc1").children().length == 0){
         
-        curwave ++;
-        if (curwave > maxwave){
-                writelog("<br>The battle is over!");
-        } else {
-                newmon ("#enc1");
-                $("#wave").html("Wave "+curwave+" / "+maxwave);
-        }
+        newmon ("#enc1");
+        
     }
 	
-	// are there more than one monsters?
+    // are there more than one monsters?
     
     mone = Math.floor((Math.random() * 100) + 1);
     if (mone <= (secmonchance[enemytype] + battlenum)){
@@ -367,7 +367,7 @@ function mongen(){
             console.log("csak harmadik ne legyen, akkor inkább csak második legyen.");
 	}
 	
-	// second panel
+    // second panel
 	    
     
     if (($("#enc2").children().length == 0) || ((cardbyid[$("#enc2").children()[0].id].type != "monst") && (secmon))){
@@ -395,6 +395,7 @@ function mongen(){
         } else {
             if (cardbyid[enemies[2].children()[0].id].type == "monst"){
                 mone = Math.floor((Math.random() * 100) + 1);
+                console.log("50 alatt healer: "+mone);
                 if (mone <= 50){
                         $("#enc3").empty();
                         recruit = 6;
@@ -430,17 +431,34 @@ function mongen(){
     $('#enc2 div:first').css("height", "184px");
     $('#enc3 img:first').attr("class", "doublecard");
     $('#enc3 div:first').css("height", "184px");
-	
-    if (curwave > maxwave){
-        $("#enc1").empty();
-        $("#enc2").empty();
-        $("#enc3").empty();
-        endbattle();
-    }
+
 }
 
 newmon = (where) => {
     
+    var getthis;
+    switch (enemytype){
+        case 1:
+            getthis = "Orc Enemy";
+            break;
+        case 2:
+            getthis = "Beast Enemy";
+            break;
+        case 3:
+            getthis = "Undead Enemy";
+            break;
+        case 4:
+            getthis = "Demon Enemy";
+            break;
+               
+    }
+    
+    var monlen = en.length-1;
+    
+    do {
+        mondraw = Math.floor((Math.random() * monlen) + 1);
+    } while (en[mondraw].trait != getthis);
+        
     generate (2, where);
     monstapp = hanylapvan;
     writelog("<br>A new Enemy appears: <card id=\"" + monstapp + "\">" + cardbyid[monstapp].title + "</card>.");

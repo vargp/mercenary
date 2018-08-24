@@ -9,6 +9,7 @@ var testengen = 1;
 var comgen = 1;
 var recruit = 0;
 var adadraw = 0;
+var mondraw = 0;
 var bossnum = 0;
 
 var generate = (mit, hova) => {
@@ -67,11 +68,11 @@ var generate = (mit, hova) => {
             break;
         case 2:
             // enemy
-            sumcard = en.length-1;
-            numgen = Math.floor((Math.random() * sumcard) + 1);
+            
+            numgen = mondraw;
             
             //cheat
-            // numgen = 6;
+            // numgen = 79;
             
             drawcard = en[numgen];            
             cardbyid[hanylapvan].illus = "en";
@@ -79,7 +80,7 @@ var generate = (mit, hova) => {
         case 3:
             // commander
             numgen = comgen;
-            console.log(comgen);
+            //console.log(comgen);
             drawcard = co[comgen];
             comgen++;            
             cardbyid[hanylapvan].illus = "co";
@@ -90,7 +91,7 @@ var generate = (mit, hova) => {
             sumcard = skill.length-1;
             numgen = Math.floor((Math.random() * sumcard) + 1);
             //cheat
-            // numgen = 10;
+            //numgen = 27;
             drawcard = skill[numgen];          
             cardbyid[hanylapvan].illus = "sk"; 
             cardbyid[hanylapvan].baseperc = drawcard.perc;
@@ -108,11 +109,14 @@ var generate = (mit, hova) => {
             break;
         case 6:
             // region
-            sumcard = reg.length-1;
+            sumcard = reg.length-3;
             numgen = Math.floor((Math.random() * sumcard) + 1);
             
             //cheat
-            numgen = 2;
+            //numgen = 38;
+            if (recruit > 0){
+                numgen = recruit;
+            }
             
             drawcard = reg[numgen];          
             cardbyid[hanylapvan].illus = "reg"; 
@@ -120,6 +124,9 @@ var generate = (mit, hova) => {
             break;
         case 7:
             // adv & disadv
+            
+            // cheat
+            // adadraw = 6;
             
             numgen = adadraw;
             drawcard = ada[numgen];          
@@ -146,7 +153,7 @@ var generate = (mit, hova) => {
         cardbyid[hanylapvan].illus += "0";
     }
     cardbyid[hanylapvan].illus += numgen;
-    console.log(cardbyid[hanylapvan].illus);
+    //console.log(cardbyid[hanylapvan].illus);
     
     cardbyid[hanylapvan].assign = 0;
     cardbyid[hanylapvan].assist = 0;

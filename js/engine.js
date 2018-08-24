@@ -45,6 +45,11 @@ var keepnum = 1;
 var present = new Array();
 var commfight = true;
 var whoexp = 0;
+var healerheal;
+var whodies = 0;
+var handdisc = false;
+var endingturn = false;
+var displayed = 0;
 
 $(document).on( "click", "#endturn", function( event ) {
     
@@ -72,60 +77,105 @@ function discard(){
 
 discfromhand = (what) => {
     
+    canceled = false;
     discthis = what;
+    if ($(".cardc[id=\""+what+"\"]").hasClass("attacking")){
+        handdisc = false;
+    } else {
+        handdisc = true;
+    }
     trigger (10);
-    console.log("discard: "+what);
-    $(".cardc[id=\""+what+"\"]").draggable( "destroy" );
-    $("#deck").append($(".cardc[id=\""+what+"\"]"));
-    cardbyid[what].place = "#deck";
+    if (!canceled){
+        console.log("discard: "+what);
+        if ($(".cardc[id=\""+what+"\"]").hasClass("ui-draggable")){
+            $(".cardc[id=\""+what+"\"]").draggable( "destroy" );
+        }
+        $("#deck").append($(".cardc[id=\""+what+"\"]"));
+        cardbyid[what].place = "#deck";
+        if ( !endingturn){
+            writelog("<br><card id=\"" + what + "\">" + cardbyid[what].title + "</card> is discarded.</font>");
+        }
+    }
     
 };
 
 
 function endofturn(){
     
+    attacked = 0;
+    attmonst = 0;
     
-    $("#deck").append($(".cardc.attacking"));
+    trigger (6);
+    
+    $("#avnow").append($(".cardc.attacking"));
+    
+    endingturn = true;
     
     discard();
+    
+    endingturn = false;
+    
+    trigger(20);
+    
+    if (cardbyid[enemies[1].children()[0].id].hp <= 0){
+        curwave ++;
+    }
+    
+    $(".cardc.dead").remove();
+    
     
     $("#deck").children(".cardc").each(function() {
         cardbyid[$(this).attr("id")].assign=0;
         cardbyid[$(this).attr("id")].assist=0;
         
-        
     });
+    
+    
+    
+    $("#wave").html("Wave "+curwave+" / "+maxwave);
+    
+    if ((curwave > maxwave) || (bscore > 99) || (bscore < 1)){
+        writelog("<br>The battle is over!");
+        $("#keep").children(".cardc").each(function() {
+            cardbyid[$(this).attr("id")].place="#deck";
+            $("#deck").append($(this));
+            $("#wave").html("Battle over!");
+        });
+        endbattle();
+    } else {
         
+        startturn();
+        
+    } 
     
+    checkdropdisable();
+    
+}
+
+function startturn(){
+    
+    writelog("<br><font color=\"orchid\">A new turn begins.</font>");
+                
     sortdeck();
-    
+
     rollchance();
-    
+
     sortdeck();
-    
+
     $("#keep").children(".cardc").each(function() {
         cardbyid[$(this).attr("id")].place="#avnow";
         makedrag($(this));
         $("#avnow").append($(this));
-        
+
     });
     
+    mongen();
+    
+    trigger(19);
+
     hold = false;
     $("#endturn").css("display", "inline-block");
-    
-    // $("#dead").append($(".cardc.dead"));
-    $(".cardc.dead").remove();
-    
-    checkdropdisable();
-    
-    if ((bscore > 99) || (bscore < 1)){
-        endbattle();
-    } else {
-        mongen();
-    }
-    
-    
-    
+
 }
 
 function rollchance(){
@@ -134,7 +184,7 @@ function rollchance(){
     
     $("#deck").children().each(function() {
         croll = Math.floor((Math.random() * 100) + 1);
-        console.log("roll "+croll+" vs "+cardbyid[$(this).attr("id")].perc);
+        //console.log("roll "+croll+" vs "+cardbyid[$(this).attr("id")].perc);
         if (cardbyid[$(this).attr("id")].perc >= croll){
             
             drawcard($(this).attr("id"));
@@ -152,11 +202,11 @@ function drawcard(ezt){
     makedrag($(".cardc[id=\""+ezt+"\"]"));
     justdrawn = ezt;
     trigger (9);
-    console.log("draw: "+ezt);
+    // console.log("draw: "+ezt);
     
     if ($("#avnow").children().length > 12){
         
-        discfromhand($("#avnow").children()[0].id)
+        discfromhand($("#avnow").children()[0].id);
         
     } 
     
@@ -241,7 +291,7 @@ function combatstart(){
     trigger (1);
     
     
-    writelog("<br><font color=\"orchid\">Combat round begins.</font>");
+    writelog("<br><font color=\"orchid\">Combat begins.</font>");
     nextstep();
         
     
@@ -258,102 +308,108 @@ function nextstep() {
     
     if (theend){
         fight = 4;
-    }
-    
-    
-    if ((cardbyid[enemies[fight].children()[0].id].type == "monst") && (cardbyid[enemies[fight].children()[0].id].hp > 0)){
-        if (enemies[fight].children()[attack] == undefined){
-            if (attack == 3){
-                // else skip this step
-                console.log('hit the commander!');
-				if (commfight){
-					attacked = commander;
-					combat();
-					delay = 2400;
-				}
-				commfight = true;
-                fight ++;
-                console.log("már a commandert csapta, fight ++");
-                attack = 0;
-                
+    } else {
+           
+        if ((cardbyid[enemies[fight].children()[0].id].type == "monst") && (cardbyid[enemies[fight].children()[0].id].hp > 0)){
+            if (enemies[fight].children()[attack] == undefined){
+                if (attack == 3){
+                    // else skip this step
+                    console.log('hit the commander!');
+                                    if (commfight){
+                                            attacked = commander;
+                                            combat();
+                                            delay = 2400;
+                                    }
+                                    commfight = true;
+                    fight ++;
+                    console.log("már a commandert csapta, fight ++");
+                    attack = 0;
+
+                } else {
+                    console.log("hoppskipp!");
+                }
             } else {
-                console.log("hoppskipp!");
+                attacked = enemies[fight].children()[attack].id;
+                            if (cardbyid[attacked].hp > 0){
+                                    combat();
+                                    delay = 2400;
+                            }
+
             }
-        } else {
-            attacked = enemies[fight].children()[attack].id;
-			if (cardbyid[attacked].hp > 0){
-				combat();
-				delay = 2400;
-			}
-            
-        }
-    } else if (cardbyid[enemies[fight].children()[0].id].type == "fray"){
-        $(".cardc").css("box-shadow", "0 0 10px 2px #000");
-        $(".cardc[id=\""+enemies[fight].children()[0].id+"\"]").css("box-shadow", "0 0 6px 3px gold");
-        
-        if (curfray > 0){
-            writelog("<br><font color=\"orange\">The Monsters gain "+curfray+" Battlescore.</font>");
-        } else {
-            writelog("<br><font color=\"orange\">You gain "+Math.abs(curfray)+" Battlescore.</font>"); 
-        }
-        
-        trigger (7);
-        fight ++;
-        console.log("fray volt, fight ++");
-        bscore -= curfray;
-        curfray = frayval[battlenum];
-        showbscore();
-        attack = 0;
-        delay = 1200;
-        
-    } else if (cardbyid[enemies[fight].children()[0].id].type == "heal"){
-		
-        $(".cardc").css("box-shadow", "0 0 10px 2px #000");
-               
-        
-        if (enemies[fight].children()[attack] != undefined){
-            
-            healed = enemies[fight].children()[attack].id;
-            trigger (8);
-            
-            $(".cardc[id=\""+enemies[fight].children()[attack].id+"\"]").css("box-shadow", "0 0 6px 3px gold");
-            showcard(enemies[fight].children()[attack].id);
+        } else if (cardbyid[enemies[fight].children()[0].id].type == "fray"){
+            $(".cardc").css("box-shadow", "0 0 10px 2px #000");
+            $(".cardc[id=\""+enemies[fight].children()[0].id+"\"]").css("box-shadow", "0 0 6px 3px gold");
 
-            heal(enemies[fight].children()[attack].id, healval[battlenum]);
+            if (curfray > 0){
+                writelog("<br><font color=\"orange\">The Monsters gain "+curfray+" Battlescore.</font>");
+            } else {
+                writelog("<br><font color=\"orange\">You gain "+Math.abs(curfray)+" Battlescore.</font>"); 
+            }
 
-            $("#hpval").html(cardbyid[enemies[fight].children()[attack].id].hp);
-            $("#takedmg").css("display", "inline-block");
-            $("#takedmg").addClass("damage");
-            setTimeout(function(){
-                $("#takedmg").css("display", "none");
-            }, 1000);
+            trigger (7);
+            fight ++;
+            console.log("fray volt, fight ++");
+            bscore -= curfray;
+            curfray = frayval[battlenum];
+            showbscore();
+            attack = 0;
             delay = 1200;
-            writelog("<br><card id=\"" + enemies[fight].children()[attack].id + "\">" + cardbyid[enemies[fight].children()[attack].id].title + "</card> <font color=\"Aqua\">regained "+actheal+" Health.</font>");
-        }
-        if (attack == 2){
+
+        } else if (cardbyid[enemies[fight].children()[0].id].type == "heal"){
+
+            $(".cardc").css("box-shadow", "0 0 10px 2px #000");
+
+
+            if (enemies[fight].children()[attack] != undefined){
+
+                healed = enemies[fight].children()[attack].id;
+                healerheal = healval[battlenum];
+
+                trigger (8);
+
+                $(".cardc[id=\""+enemies[fight].children()[attack].id+"\"]").css("box-shadow", "0 0 6px 3px gold");
+                showcard(enemies[fight].children()[attack].id);
+
+                heal(enemies[fight].children()[attack].id, healerheal);
+
+                $("#hpval").html(cardbyid[enemies[fight].children()[attack].id].hp);
+                $("#takedmg").css("display", "inline-block");
+                $("#takedmg").addClass("damage");
+                setTimeout(function(){
+                    $("#takedmg").css("display", "none");
+                }, 1000);
+                delay = 1200;
+
+            }
+            if (attack == 2){
+                attack = 0;
+                fight ++;
+                console.log("heal volt, fight ++");
+            }
+
+
+        } else if (cardbyid[enemies[fight].children()[0].id].hp <= 0){
             attack = 0;
             fight ++;
-            console.log("heal volt, fight ++");
+            console.log("szörny halott, fight ++");
         }
-		
+
+        attack++;
         
-    } else if (cardbyid[enemies[fight].children()[0].id].hp <= 0){
-        attack = 0;
-        fight ++;
-        console.log("szörny halott, fight ++");
     }
-    
-    attack++;
-    
         
     if (fight == 4) {
         delay +=500;
         if (!theend){
             setTimeout(function(){
-                writelog("<br><font color=\"orchid\">Combat round ends.</font>");
+                writelog("<br><font color=\"orchid\">Combat ends.</font>");
                 $(".cardc").css("box-shadow", "0 0 10px 2px #000");
-                trigger (6);
-                endofturn();
+                
+                setTimeout(function(){
+                    
+                    endofturn();
+                    
+                }, 200);
             }, delay);
         }
     } else {
@@ -366,7 +422,6 @@ function nextstep() {
 function combat() {
     
     retaliate = true;
-    
     
     
     $(".cardc").css("box-shadow", "0 0 10px 2px #000");
@@ -401,13 +456,14 @@ function combat() {
             combattime = true;
             
             writelog("<br><card id=\"" + attacked + "\">" + cardbyid[attacked].title + "</card><font color=\"springgreen\"> attacks <card id=\"" + attmonst + "\">" + cardbyid[attmonst].title + "</card></font>!");
-            
+                        
             damage(attmonst, cardbyid[attacked].dmg);
             
             //writelog("<br><card id=\"" + attmonst + "\">" + cardbyid[attmonst].title + "</card> took "+cardbyid[attacked].dmg+" damage!");
             
             slash();
             combattime = false;
+                                    
             trigger (5);
         
         } else {
@@ -418,8 +474,6 @@ function combat() {
         
     }, 1300);
     
-    setTimeout(checkdead, 2000, attacked, 0);
-    setTimeout(checkdead, 2000, attmonst, attacked);
     
 }
 
@@ -432,10 +486,16 @@ function heal(who, amount) {
     trigger(15);
     
     actheal = cardbyid[who].basehp - cardbyid[who].hp;
-    if (actheal >= amount){
-        actheal = amount;
+    if (actheal >= heamount){
+        actheal = heamount;
     }
+    
+    if (actheal < 0){
+        actheal = 0;
+    }
+    
     cardbyid[who].hp += actheal;
+    writelog("<br><card id=\"" + who + "\">" + cardbyid[who].title + "</card> <font color=\"Aqua\">regained "+actheal+" Health.</font>");
     
 }
 
@@ -457,12 +517,23 @@ var damage = (who, amount) => {
     
     if (!combattime){
         checkdead(takedamage, 0);
+    } else {
+        checkdead(takedamage, attacked);
     }
     
 };
 
 var checkdead = (who, bywhom) => {
-     
+    
+    if (cardbyid[who].hp <= 0) {
+        whodies = who;
+        cardbyid[who].hp = 99;
+        trigger (22);
+        if (cardbyid[who].hp == 99){
+            cardbyid[who].hp = 0;
+        }
+    }
+    
     if (cardbyid[who].hp <= 0) {
         $(".cardc[id=\""+who+"\"]").addClass("dead");
         cardbyid[who].illus = "skull";
@@ -568,7 +639,17 @@ var trigger = (trig) => {
     trigmonst(trig);
     trigassigned(trig);
     trighand(trig);
-                
+    
+    if (cardbyid[commander].trig == trig){
+        commeff(commander);
+    }
+    if (cardbyid[bfield].trig == trig){
+        regeff(bfield);
+    }
+    
+    if (trig == 18){
+        trigdeck(trig);
+    }
     
 };
 
@@ -589,9 +670,9 @@ trigassigned = (trig) => {
 trigmonst = (trig) => {
     for (let i = 1; i < 4; i++) {
         if (enemies[i].children()[0] != undefined){ 
-            console.log("type: "+cardbyid[enemies[i].children()[0].id].type+", trig: "+cardbyid[enemies[i].children()[0].id].trig)
+            // console.log("type: "+cardbyid[enemies[i].children()[0].id].type+", trig: "+cardbyid[enemies[i].children()[0].id].trig)
             if ((cardbyid[enemies[i].children()[0].id].what == "monst") && (cardbyid[enemies[i].children()[0].id].trig == trig) && (cardbyid[enemies[i].children()[0].id].hp > 0)){
-                console.log("triggered!");
+                //console.log("triggered!");
                 //setTimeout(monsteff, delay, enemies[i].children()[0].id);
                 monsteff(enemies[i].children()[0].id);
             }
@@ -618,6 +699,25 @@ trighand = (trig) => {
     
 };
 
+trigdeck = (trig) => {
+    $("#deck").children().each(function() {
+        if (cardbyid[$(this).attr("id")].trig == trig){
+            switch(cardbyid[$(this).attr("id")].what){
+                case "unit":
+                    uniteff($(this).attr("id"));
+                    break;
+                case "skill":
+                    skilleff($(this).attr("id"));
+                    break;
+                case "ada":
+                    adaeff($(this).attr("id"));
+                    break;
+            }
+        }
+    });
+    
+};
+
 function startbattle(){
     
     writelog("<br><font color=\"orchid\">Battle starts.</font>");
@@ -627,9 +727,7 @@ function startbattle(){
     if (battlenum >=2){
         $("#info").children()[1].remove();
     }
-    $("#wave").css("display", "inline-block");
-	
-    $("#wave").html("Wave "+curwave+" / "+maxwave);
+    
     
     $("#game").append($(".cardc[id=\""+bfield+"\"]"));
     var str = '<div class="cardf" id="endturn"><img class="smallcard" src="img/endturn.jpg"></div>';
@@ -639,8 +737,13 @@ function startbattle(){
     $("#enc2").empty();
     $("#enc3").empty();
     
+    keepnum = 1;
+    
     maxwave = cardbyid[bfdetails].waves;
-    curwave = 0;
+    curwave = 1;
+    $("#wave").css("display", "inline-block");
+	
+    $("#wave").html("Wave "+curwave+" / "+maxwave);
     curfray = frayval[battlenum];
     bscore = cardbyid[bfdetails].bsbase;
     showbscore();
@@ -648,11 +751,11 @@ function startbattle(){
     terrada(true);
     terrada(false);
     
-    sortdeck();
-    rollchance();
+    trigger (18);
     
-    enemytype = 1;
-    mongen();
+    enemytype = cardbyid[bfdetails].montype;
+    
+    startturn();
     
 }
 
@@ -670,37 +773,37 @@ terrada = (adv) => {
             break;
         case "woodland":
             if (adv){
-                adadraw = 1;
+                adadraw = 3;
                 generate(7, "#deck");
             } else {
-                adadraw = 2;
+                adadraw = 4;
                 generate(7, "#deck");
             }
             break;
         case "swamp":
             if (adv){
-                adadraw = 1;
+                adadraw = 5;
                 generate(7, "#deck");
             } else {
-                adadraw = 2;
+                adadraw = 6;
                 generate(7, "#deck");
             }
             break;
         case "plains":
             if (adv){
-                adadraw = 1;
+                adadraw = 7;
                 generate(7, "#deck");
             } else {
-                adadraw = 2;
+                adadraw = 8;
                 generate(7, "#deck");
             }
             break;
         case "fortress":
             if (adv){
-                adadraw = 1;
+                adadraw = 9;
                 generate(7, "#deck");
             } else {
-                adadraw = 2;
+                adadraw = 10;
                 generate(7, "#deck");
             }
             break;
@@ -712,6 +815,8 @@ terrada = (adv) => {
 function endbattle(){
     
     hidegame();
+    $("#battlescore").css("display", "inline-block");
+    $("#winbattle").css("display", "inline-block");
     
     writelog("<br><font color=\"orchid\">Battle ends.</font>");
     
@@ -791,12 +896,61 @@ removecard = (what) => {
     canceled = false;
     trigger(12);
     if (!canceled){
-        writelog("<br><card id=\"" + what + "\">" + cardbyid[what].title + "</card> is removed from your deck.</font>");
+        writelog("<br><card id=\"" + what + "\">" + cardbyid[what].title + "</card> is removed from the game.</font>");
         cardbyid[what].place = "#tempoop";
         $("#tempoop").append($(".cardc[id=\""+what+"\"]"));
     }
     
 };
+
+dmginc = (who, amount) => {
+    
+    // monsters damage increased
+    canceled = false;
+    trigger(24);
+    if (!canceled){
+        cardbyid[who].dmg += amount;
+    }
+    
+};
+
+percdec = (who, amount) => {
+    
+    // hero units perc decreased
+    canceled = false;
+    trigger(25);
+    if (!canceled){
+        cardbyid[who].perc -= amount;
+        if (cardbyid[who].perc < 0){
+            cardbyid[who].perc = 0;
+        }
+    }
+    
+};
+
+dmgdec = (who, amount) => {
+    
+    // hero units dmg decreased
+    canceled = false;
+    trigger(26);
+    if (!canceled){
+        cardbyid[who].dmg -= amount;
+        if (cardbyid[who].dmg < 0){
+            cardbyid[who].dmg = 0;
+        }
+    }
+    
+};
+
+function disadvadd(){
+    
+    canceled = false;
+    trigger(23);
+    if (!canceled){
+        generate(7, "#deck");
+    }
+    
+}
 
 function getpresent(){
 	present = [];
@@ -805,7 +959,7 @@ function getpresent(){
             if (cardbyid[$(this).attr("id")].what == "unit"){
                 present.push($(this).attr("id"));
             }
-	})
+	});
 	for (let i = 1; i < 4; i++) {
         for (let j = 1; j < 3; j++) {
             if (enemies[i].children()[j] != undefined){   

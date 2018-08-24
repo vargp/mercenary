@@ -37,7 +37,9 @@ skilleff = (cid) => {
                 getpresent();
             }
             for (let i = 0; i < present.length; i++) {
-                heal(present[i], 3);
+                if (cardbyid[cardbyid[present[i]].assign].type == "monst"){
+                    heal(present[i], 3);
+                }
             }
             break;
         case 3:
@@ -65,10 +67,27 @@ skilleff = (cid) => {
             }
             break;
         case 4:
-            // After Attacking:<br>Enemies attacked by Ranger Units don't fight with your Commander<br>this turn.
-            if (cardbyid[attacked].trait == "Ranger Hero"){
-                writelog("<br><font color=\"orchid\">After Attacking: Your Ranger proceeds to <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>.</font>");
-                writelog("<br>This Enemy won't attack your Commander.");
+            // The first Ranger assigned to an Enemy fights it again instead of your Commander.
+            var kiran = 0;
+            if (attacked == commander){
+                console.log("--- bejöttünk!");
+                console.log(cardbyid[attmonst].assign+": "+cardbyid[cardbyid[attmonst].assign].trait);
+                console.log(cardbyid[attmonst].assist+": "+cardbyid[cardbyid[attmonst].assist].trait);
+                if (cardbyid[attmonst].assign != 0){
+                    if (cardbyid[cardbyid[attmonst].assign].trait == "Ranger Hero"){
+                        kiran = cardbyid[attmonst].assign;
+                    }
+                }
+                if ((cardbyid[attmonst].assist != 0) && (kiran == 0)){
+                    if (cardbyid[cardbyid[attmonst].assist].trait == "Ranger Hero"){
+                        kiran = cardbyid[attmonst].assist;
+                    }
+                }
+            }
+            if (kiran > 0){
+                writelog("<br><font color=\"orchid\">Your Ranger is good at <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>.</font>");
+                writelog("<br>This Enemy attacks the Ranger instead of your Commander.");
+                attacked = kiran;
                 commfight = false;
             }
             break;
@@ -132,13 +151,13 @@ skilleff = (cid) => {
             }
             break;
         case 9:
-            // Before Combat:<br>Your Rangers deal 4 Damage<br>to their assigned Enemy.
+            // Before Combat:<br>Your Rangers deal 3 Damage<br>to their assigned Enemy.
             for (let i = 1; i < 4; i++) {
                 for (let j = 1; j < 3; j++) {
                     if (enemies[i].children()[j] != undefined){  
                         if ((cardbyid[enemies[i].children()[j].id].trait == "Ranger Hero") && (cardbyid[cardbyid[enemies[i].children()[j].id].assign].type == "monst")){
                             writelog("<br><font color=\"orchid\">Before Combat: Your Ranger finds a chance to <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>!</font>");
-                            damage (enemies[i].children()[0].id, 4);
+                            damage (enemies[i].children()[0].id, 3);
                             
                         }
                     }
@@ -149,7 +168,9 @@ skilleff = (cid) => {
             // If a Rogue's Assisting Unit gains Experience in Combat, so does the Rogue.
             if ((whoexp == attacked) && (cardbyid[cardbyid[attacked].assist].trait == "Rogue Hero")){
                 writelog("<br><font color=\"orchid\">Your Rogue can also <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>.</font>");
-                gainexp(cardbyid[attacked].assist);
+                setTimeout(function(){
+                    gainexp(cardbyid[attacked].assist);
+                }, 50);
             }
             break;
     }
@@ -161,33 +182,130 @@ adaeff = (cid) => {
     switch (cardbyid[cid].abnum){
         case 1:
             // When Drawn:<br>Draw the first Unit from your deck into your Hand.
+            if (justdrawn == cid){
+                setTimeout(function(){
+                    writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
+                    writelog("<br>You draw <card id=\"" + $("#deck").children()[0].id + "\">" + cardbyid[$("#deck").children()[0].id].title + "</card>.");
+                    drawcard($("#deck").children()[0].id);
+                }, 50);
+            }
             break;
         case 2:
             // When Drawn:<br>The Monsters gain 4 Battlescore.
+            if (justdrawn == cid){
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
+                writelog("<br>The Monsters gain 4 Battlescore.");
+                bscore -= 4;
+                showbscore();
+            }
             break;
         case 3:
-            // 
+            // After Combat:<br>Present Units regain 2 Health
+            writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
+            writelog("<br>Present Units regain 2 Health.");
+            getpresent();
+            for (let i = 0; i < present.length; i++) {
+                heal(present[i], 2);
+            }
             break;
         case 4:
-            // 
+            //  When Drawn:<br>Discard the leftmost unit from your Hand.
+            if (justdrawn == cid){
+                setTimeout(function(){
+                    var leftu = 0;
+                    $("#avnow").children().each(function() {
+                        if (cardbyid[$(this).attr("id")].what == "unit"){
+                                if (leftu == 0){
+                                    leftu = $(this).attr("id");
+                                }
+                        }
+                    });
+                    if (leftu > 0){
+                        writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
+                        writelog("<br>You discard <card id=\"" + leftu + "\">" + cardbyid[leftu].title + "</card>.");
+                        discfromhand(leftu);
+                    }
+                }, 50);
+            }
             break;
         case 5:
-            // 
+            // Before Combat:<br>Present Enemies lose 1 DMG.
+            writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
+            writelog("<br>Present Enemies lose 1 DMG.");
+            for (let i = 1; i < 4; i++) {
+
+                if (cardbyid[enemies[i].children()[0].id].type == "monst"){
+                    cardbyid[enemies[i].children()[0].id].dmg --;
+                    if (cardbyid[enemies[i].children()[0].id].dmg < 0){
+                        cardbyid[enemies[i].children()[0].id].dmg = 0;
+                    }
+                }
+
+            }
             break;
         case 6:
-            // 
+            // When Drawn:<br>Units in your Deck lose 4 Speed.
+            if (justdrawn == cid){
+                setTimeout(function(){
+                    writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
+                    writelog("<br>Units in your Deck lose 4 Speed.");
+                    $("#deck").children().each(function() {
+                        if (cardbyid[$(this).attr("id")].what == "unit"){
+                            percdec ($(this).attr("id"), 4);
+                        }
+                    });
+                    szoltmar = false;
+                }, 50);
+            }
             break;
         case 7:
-            // 
+            // When Drawn:<br>Units in your Deck gain +4 Speed.
+            if (justdrawn == cid){
+                setTimeout(function(){
+                    writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
+                    writelog("<br>Units in your Deck gain 4 Speed.");
+                    $("#deck").children().each(function() {
+                        if (cardbyid[$(this).attr("id")].what == "unit"){
+                                cardbyid[$(this).attr("id")].perc +=4;
+                        }
+                    });
+                }, 50);
+            }
             break;
         case 8:
-            // 
+            // When Drawn:<br>Units in your Hand lose 2 Health.
+            if (justdrawn == cid){
+                setTimeout(function(){
+                    writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
+                    writelog("<br>Units in your Hand lose 2 Health.");
+                    $("#avnow").children().each(function() {
+                        if (cardbyid[$(this).attr("id")].what == "unit"){
+                                damage($(this).attr("id"), 2);
+                        }
+                    });
+                }, 50);
+            }
             break;
         case 9:
-            // 
+            // When Drawn:<br>You gain 4 Battlescore.
+            if (justdrawn == cid){
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
+                writelog("<br>You gain 4 Battlescore.");
+                bscore += 4;
+                showbscore();
+            }
             break;
         case 10:
-            // 
+            // Before Combat:<br>Present Enemies gain +1 DMG.
+            writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
+            writelog("<br>Present Enemies gain 1 DMG.");
+            for (let i = 1; i < 4; i++) {
+
+                if (cardbyid[enemies[i].children()[0].id].type == "monst"){
+                    cardbyid[enemies[i].children()[0].id].dmg ++;
+                }
+
+            }
             break;
         
     }

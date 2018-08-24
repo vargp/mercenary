@@ -1,1 +1,13 @@
 unit8*unit16*unit9*unit13*unit9*unit13*unit5*unit15*unit15*unit15*unit17*unit13*unit18*unit9*unit8*comm8*
+
+if (hascleric){
+    writelog("<br><font color=\"orchid\">Before Combat: your Cleric's <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> heals your units.</font>");
+    getpresent();
+}
+for (let i = 0; i < present.length; i++) {
+    heal(present[i], 3);
+}
+
+
+if (cardbyid[attacked].trait == "Ranger Hero"){
+}

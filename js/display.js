@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-
+var cid;
 
 $( document ).ready(function() {
         
@@ -12,6 +12,7 @@ $( document ).ready(function() {
                 
         arrange();
         startgame();
+        ccount();
     
 });
 
@@ -248,11 +249,14 @@ function startgame(){
 
 function startingdeck(){
     
+    recruit = 0;
     
     for (let i = 1; i <= 6; i++) {
         // cheat
-        // recruit = 6;
-        // generate (1, "#deck");
+        //recruit = 56;
+        //generate (1, "#deck");
+        //adadraw = 2;
+        //generate(7, "#deck");
     }
     
     recruit = 1;
@@ -321,6 +325,7 @@ $( "div" ).on( "mouseleave", ".cardc", function( event ) {
 function showcard(lapid){
     
     cid = cardbyid[lapid];
+    displayed = lapid;
     
     //var imgsrc = "images/illus/" + cid.illus + ".jpg";
     //var showthis = "url(\"" + imgsrc + "\")";
@@ -344,6 +349,10 @@ function showcard(lapid){
     $(".cardtrait").text(cid.trait.toUpperCase());
     $(".cardtext").html(cid.text);
     $("#takedmg").html(cid.hp);
+    
+    if (cid.temp){
+        $(".cardtrait").text(cid.trait.toUpperCase()+" *");
+    }
     
     //writelog(("dmg" in cid)+" "+lapid+ "<br>");
     if ("dmg" in cid){
