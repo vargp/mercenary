@@ -109,9 +109,9 @@ skilleff = (cid) => {
                 }
             }
             if (haswar){
-                writelog("<br><font color=\"orchid\">Your Warrior's <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> lets you gain 5 Battlescore.</font>");
-                bscore += 5;
-                showbscore();
+                writelog("<br><font color=\"orchid\">Your Warrior's <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> lets you perform better in battle.</font>");
+                bscorechange(5);
+                
             }
             break;
         case 6:
@@ -173,6 +173,68 @@ skilleff = (cid) => {
                 }, 50);
             }
             break;
+		case 11:
+            // After Combat:<br>for each Warrior in your Hand, give 3 random Units in your deck<br>+1 DMG and +2 HP for the rest of this battle.
+            break;
+        case 12:
+            // After Combat:<br>If you have a Cleric present, your Commander regains 3 Health.
+            break;
+        case 13:
+            // Before Combat:<br>If the Boss is visible, lower its HP by 2 (to a minimum of 10) if you have a Mage in your Hand.
+            break;
+        case 14:
+            // When an Enemy appears:<br>If you have a Ranger in your hand, deal that Enemy 2 Damage.
+            break;
+        case 15:
+            // When a Rogue would die:<br>That Rogue remains alive with 1 HP left.
+            break;
+        case 16:
+            // After Attacking:<br>If a Warrior kills an Enemy, he deals Damage to the next Enemy too.
+            break;
+        case 17:
+            // After Combat:<br>If you have a Cleric present, each present Unit with less than 5 HP regains 3 Health.
+            break;
+        case 18:
+            // Before Combat:<br>If you have a Mage in your hand, give all your cards (except Disadvantages) +4 Speed.
+            break;
+        case 19:
+            // Before Combat:<br>place a current Terrain Advantage into your deck for each Ranger present.
+            break;
+        case 20:
+            // When you kill an Enemy:<br>Gain +2 Battlescore for each Rogue in your Hand.
+            break;
+        case 21:
+            // Before Combat:<br>If you have a Warrior assigned<br>to the first Enemy and it's not the Enemy with the least HP, swap this with that Enemy.
+            break;
+        case 22:
+            // Before Combat:<br>If you have a Cleric in your Hand, make the Healer appear in the 3rd slot even if there's something else there currently.
+            break;
+        case 23:
+            // Before Combat:<br>Create a copy of a random Mage in your hand (for this battle only).
+            break;
+        case 24:
+            // Before Combat:<br>If you have a Ranger present,<br>give each present Unit with less<br>than 10 HP +1 DMG for the rest<br>of this battle.
+            break;
+        case 25:
+            // Before Combat: If you have a Rogue present and didn't assign any cards, Combat is skipped this round and new Enemies appear instead of the current ones.
+            break;
+        case 26:
+            // At Round Start: If you have a Rogue present and the Fray is not visible, make the Fray appear in the 1st slot even if there's something else there currently.
+            break;
+        case 27:
+            // After Attacking:<br>If a Warrior is assigned alone to<br>an Enemy, he gains 2 HP and attacks that Enemy again
+            break;
+        case 28:
+            // At the start of a Round:<br>If you have a Cleric in your Hand, draw your slowest Unit.
+            break;
+        case 29:
+            // After Combat:<br>If you have a Mage in your Hand, deal each enemy 2 Damage.
+            break;
+        case 30:
+            // At the End of the Round:<br>Keep your Rangers that are assigned to Enemies.
+            break;
+        
+        
     }
 };
 
@@ -181,7 +243,7 @@ adaeff = (cid) => {
     
     switch (cardbyid[cid].abnum){
         case 1:
-            // When Drawn:<br>Draw the first Unit from your deck into your Hand.
+            // When Drawn:<br>Draw the first card from your deck into your Hand.
             if (justdrawn == cid){
                 setTimeout(function(){
                     writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
@@ -194,9 +256,8 @@ adaeff = (cid) => {
             // When Drawn:<br>The Monsters gain 4 Battlescore.
             if (justdrawn == cid){
                 writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
-                writelog("<br>The Monsters gain 4 Battlescore.");
-                bscore -= 4;
-                showbscore();
+                bscorechange(-4);
+                
             }
             break;
         case 3:
@@ -290,9 +351,8 @@ adaeff = (cid) => {
             // When Drawn:<br>You gain 4 Battlescore.
             if (justdrawn == cid){
                 writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
-                writelog("<br>You gain 4 Battlescore.");
-                bscore += 4;
-                showbscore();
+                bscorechange(4);
+                
             }
             break;
         case 10:

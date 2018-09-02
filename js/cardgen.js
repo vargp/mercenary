@@ -72,7 +72,7 @@ var generate = (mit, hova) => {
             numgen = mondraw;
             
             //cheat
-            // numgen = 79;
+            // numgen = 80;
             
             drawcard = en[numgen];            
             cardbyid[hanylapvan].illus = "en";
@@ -101,7 +101,7 @@ var generate = (mit, hova) => {
         case 5:
             // buyable
             drawcard = buyable[recruit];
-            console.log("Rec: "+recruit);
+            //console.log("Rec: "+recruit);
             numgen = recruit;
             recruit++;            
             cardbyid[hanylapvan].illus = "bu";

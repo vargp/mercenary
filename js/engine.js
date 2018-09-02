@@ -50,6 +50,8 @@ var whodies = 0;
 var handdisc = false;
 var endingturn = false;
 var displayed = 0;
+var bscamount = 0;
+var monstszolt = false;
 
 $(document).on( "click", "#endturn", function( event ) {
     
@@ -86,7 +88,7 @@ discfromhand = (what) => {
     }
     trigger (10);
     if (!canceled){
-        console.log("discard: "+what);
+        //console.log("discard: "+what);
         if ($(".cardc[id=\""+what+"\"]").hasClass("ui-draggable")){
             $(".cardc[id=\""+what+"\"]").draggable( "destroy" );
         }
@@ -174,6 +176,7 @@ function startturn(){
     trigger(19);
 
     hold = false;
+    szoltmar = false;
     $("#endturn").css("display", "inline-block");
 
 }
@@ -220,13 +223,13 @@ function makedrag(ezt){
         ezt.draggable({
             revert: "invalid",
             start: function( event, ui ) {
-                console.log($(this).attr("id"));
+                //console.log($(this).attr("id"));
                 dragid = $(this).attr("id");
                 $(".cardc[id=\""+dragid+"\"]").draggable( "option", "revertDuration", 200 );
                 honnandrag = cardbyid[dragid].place;
                             if (cardbyid[$(honnandrag).children()[0].id].type == "fray"){
                                     curfray += cardbyid[dragid].dmg;
-                                    console.log("frayből drag");
+                                    //console.log("frayből drag");
                             }
             },
             stop: function( event, ui ) {
@@ -302,9 +305,11 @@ function combatstart(){
 function nextstep() {
     
     delay = 0;
-    console.log("fight: "+fight+", attack: "+attack);
+    //console.log("fight: "+fight+", attack: "+attack);
     attmonst = enemies[fight].children()[0].id;
     healed = 0;
+    monstszolt = false;
+    attacked = 0;
     
     if (theend){
         fight = 4;
@@ -314,7 +319,7 @@ function nextstep() {
             if (enemies[fight].children()[attack] == undefined){
                 if (attack == 3){
                     // else skip this step
-                    console.log('hit the commander!');
+                    //console.log('hit the commander!');
                                     if (commfight){
                                             attacked = commander;
                                             combat();
@@ -322,11 +327,11 @@ function nextstep() {
                                     }
                                     commfight = true;
                     fight ++;
-                    console.log("már a commandert csapta, fight ++");
+                    //console.log("már a commandert csapta, fight ++");
                     attack = 0;
 
                 } else {
-                    console.log("hoppskipp!");
+                    //console.log("hoppskipp!");
                 }
             } else {
                 attacked = enemies[fight].children()[attack].id;
@@ -339,19 +344,15 @@ function nextstep() {
         } else if (cardbyid[enemies[fight].children()[0].id].type == "fray"){
             $(".cardc").css("box-shadow", "0 0 10px 2px #000");
             $(".cardc[id=\""+enemies[fight].children()[0].id+"\"]").css("box-shadow", "0 0 6px 3px gold");
-
-            if (curfray > 0){
-                writelog("<br><font color=\"orange\">The Monsters gain "+curfray+" Battlescore.</font>");
-            } else {
-                writelog("<br><font color=\"orange\">You gain "+Math.abs(curfray)+" Battlescore.</font>"); 
-            }
-
+            
             trigger (7);
             fight ++;
-            console.log("fray volt, fight ++");
-            bscore -= curfray;
+            //console.log("fray volt, fight ++");
+            
+            curfray = curfray * -1;
+            bscorechange (curfray);
             curfray = frayval[battlenum];
-            showbscore();
+            
             attack = 0;
             delay = 1200;
 
@@ -384,14 +385,14 @@ function nextstep() {
             if (attack == 2){
                 attack = 0;
                 fight ++;
-                console.log("heal volt, fight ++");
+                //console.log("heal volt, fight ++");
             }
 
 
         } else if (cardbyid[enemies[fight].children()[0].id].hp <= 0){
             attack = 0;
             fight ++;
-            console.log("szörny halott, fight ++");
+            //console.log("szörny halott, fight ++");
         }
 
         attack++;
@@ -541,9 +542,8 @@ var checkdead = (who, bywhom) => {
         $(".cardc[id=\""+who+"\"]").children("img").attr("src", "img/illus/skull.jpg");
         writelog("<br><card id=\"" + who + "\">" + cardbyid[who].title + "</card><font color=\"SlateGrey\"> has died!");
         if (cardbyid[who].type == "monst"){
-            bscore += 2;
-            writelog("<br><font color=\"orange\">You gain 2 Battlescore.</font>");
-            showbscore();
+            bscorechange(2);
+            
             if (bywhom > 0){
                 gainexp(bywhom);
             }
@@ -556,9 +556,8 @@ var checkdead = (who, bywhom) => {
                     sadend();
                 }, 1000);
             } else {
-                bscore -= 2;
-                writelog("<br><font color=\"orange\">The monsters gain 2 Battlescore.</font>");
-                showbscore();
+                bscorechange(-2);
+                                
             }
             
         }
@@ -624,8 +623,8 @@ function checkass() {
                     cardbyid[enemies[i].children()[2].id].assist = enemies[i].children()[1].id;
                 }
             
-            console.log(enemies[i].children()[j].id+". assign: "+cardbyid[enemies[i].children()[j].id].assign);
-            console.log(enemies[i].children()[j].id+". assist: "+cardbyid[enemies[i].children()[j].id].assist);
+            //console.log(enemies[i].children()[j].id+". assign: "+cardbyid[enemies[i].children()[j].id].assign);
+            //console.log(enemies[i].children()[j].id+". assist: "+cardbyid[enemies[i].children()[j].id].assist);
             }
             
         }
@@ -768,7 +767,7 @@ terrada = (adv) => {
                 generate(7, "#deck");
             } else {
                 adadraw = 2;
-                generate(7, "#deck");
+                disadvadd();
             }
             break;
         case "woodland":
@@ -777,7 +776,7 @@ terrada = (adv) => {
                 generate(7, "#deck");
             } else {
                 adadraw = 4;
-                generate(7, "#deck");
+                disadvadd();
             }
             break;
         case "swamp":
@@ -786,7 +785,7 @@ terrada = (adv) => {
                 generate(7, "#deck");
             } else {
                 adadraw = 6;
-                generate(7, "#deck");
+                disadvadd();
             }
             break;
         case "plains":
@@ -795,7 +794,7 @@ terrada = (adv) => {
                 generate(7, "#deck");
             } else {
                 adadraw = 8;
-                generate(7, "#deck");
+                disadvadd();
             }
             break;
         case "fortress":
@@ -804,7 +803,7 @@ terrada = (adv) => {
                 generate(7, "#deck");
             } else {
                 adadraw = 10;
-                generate(7, "#deck");
+                disadvadd();
             }
             break;
         
@@ -838,7 +837,7 @@ function endbattle(){
             cardbyid[$(this).attr("id")].hp = cardbyid[$(this).attr("id")].basehp;
         }
         if (cardbyid[$(this).attr("id")].temp){
-            console.log("remove: "+$(this));
+            //console.log("remove: "+$(this));
             cardbyid[$(this).attr("id")].place = "oog";
             $(this).remove();
         }
@@ -876,13 +875,13 @@ function endbattle(){
         difference = Math.floor((cardbyid[$(this).attr("id")].basehp - cardbyid[$(this).attr("id")].hp)/2);
         if (difference > 0){
             cardbyid[$(this).attr("id")].hp += difference;
-            console.log(cardbyid[$(this).attr("id")].title+" healed "+difference);
+            //console.log(cardbyid[$(this).attr("id")].title+" healed "+difference);
         }
     });
     difference = Math.floor((cardbyid[commander].basehp - cardbyid[commander].hp)/2);
     if (difference > 0){
         cardbyid[commander].hp += difference;
-        console.log("Commander healed "+difference);
+        //console.log("Commander healed "+difference);
     }
     
     $("#game").children()[2].remove();
@@ -900,6 +899,21 @@ removecard = (what) => {
         cardbyid[what].place = "#tempoop";
         $("#tempoop").append($(".cardc[id=\""+what+"\"]"));
     }
+    
+};
+
+bscorechange = (amount) => {
+    
+    bscamount = amount;
+    trigger(27);
+    bscore += bscamount;
+    showbscore();
+    if (bscamount > 0){
+        writelog("<br><font color=\"orange\">You gain "+bscamount+" Battlescore.</font>");
+    } else {
+        writelog("<br><font color=\"orange\">The Monsters gain "+Math.abs(bscamount)+" Battlescore.</font>");
+    }
+    
     
 };
 

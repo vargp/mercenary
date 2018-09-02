@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-var cid;
+var shown;
 
 $( document ).ready(function() {
         
@@ -171,10 +171,10 @@ function arrange(){
                 $(".cardc[id=\""+dragid+"\"]").removeClass("tokeep");
                 cardbyid[dragid].place="#"+enemies[i].attr("id");
                 enemies[i].append(ui.draggable);
-                                if (cardbyid[enemies[i].children()[0].id].type == "fray"){
-                                        curfray -= cardbyid[dragid].dmg;
-                                        console.log("fraybe drag");
-                                }
+                    if (cardbyid[enemies[i].children()[0].id].type == "fray"){
+                        curfray -= cardbyid[dragid].dmg;
+                        console.log("fraybe drag");
+                    }
                 //$('#keep').append($(".cardc[id=\""+dragid+"\"]"));
                 checkdropdisable();
             }
@@ -254,7 +254,7 @@ function startingdeck(){
     for (let i = 1; i <= 6; i++) {
         // cheat
         //recruit = 56;
-        //generate (1, "#deck");
+        generate (1, "#deck");
         //adadraw = 2;
         //generate(7, "#deck");
     }
@@ -324,50 +324,50 @@ $( "div" ).on( "mouseleave", ".cardc", function( event ) {
 
 function showcard(lapid){
     
-    cid = cardbyid[lapid];
+    shown = cardbyid[lapid];
     displayed = lapid;
     
-    //var imgsrc = "images/illus/" + cid.illus + ".jpg";
+    //var imgsrc = "images/illus/" + shown.illus + ".jpg";
     //var showthis = "url(\"" + imgsrc + "\")";
     //$(".illus").css("background-image", showthis);
     
-    var typeimg = "url(\"img/" + cid.type +".png\")";
-    if (cid.what == "boss"){
+    var typeimg = "url(\"img/" + shown.type +".png\")";
+    if (shown.what == "boss"){
         typeimg = "url(\"img/boss.png\")";
     }
     $(".cardtype").css("background-image", typeimg);
     //$(".bigcard").css("box-shadow", "0 0 10px 2px #fff");
     $(".bigcard").css("box-shadow", "5px 5px 10px 2px #000");
     
-    var imgsrc = "img/illus/" + cid.illus + ".jpg";
+    var imgsrc = "img/illus/" + shown.illus + ".jpg";
     var showthis = "url(\"" + imgsrc + "\")";
     $(".illus").css("background-image", showthis);
     
     $("#takedmg").css("display", "none");
     $("#slash").css("display", "none");
-    $(".cardtitle").text(cid.title);
-    $(".cardtrait").text(cid.trait.toUpperCase());
-    $(".cardtext").html(cid.text);
-    $("#takedmg").html(cid.hp);
+    $(".cardtitle").text(shown.title);
+    $(".cardtrait").text(shown.trait.toUpperCase());
+    $(".cardtext").html(shown.text);
+    $("#takedmg").html(shown.hp);
     
-    if (cid.temp){
-        $(".cardtrait").text(cid.trait.toUpperCase()+" *");
+    if (shown.temp){
+        $(".cardtrait").text(shown.trait.toUpperCase()+" *");
     }
     
-    //writelog(("dmg" in cid)+" "+lapid+ "<br>");
-    if ("dmg" in cid){
+    //writelog(("dmg" in shown)+" "+lapid+ "<br>");
+    if ("dmg" in shown){
         $("#dmgval").css("display", "inline-block");
         $("#damage").css("display", "inline-block");
         $("#health").css("display", "inline-block");
-        $("#dmgval").html(cid.dmg);
-        $("#hpval").html(cid.hp);
+        $("#dmgval").html(shown.dmg);
+        $("#hpval").html(shown.hp);
         $("#hpval").css("display", "inline-block");
-        if (cid.xp[1]){
+        if (shown.xp[1]){
                 $("#damage").html("DMG*");
         } else {
                 $("#damage").html("DMG");
         }
-        if (cid.xp[2]){
+        if (shown.xp[2]){
                 $("#health").html("HP*");
         } else {
                 $("#health").html("HP");
@@ -380,11 +380,11 @@ function showcard(lapid){
         $("#health").css("display", "none");
     }
     
-    if ("perc" in cid){
+    if (("perc" in shown) && (!isNaN(shown.perc))){
         $(".percent").css("display", "inline-block");
-        $(".percent").text(cid.perc);
-		if (cid.xp[3]){
-			$(".percent").text(cid.perc+"*");
+        $(".percent").text(shown.perc);
+		if (shown.xp[3]){
+			$(".percent").text(shown.perc+"*");
 		} 
     } else {
         $(".percent").css("display", "none");
@@ -395,7 +395,7 @@ function showcard(lapid){
     
     $(".cardtitle").css("color", "white");
     
-    switch (cid.type){
+    switch (shown.type){
         case "neut":
             textshad = "rgba(0, 0, 0, 0.6) 0px 0px 1px";
             textcol = "rgb(0, 0, 0)";
@@ -442,7 +442,7 @@ function showcard(lapid){
             break;
     }
     
-    if (cid.what == "boss"){
+    if (shown.what == "boss"){
         textcol = "rgb(166, 14, 14)";
         textshad = "rgba(46, 0, 0, 1) 1px 1px 3px";
         $(".cardtitle").css("color", textcol);
@@ -458,20 +458,20 @@ function showcard(lapid){
     $(".stats").css("color", textcol);
     
     
-    if ((cid.hp < cid.basehp) && (cid.what != "monst")){
+    if ((shown.hp < shown.basehp) && (shown.what != "monst")){
         $("#hpval").css("color", "rgb(150, 0, 0)");
     }
         
-    if ((cid.place=="#basicbuy") || (cid.place=="#buy")){
+    if ((shown.place=="#basicbuy") || (shown.place=="#buy")){
         $("#goldbag").css("display", "inline-block");
         $("#goldval").css("display", "inline-block");
-        $("#goldval").text(cid.cost);
+        $("#goldval").text(shown.cost);
     } else {
         $("#goldval").css("display", "none");
         $("#goldbag").css("display", "none");
     }
 	
-    if (cid.type == "fray"){
+    if (shown.type == "fray"){
         if (curfray > 0){
                 $(".cardtext").html("The Monsters will gain<br>"+curfray+" Battlescore.");
         } else {
@@ -479,11 +479,11 @@ function showcard(lapid){
         }
 
     }
-    if (cid.type == "heal"){
+    if (shown.type == "heal"){
         $(".cardtext").html("Units assigned here will<br>regain "+healval[battlenum]+" Health each.");
     }
     
-    if (cid.what == "info"){
+    if (shown.what == "info"){
         var infotext;
         
         if (bfdetails > 0){
@@ -498,9 +498,9 @@ function showcard(lapid){
         $(".cardtext").html(infotext);
     }
     
-    if (cid.what == "battinf"){
+    if (shown.what == "battinf"){
         var infotext;
-        switch(cid.montype){
+        switch(shown.montype){
             case 1:
                 infotext = "Enemy: Orcs";
                 break;
@@ -514,25 +514,25 @@ function showcard(lapid){
                 infotext = "Enemy: Demons";
                 break;
         }
-        infotext += "<br>Waves: "+cid.waves;
-        infotext += "<br>Starting Battlescore: "+cid.bsbase;
-        infotext += "<br>Gold Reward: "+cid.gold+" ("+cid.goldlose+")";
-        infotext += "<br>Fame Reward: "+cid.fame+" ("+cid.famelose+")";
+        infotext += "<br>Waves: "+shown.waves;
+        infotext += "<br>Starting Battlescore: "+shown.bsbase;
+        infotext += "<br>Gold Reward: "+shown.gold+" ("+shown.goldlose+")";
+        infotext += "<br>Fame Reward: "+shown.fame+" ("+shown.famelose+")";
         $(".cardtext").html(infotext);
     }
     
-    if (cid.what == "rest"){
-        var infotext = cid.text;
+    if (shown.what == "rest"){
+        var infotext = shown.text;
         infotext += "<br>("+healable +" Affected)";
         $(".cardtext").html(infotext);
     }
-    if (cid.what == "promote"){
-        var infotext = cid.text;
+    if (shown.what == "promote"){
+        var infotext = shown.text;
         infotext += "<br>("+ promotable +" Affected)";
         $(".cardtext").html(infotext);
     }
-    if (cid.what == "drill"){
-        var infotext = cid.text;
+    if (shown.what == "drill"){
+        var infotext = shown.text;
         infotext += "<br>("+ numskill +" Affected)";
         $(".cardtext").html(infotext);
     }

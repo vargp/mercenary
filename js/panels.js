@@ -317,7 +317,7 @@ $(document).on( "click", ".bbox", function( event ) {
     $(this).css("box-shadow", "0 0 6px 3px gold");
     bfield = $(this).children()[0].id;
     bfdetails = $(this).children()[1].id;
-    console.log(bfield);
+    //console.log(bfield);
     
 });
 

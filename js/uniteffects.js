@@ -72,9 +72,8 @@ uniteff = (cid) => {
             if (cardbyid[cardbyid[cid].assign].type == "fray"){
                 
                 writelog("<br><font color=\"orchid\">In the Fray: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses his special ability!</font>");
-                bscore += 2;
-                showbscore();
-                writelog("<br>You gain 2 Battlescore.");
+                bscorechange(2);
+                
             }
             break;
         case 8:
@@ -83,9 +82,7 @@ uniteff = (cid) => {
                 
                 writelog("<br><font color=\"orchid\">After Combat: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses her special ability!</font>");
                 heal(cid, 2);
-                writelog("<br>She regains "+actheal+" Health.");
                 heal(cardbyid[cid].assist, 2);
-                writelog("<br><card id=\"" + cardbyid[cid].assist + "\">" + cardbyid[cardbyid[cid].assist].title + "</card> regains "+actheal+" Health.");
                 
             }
             break;
@@ -474,7 +471,7 @@ uniteff = (cid) => {
         case 50:
             // While in your Hand:<br>Disadvantage cards can't be added to your deck if the Battlefield is a Woodland Region.
             if ((cardbyid[bfield].trait == "Woodlands Region") && (cardbyid[cid].assign == 0)) {
-                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> prevents that!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> prevents adding the Disadvantage!</font>");
                 canceled = true;
             }
             break;
@@ -494,7 +491,7 @@ uniteff = (cid) => {
             }
             break;
         case 53:
-            // 
+            // While Present:<br>Enemies can't regain Health.
             if (cardbyid[getheal].type == "monst"){
                 writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> doesn't let enemies heal!</font>");
                 heamount = 0;
@@ -503,13 +500,13 @@ uniteff = (cid) => {
         case 54:
             // While Present:<br>Enemies can't increase their DMG.
             canceled = true;
-            writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> prevents that!</font>");
+            writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> prevents the DMG increase!</font>");
             break;
         case 55:
             // While Present:<br>The Speed of your cards can't be decreased.
             canceled = true;
             if (!szoltmar){
-                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> prevents that!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> prevents the Speed decrease!</font>");
                 szoltmar = true;
             }
             break;
@@ -524,7 +521,7 @@ uniteff = (cid) => {
             // While Present:<br>The DMG of your Units can't be decreased.
             canceled = true;
             if (!szoltmar){
-                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> prevents that!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> prevents the DMG decrease!</font>");
                 szoltmar = true;
             }
             break;
