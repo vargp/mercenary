@@ -86,6 +86,9 @@ discfromhand = (what) => {
     } else {
         handdisc = true;
     }
+    if ( !endingturn){
+        writelog("<br><card id=\"" + what + "\">" + cardbyid[what].title + "</card> is discarded.</font>");
+    }
     trigger (10);
     if (!canceled){
         //console.log("discard: "+what);
@@ -94,9 +97,7 @@ discfromhand = (what) => {
         }
         $("#deck").append($(".cardc[id=\""+what+"\"]"));
         cardbyid[what].place = "#deck";
-        if ( !endingturn){
-            writelog("<br><card id=\"" + what + "\">" + cardbyid[what].title + "</card> is discarded.</font>");
-        }
+        
     }
     
 };
@@ -456,7 +457,7 @@ function combat() {
             trigger (4);
             combattime = true;
             
-            writelog("<br><card id=\"" + attacked + "\">" + cardbyid[attacked].title + "</card><font color=\"springgreen\"> attacks <card id=\"" + attmonst + "\">" + cardbyid[attmonst].title + "</card></font>!");
+            writelog("<br><card id=\"" + attacked + "\">" + cardbyid[attacked].title + "</card><font color=\"springgreen\"> retaliates!</font>");
                         
             damage(attmonst, cardbyid[attacked].dmg);
             
@@ -468,7 +469,9 @@ function combat() {
             trigger (5);
         
         } else {
-            writelog("<br><card id=\"" + attacked + "\">" + cardbyid[attacked].title + "</card><font color=\"springgreen\"> can't retaliate!");
+            if (!theend){
+                writelog("<br><card id=\"" + attacked + "\">" + cardbyid[attacked].title + "</card><font color=\"springgreen\"> can't retaliate!");
+            }
         }
         
         combattime = false;
@@ -481,52 +484,64 @@ function combat() {
 
 function heal(who, amount) {
     
-    getheal = who;
-    heamount = amount;
+    if (cardbyid[who].hp > 0){
+    // dont heal the dead
     
-    trigger(15);
+        getheal = who;
+        heamount = amount;
+
+        trigger(15);
+
+        actheal = cardbyid[who].basehp - cardbyid[who].hp;
+        if (actheal >= heamount){
+            actheal = heamount;
+        }
+
+        if (actheal < 0){
+            actheal = 0;
+        }
+
+        cardbyid[who].hp += actheal;
+        writelog("<br><card id=\"" + who + "\">" + cardbyid[who].title + "</card> <font color=\"Aqua\">regained "+actheal+" Health.</font>");
     
-    actheal = cardbyid[who].basehp - cardbyid[who].hp;
-    if (actheal >= heamount){
-        actheal = heamount;
     }
-    
-    if (actheal < 0){
-        actheal = 0;
-    }
-    
-    cardbyid[who].hp += actheal;
-    writelog("<br><card id=\"" + who + "\">" + cardbyid[who].title + "</card> <font color=\"Aqua\">regained "+actheal+" Health.</font>");
     
 }
 
 var damage = (who, amount) => {
     
-    takedamage = who;
-    tdamount = amount;
+    if (cardbyid[who].hp > 0){
+    // dont damage the dead
+
+        takedamage = who;
+        tdamount = amount;
+
+        trigger (14);
+
+        if (tdamount < 0){
+            tdamount = 0;
+        }
+
+        cardbyid[takedamage].hp -= tdamount;
+        writelog("<br><card id=\"" + takedamage + "\">" + cardbyid[takedamage].title + "</card> has lost "+tdamount+" Health.");
+        //writelog("<br>Damage: "+tdamount+" Health.</font>");
+        $("#hpval").html(cardbyid[takedamage].hp);
+
+        if (!combattime){
+            checkdead(takedamage, 0);
+        } else {
+            checkdead(takedamage, attacked);
+        }
     
-    trigger (14);
-    
-    if (tdamount < 0){
-        tdamount = 0;
     }
-    
-    cardbyid[takedamage].hp -= tdamount;
-    writelog("<br><card id=\"" + takedamage + "\">" + cardbyid[takedamage].title + "</card> has lost "+tdamount+" Health.");
-    //writelog("<br>Damage: "+tdamount+" Health.</font>");
-    $("#hpval").html(cardbyid[takedamage].hp);
-    
-    if (!combattime){
-        checkdead(takedamage, 0);
-    } else {
-        checkdead(takedamage, attacked);
-    }
-    
+        
 };
 
 var checkdead = (who, bywhom) => {
     
+    
     if (cardbyid[who].hp <= 0) {
+        writelog("<br><card id=\"" + who + "\">" + cardbyid[who].title + "</card><font color=\"SlateGrey\"> has died!");
         whodies = who;
         cardbyid[who].hp = 99;
         trigger (22);
@@ -540,7 +555,7 @@ var checkdead = (who, bywhom) => {
         cardbyid[who].illus = "skull";
         cardbyid[who].trait = "dead";
         $(".cardc[id=\""+who+"\"]").children("img").attr("src", "img/illus/skull.jpg");
-        writelog("<br><card id=\"" + who + "\">" + cardbyid[who].title + "</card><font color=\"SlateGrey\"> has died!");
+        
         if (cardbyid[who].type == "monst"){
             bscorechange(2);
             
@@ -553,6 +568,7 @@ var checkdead = (who, bywhom) => {
                 setTimeout(function(){
                     writelog("<br><font color=\"red\">Oh no! Your Commander is dead!!</font>");
                     writelog("<br><font color=\"orange\">You have lost the game.</font>");
+                    retaliate = false;
                     sadend();
                 }, 1000);
             } else {
@@ -589,9 +605,10 @@ var gainexp = (who) => {
             whichxp = Math.floor((Math.random() * 3) + 1);
         } while (cardbyid[who].xp[whichxp]);
         cardbyid[who].xp[whichxp] = true;
-        writelog("<br><card id=\"" + who + "\">" + cardbyid[who].title + "</card><font color=\"yellowgreen\"> has earned a promotion!");
+        writelog("<br><card id=\"" + who + "\">" + cardbyid[who].title + "</card><font color=\"yellowgreen\"> gains experience!");
+        trigger(17);
     }
-    trigger(17);
+    
 };
 
 function checkass() {
@@ -681,7 +698,7 @@ trigmonst = (trig) => {
 
 trighand = (trig) => {
     $("#avnow").children().each(function() {
-        if (cardbyid[$(this).attr("id")].trig == trig){
+        if ((cardbyid[$(this).attr("id")].trig == trig) && (cardbyid[$(this).attr("id")].hp > 0)){
             switch(cardbyid[$(this).attr("id")].what){
                 case "unit":
                     uniteff($(this).attr("id"));
@@ -700,7 +717,7 @@ trighand = (trig) => {
 
 trigdeck = (trig) => {
     $("#deck").children().each(function() {
-        if (cardbyid[$(this).attr("id")].trig == trig){
+        if ((cardbyid[$(this).attr("id")].trig == trig) && (cardbyid[$(this).attr("id")].hp > 0)){
             switch(cardbyid[$(this).attr("id")].what){
                 case "unit":
                     uniteff($(this).attr("id"));

@@ -340,7 +340,7 @@ monsteff = (cid) => {
         case 29:
             // Before Combat:<br>A new Enemy appears<br>in the 2nd slot.
             
-            writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>summons a new enemy!</font>");
+            writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> summons a new enemy!</font>");
             newmon ("#enc2");
             if ( cardbyid[$('#enc2 .cardc:first').attr("id")].assign != 0){
                 cardbyid[hanylapvan].assign = cardbyid[$('#enc2 .cardc:first').attr("id")].assign;

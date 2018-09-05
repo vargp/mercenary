@@ -35,7 +35,7 @@ var generate = (mit, hova) => {
     
     var laphuz;
     var numgen;
-    var drawcard;
+    var drawed;
     var sumcard;
     var hanylapos;
     var cardtext = "";
@@ -60,11 +60,11 @@ var generate = (mit, hova) => {
             //numgen = 9;
             //testgen++;
             
-            drawcard = char[numgen];
-            cardbyid[hanylapvan].baseperc = drawcard.perc;
+            drawed = char[numgen];
+            cardbyid[hanylapvan].baseperc = drawed.perc;
             cardbyid[hanylapvan].perc = cardbyid[hanylapvan].baseperc;
             cardbyid[hanylapvan].illus = "ch";
-            cardbyid[hanylapvan].cost = drawcard.cost;
+            cardbyid[hanylapvan].cost = drawed.cost;
             break;
         case 2:
             // enemy
@@ -74,14 +74,15 @@ var generate = (mit, hova) => {
             //cheat
             // numgen = 80;
             
-            drawcard = en[numgen];            
+            drawed = en[numgen];            
             cardbyid[hanylapvan].illus = "en";
+            
             break;
         case 3:
             // commander
             numgen = comgen;
             //console.log(comgen);
-            drawcard = co[comgen];
+            drawed = co[comgen];
             comgen++;            
             cardbyid[hanylapvan].illus = "co";
             
@@ -92,35 +93,37 @@ var generate = (mit, hova) => {
             numgen = Math.floor((Math.random() * sumcard) + 1);
             //cheat
             //numgen = 27;
-            drawcard = skill[numgen];          
+            drawed = skill[numgen];          
             cardbyid[hanylapvan].illus = "sk"; 
-            cardbyid[hanylapvan].baseperc = drawcard.perc;
+            cardbyid[hanylapvan].baseperc = drawed.perc;
             cardbyid[hanylapvan].perc = cardbyid[hanylapvan].baseperc;
-            cardbyid[hanylapvan].cost = drawcard.cost;
+            cardbyid[hanylapvan].cost = drawed.cost;
             break;
         case 5:
             // buyable
-            drawcard = buyable[recruit];
+            drawed = buyable[recruit];
             //console.log("Rec: "+recruit);
             numgen = recruit;
             recruit++;            
             cardbyid[hanylapvan].illus = "bu";
-            cardbyid[hanylapvan].cost = drawcard.cost;
+            cardbyid[hanylapvan].cost = drawed.cost;
             break;
         case 6:
             // region
             sumcard = reg.length-3;
-            numgen = Math.floor((Math.random() * sumcard) + 1);
+            do {
+                numgen = Math.floor((Math.random() * sumcard) + 1);
+            } while ((numgen == reg[1]) || (numgen == reg[2]) || (numgen == reg[3]));
             
             //cheat
-            //numgen = 38;
+            //numgen = 50;
             if (recruit > 0){
                 numgen = recruit;
             }
             
-            drawcard = reg[numgen];          
+            drawed = reg[numgen];          
             cardbyid[hanylapvan].illus = "reg"; 
-            cardbyid[hanylapvan].fmod = drawcard.fmod;
+            cardbyid[hanylapvan].fmod = drawed.fmod;
             break;
         case 7:
             // adv & disadv
@@ -129,25 +132,25 @@ var generate = (mit, hova) => {
             // adadraw = 6;
             
             numgen = adadraw;
-            drawcard = ada[numgen];          
+            drawed = ada[numgen];          
             cardbyid[hanylapvan].illus = "ada"; 
             cardbyid[hanylapvan].temp = true;
-            cardbyid[hanylapvan].baseperc = drawcard.perc;
+            cardbyid[hanylapvan].baseperc = drawed.perc;
             cardbyid[hanylapvan].perc = cardbyid[hanylapvan].baseperc;
             break;
         case 8:
             // boss
             numgen = bossnum;
                         
-            drawcard = boss[numgen];            
+            drawed = boss[numgen];            
             cardbyid[hanylapvan].illus = "boss";
             break;
     }
     
     
-    cardbyid[hanylapvan].what = drawcard.what;
-    cardbyid[hanylapvan].type = drawcard.type;
-    cardbyid[hanylapvan].trig = drawcard.trig;
+    cardbyid[hanylapvan].what = drawed.what;
+    cardbyid[hanylapvan].type = drawed.type;
+    cardbyid[hanylapvan].trig = drawed.trig;
     
     if (numgen < 10){
         cardbyid[hanylapvan].illus += "0";
@@ -158,20 +161,20 @@ var generate = (mit, hova) => {
     cardbyid[hanylapvan].assign = 0;
     cardbyid[hanylapvan].assist = 0;
     
-    cardbyid[hanylapvan].title = drawcard.title;
-    cardbyid[hanylapvan].text = drawcard.text;
+    cardbyid[hanylapvan].title = drawed.title;
+    cardbyid[hanylapvan].text = drawed.text;
     cardbyid[hanylapvan].abnum = numgen;
     cardbyid[hanylapvan].place = hova;
-    cardbyid[hanylapvan].trait = drawcard.trait;
+    cardbyid[hanylapvan].trait = drawed.trait;
     
     cardbyid[hanylapvan].xp = new Array();
     cardbyid[hanylapvan].xp[1] = false;
     cardbyid[hanylapvan].xp[2] = false;
     cardbyid[hanylapvan].xp[3] = false;
 	
-    if ("dmg" in drawcard){
-        cardbyid[hanylapvan].basedmg = drawcard.dmg;
-        cardbyid[hanylapvan].basehp = drawcard.hp;    
+    if ("dmg" in drawed){
+        cardbyid[hanylapvan].basedmg = drawed.dmg;
+        cardbyid[hanylapvan].basehp = drawed.hp;    
         if (cardbyid[hanylapvan].what == "monst"){
             cardbyid[hanylapvan].basedmg += monplusdmg[battlenum];
             cardbyid[hanylapvan].basehp += monplushp[battlenum];

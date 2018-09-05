@@ -12,7 +12,7 @@ var promotable = 0;
 var numskill = 0;
 var healable = 0;
 var monstapp = 0;
-
+var forcemon = "none";
 
 function choosecomm(){
     
@@ -207,21 +207,7 @@ $('#buy, #basicbuy').on( "click", ".cardc", function( event ) {
         if (cardbyid[$(this).attr("id")].what == "promote"){
             writelog("<br>Your Units that could be promoted have their stats increased.");
             $("#seedeck").children(".cardc").each(function() {
-                if (cardbyid[$(this).attr("id")].xp[1]){
-                    cardbyid[$(this).attr("id")].xp[1] = false;
-                    cardbyid[$(this).attr("id")].dmg += 1;
-                    cardbyid[$(this).attr("id")].basedmg += 1;
-                }
-                if (cardbyid[$(this).attr("id")].xp[2]){
-                    cardbyid[$(this).attr("id")].xp[2] = false;
-                    cardbyid[$(this).attr("id")].hp += 2;
-                    cardbyid[$(this).attr("id")].basehp += 2;
-                }
-                if (cardbyid[$(this).attr("id")].xp[3]){
-                    cardbyid[$(this).attr("id")].xp[3] = false;
-                    cardbyid[$(this).attr("id")].perc += 3;
-                    cardbyid[$(this).attr("id")].baseperc += 3;
-                }
+                promoteunit($(this).attr("id"));
             });
         }
         if (cardbyid[$(this).attr("id")].what == "drill"){
@@ -237,6 +223,25 @@ $('#buy, #basicbuy').on( "click", ".cardc", function( event ) {
     }
     
 });
+
+var promoteunit = (who) => {
+    if (cardbyid[who].xp[1]){
+        cardbyid[who].xp[1] = false;
+        cardbyid[who].dmg += 1;
+        cardbyid[who].basedmg += 1;
+    }
+    if (cardbyid[who].xp[2]){
+        cardbyid[who].xp[2] = false;
+        cardbyid[who].hp += 2;
+        cardbyid[who].basehp += 2;
+    }
+    if (cardbyid[who].xp[3]){
+        cardbyid[who].xp[3] = false;
+        cardbyid[who].perc += 3;
+        cardbyid[who].baseperc += 3;
+    }
+    
+};
 
 
 
@@ -271,6 +276,7 @@ function regions(){
         console.log("basicfame: "+basicfame);
         basicfame += cardbyid[hanylapvan].fmod;
         console.log("after fmod: "+basicfame);
+        reg[i] = cardbyid[hanylapvan].abnum;
         recruit = 7;
         generate (5, battles[i]);
         cardbyid[hanylapvan].montype = Math.floor((Math.random() * 4) + 1);
@@ -361,6 +367,9 @@ function mongen(){
         thirmon = true;
     }
     
+    forcemon = "none";
+    trigger(28);
+    
 	if ((!secmon) && (thirmon)){
             secmon = true;
             thirmon = false;
@@ -385,6 +394,8 @@ function mongen(){
     
         
     // third panel
+    
+    forcemon = "none";
     
     
     if (($("#enc3").children().length == 0) || (cardbyid[$("#enc3").children()[0].id].type != "monst")){
@@ -453,6 +464,10 @@ newmon = (where) => {
                
     }
     
+    if (forcemon != "none"){
+        getthis = forcemon;
+    }
+    
     var monlen = en.length-1;
     
     do {
@@ -462,6 +477,8 @@ newmon = (where) => {
     generate (2, where);
     monstapp = hanylapvan;
     writelog("<br>A new Enemy appears: <card id=\"" + monstapp + "\">" + cardbyid[monstapp].title + "</card>.");
+    
+    trigger(29);
     
     trigger(16);
     

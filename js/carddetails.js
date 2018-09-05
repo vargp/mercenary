@@ -14,7 +14,10 @@ var ada = new Array();
 var boss = new Array();
 var hint = new Array();
 var buyable = new Array();
-
+var reg = new Array();
+reg[1] = 0;
+reg[2] = 0;
+reg[3] = 0;
 
 
 var startcards = [0, 7, 6, 3, 4];
@@ -59,6 +62,8 @@ var goldbase = [0, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140];
  * 25: Hero card perc decrease
  * 26: Hero unit dmg decrease
  * 27: Battlescore change
+ * 28: additional monster
+ * 29: blank before when appears
  *  
  */
 
@@ -219,57 +224,57 @@ co[7] = {what: "comm", type: "comm", title: "Selina Oldsong", trait: "Commander"
 co[8] = {what: "comm", type: "comm", title: "Jakobe Stonegrave", trait: "Commander", dmg: 6, hp: 24, trig: 18, text: "Your units have<br>+2 Health during Battles."};
 
 reg[1] = {type: "region", what: "mountain", title: "Coldstone Mountains", trait: "Mountain Region", fmod: 1, trig: 18,  text: "At battle start, your Ranger<br>units gain -2 DMG here."};
-reg[2] = {type: "region", what: "woodland", title: "Northern Woods", trait: "Woodlands Region", fmod: 1, trig: 18, text: "Additional Beasts may attack you here."};
-reg[3] = {type: "region", what: "woodland", title: "Quona River Shallows", trait: "Woodlands Region", fmod: -1, trig: 18, text: "Start the battle with +2 Swamp Terrain Advantage in your deck."};
-reg[4] = {type: "region", what: "swamp", title: "The Frozen Marshes", trait: "Swamp Region", fmod: 1, trig: 18, text: "At battle start, your cards with more than 20 Speed lose 4 Speed here."};
+reg[2] = {type: "region", what: "woodland", title: "Northern Woods", trait: "Woodlands Region", fmod: 1, trig: 28, text: "Additional Beasts<br>may attack you here."};
+reg[3] = {type: "region", what: "woodland", title: "Quona River Shallows", trait: "Woodlands Region", fmod: -1, trig: 18, text: "Start the battle with<br>+2 Swamp Terrain<br>Advantage in your deck."};
+reg[4] = {type: "region", what: "swamp", title: "The Frozen Marshes", trait: "Swamp Region", fmod: 1, trig: 18, text: "At battle start,<br>your cards with more than<br>20 Speed lose 5 Speed here."};
 reg[5] = {type: "region", what: "plains", title: "The Golden Savannah", trait: "Plains Region", fmod: -1, trig: 18, text: "You start at the<br>2nd Wave here."};
-reg[6] = {type: "region", what: "mountain", title: "The Green Giants", trait: "Mountain Region", fmod: -1, trig: 18, text: "When you gain Battlescore, you gain 1 more here."};
-reg[7] = {type: "region", what: "fortress", title: "Cobaltcreek Castle", trait: "Fortress Region", fmod: -1, trig: 18, text: "At battle start, your Warrior Units<br>gain +2 DMG here."};
-reg[8] = {type: "region", what: "plains", title: "Hillfoot Meadows", trait: "Plains Region", fmod: 1, trig: 18, text: "Enemies have +2 Health here."};
-reg[9] = {type: "region", what: "swamp", title: "The Sweltering Bog", trait: "Swamp Region", fmod: 1, trig: 18, text: "At the start of battle, your Units lose 2 Health here."};
-reg[10] = {type: "region", what: "fortress", title: "Island Stronghold", trait: "Fortress Region", fmod: -1, trig: 18, text: "2 Ardent Recruits are put into your deck for this battle."};
-reg[11] = {type: "region", what: "fortress", title: "Sky Citadel", trait: "Fortress Region", fmod: 1, trig: 18, text: "When you gain Battlescore, you gain 1 less here."};
-reg[12] = {type: "region", what: "swamp", title: "The Deadmire", trait: "Swamp Region", fmod: 1, trig: 18, text: "Additional Undead may attack you here."};
-reg[13] = {type: "region", what: "mountain", title: "The Barren Peaks", trait: "Mountain Region", fmod: 1, trig: 18,  text: "Additional Demons may attack you here."};
-reg[14] = {type: "region", what: "woodland", title: "Abandoned Settlement", trait: "Woodlands Region", fmod: 1, trig: 18, text: "Start the battle with +2 Fortress Terrain Disadvantage in your deck."};
-reg[15] = {type: "region", what: "plains", title: "Fertile Fiefdoms", trait: "Plains Region", fmod: -1, trig: 18, text: "At battle start, your cards with less than 20 Speed gain 4 Speed here (except Disadvantages)."};
-reg[16] = {type: "region", what: "fortress", title: "Elevated Garrison", trait: "Fortress Region", fmod: -1, trig: 18, text: "Enemies have -2 Health here."};
-reg[17] = {type: "region", what: "swamp", title: "Eastern Floodplains", trait: "Swamp Region", fmod: -1, trig: 18, text: "Start the battle with +2 Plains Terrain Advantage in your deck."};
-reg[18] = {type: "region", what: "mountain", title: "Eagle Cliff", trait: "Mountain Region", fmod: -1, trig: 18,  text: "Start the battle with +2 Fortress Terrain Advantage in your deck."};
-reg[19] = {type: "region", what: "woodland", title: "Runehewn Wildwoods", trait: "Woodlands Region", fmod: -1, trig: 18, text: "At the end of each round, if you have no Units in your Hand, deal each Enemy 2 Damage."};
-reg[20] = {type: "region", what: "plains", title: "The Enchanted Plateau", trait: "Plains Region", fmod: -1, trig: 18, text: "At the start of battle, your Units gain 2 Health here."};
-reg[21] = {type: "region", what: "fortress", title: "Alabaster Ramparts", trait: "Fortress Region", fmod: -1, trig: 18, text: "2nd and 3rd Enemies are less likely to appear here."};
-reg[22] = {type: "region", what: "swamp", title: "The Greenmoor", trait: "Swamp Region", fmod: 1, trig: 18, text: "Start the battle with +2 Woodlands Terrain Disadvantage in your deck."};
-reg[23] = {type: "region", what: "mountain", title: "The Crimson Ridge", trait: "Mountain Region", fmod: 1, trig: 18,  text: "Start the battle with +2 Swamp Terrain Disadvantage in your deck."};
-reg[24] = {type: "region", what: "woodland", title: "The Corpse Jungle", trait: "Woodlands Region", fmod: 1, trig: 18, text: "At the end of each round, if there are no Enemies alive, deal each present Unit 1 Damage."};
-reg[25] = {type: "region", what: "plains", title: "Tribal Territories", trait: "Plains Region", fmod: 1, trig: 18, text: "Additional Orcs may attack you here."};
-reg[26] = {type: "region", what: "fortress", title: "Elven Hamlet", trait: "Fortress Region", fmod: -1, trig: 18, text: "Start the battle with +2 Woodlands Terrain Advantage in your deck."};
+reg[6] = {type: "region", what: "mountain", title: "The Green Giants", trait: "Mountain Region", fmod: -1, trig: 27, text: "When you gain Battlescore,<br>you gain 1 more here."};
+reg[7] = {type: "region", what: "fortress", title: "Cobaltcreek Castle", trait: "Fortress Region", fmod: -1, trig: 18, text: "At battle start, your Warrior<br>units gain +2 DMG here."};
+reg[8] = {type: "region", what: "plains", title: "Hillfoot Meadows", trait: "Plains Region", fmod: 1, trig: 16, text: "Enemies have +2 Health here."};
+reg[9] = {type: "region", what: "swamp", title: "The Sweltering Bog", trait: "Swamp Region", fmod: 1, trig: 18, text: "At the start of battle, your Units<br>lose 2 Health here."};
+reg[10] = {type: "region", what: "fortress", title: "Island Stronghold", trait: "Fortress Region", fmod: -1, trig: 18, text: "2 Ardent Recruits join you<br>for this battle."};
+reg[11] = {type: "region", what: "fortress", title: "Sky Citadel", trait: "Fortress Region", fmod: 1, trig: 27, text: "When you gain Battlescore,<br>you gain 1 less here."};
+reg[12] = {type: "region", what: "swamp", title: "The Deadmire", trait: "Swamp Region", fmod: 1, trig: 28, text: "Additional Undead<br>may attack you here."};
+reg[13] = {type: "region", what: "mountain", title: "The Barren Peaks", trait: "Mountain Region", fmod: 1, trig: 28,  text: "Additional Demons<br>may attack you here."};
+reg[14] = {type: "region", what: "woodland", title: "Abandoned Settlement", trait: "Woodlands Region", fmod: 1, trig: 18, text: "Start the battle with<br>+2 Fortress Terrain<br>Disadvantage in your deck."};
+reg[15] = {type: "region", what: "plains", title: "Fertile Fiefdoms", trait: "Plains Region", fmod: -1, trig: 18, text: "At battle start, your cards with less than 20 Speed gain 5 Speed here (except Disadvantages)."};
+reg[16] = {type: "region", what: "fortress", title: "Elevated Garrison", trait: "Fortress Region", fmod: -1, trig: 16, text: "Enemies have -2 Health here."};
+reg[17] = {type: "region", what: "swamp", title: "Eastern Floodplains", trait: "Swamp Region", fmod: -1, trig: 18, text: "Start the battle with<br>+2 Plains Terrain<br>Advantage in your deck."};
+reg[18] = {type: "region", what: "mountain", title: "Eagle Cliff", trait: "Mountain Region", fmod: -1, trig: 18,  text: "Start the battle with<br>+2 Fortress Terrain<br>Advantage in your deck."};
+reg[19] = {type: "region", what: "woodland", title: "Runehewn Wildwoods", trait: "Woodlands Region", fmod: -1, trig: 6, text: "After Combat:<br>If you have no Units in your Hand,<br>deal each Enemy 2 Damage."};
+reg[20] = {type: "region", what: "plains", title: "The Enchanted Plateau", trait: "Plains Region", fmod: -1, trig: 18, text: "At the start of battle,<br>your Units gain 2 Health here."};
+reg[21] = {type: "region", what: "fortress", title: "Alabaster Ramparts", trait: "Fortress Region", fmod: -1, trig: 28, text: "2nd and 3rd Enemies<br>are less likely to appear here."};
+reg[22] = {type: "region", what: "swamp", title: "The Greenmoor", trait: "Swamp Region", fmod: 1, trig: 18, text: "Start the battle with<br>+2 Woodlands Terrain<br>Disadvantage in your deck."};
+reg[23] = {type: "region", what: "mountain", title: "The Crimson Ridge", trait: "Mountain Region", fmod: 1, trig: 18,  text: "Start the battle with<br>+2 Swamp Terrain<br>Disadvantage in your deck."};
+reg[24] = {type: "region", what: "woodland", title: "The Corpse Jungle", trait: "Woodlands Region", fmod: 1, trig: 6, text: "After Combat:<br>if there are no Enemies alive,<br>deal each present Unit 1 Damage."};
+reg[25] = {type: "region", what: "plains", title: "Tribal Territories", trait: "Plains Region", fmod: 1, trig: 28, text: "Additional Orcs<br>may attack you here."};
+reg[26] = {type: "region", what: "fortress", title: "Elven Hamlet", trait: "Fortress Region", fmod: -1, trig: 18, text: "Start the battle with<br>+2 Woodlands Terrain<br>Advantage in your deck."};
 reg[27] = {type: "region", what: "swamp", title: "The Dragon Morass", trait: "Swamp Region", fmod: -1, trig: 18, text: "At battle start, your Mage Units<br>gain +2 DMG here."};
 reg[28] = {type: "region", what: "mountain", title: "The Gates of Oblivion", trait: "Mountain Region", fmod: -1, trig: 18,  text: "At battle start, your Cleric Units<br>gain +2 DMG here."};
-reg[29] = {type: "region", what: "woodland", title: "Outlaw Hideout", trait: "Woodlands Region", fmod: -1, trig: 18, text: "At battle start, your Rogue Units<br>gain +2 DMG here."};
-reg[30] = {type: "region", what: "plains", title: "The Broken Land", trait: "Plains Region", fmod: -1, trig: 18, text: "Start the battle with +2 Mountains Terrain Advantage in your deck."};
-reg[31] = {type: "region", what: "fortress", title: "Neglected Cathedral", trait: "Fortress Region", fmod: 1, trig: 18, text: "Start the battle with +2 Plains Terrain Disadvantage in your deck."};
-reg[32] = {type: "region", what: "swamp", title: "Treacherous Muskeg", trait: "Swamp Region", fmod: 1, trig: 18, text: "At battle start, your Warrior Units<br>gain -2 DMG here."};
-reg[33] = {type: "region", what: "mountain", title: "Hermit Hill", trait: "Mountain Region", fmod: 1, trig: 18,  text: "At the start of each round, if there is only 1 Enemy present, it gains +1 DMG and +3 HP."};
+reg[29] = {type: "region", what: "woodland", title: "Outlaw Hideout", trait: "Woodlands Region", fmod: -1, trig: 18, text: "At battle start, your Rogue<br>Units gain +2 DMG here."};
+reg[30] = {type: "region", what: "plains", title: "The Broken Land", trait: "Plains Region", fmod: -1, trig: 18, text: "Start the battle with<br>+2 Mountains Terrain<br>Advantage in your deck."};
+reg[31] = {type: "region", what: "fortress", title: "Neglected Cathedral", trait: "Fortress Region", fmod: 1, trig: 18, text: "Start the battle with<br>+2 Plains Terrain<br>Disadvantage in your deck."};
+reg[32] = {type: "region", what: "swamp", title: "Treacherous Muskeg", trait: "Swamp Region", fmod: 1, trig: 18, text: "At battle start, your Warrior<br>Units gain -2 DMG here."};
+reg[33] = {type: "region", what: "mountain", title: "Hermit Hill", trait: "Mountain Region", fmod: 1, trig: 19,  text: "At the start of each round,<br>if there is only 1 Enemy present,<br>it gains +1 DMG and +3 HP."};
 reg[34] = {type: "region", what: "woodland", title: "Rust Grove", trait: "Woodlands Region", fmod: 1, trig: 18, text: "At battle start, your Mage Units<br>gain -2 DMG here."};
-reg[35] = {type: "region", what: "plains", title: "The Crystal Rapids", trait: "Plains Region", fmod: 1, trig: 18, text: "Start the battle with +2 Mountains Terrain Disadvantage in your deck."};
-reg[36] = {type: "region", what: "fortress", title: "Heathen Village", trait: "Fortress Region", fmod: 1, trig: 18, text: "At battle start, your Cleric Units<br>gain -2 DMG here."};
+reg[35] = {type: "region", what: "plains", title: "The Crystal Rapids", trait: "Plains Region", fmod: 1, trig: 18, text: "Start the battle with<br>+2 Mountains Terrain<br>Disadvantage in your deck."};
+reg[36] = {type: "region", what: "fortress", title: "Heathen Village", trait: "Fortress Region", fmod: 1, trig: 18, text: "At battle start, your Cleric<br>Units gain -2 DMG here."};
 reg[37] = {type: "region", what: "swamp", title: "Foul Slough", trait: "Swamp Region", fmod: 1, trig: 18, text: "At battle start, your Commander gains -2 DMG here."};
 reg[38] = {type: "region", what: "mountain", title: "The Crippled Pike", trait: "Mountain Region", fmod: 1, trig: 18,  text: "The Healer's healing power is decreased by 2 here."};
 reg[39] = {type: "region", what: "woodland", title: "Clandestine Shelter", trait: "Woodlands Region", fmod: -1, trig: 18, text: "The Healer's healing power is increased by 2 here."};
 reg[40] = {type: "region", what: "plains", title: "The Turquoise Glacier", trait: "Plains Region", fmod: 1, trig: 18, text: "At battle start, your Rogue Units<br>gain -2 DMG here."};
-reg[41] = {type: "region", what: "fortress", title: "The Lonely Tower", trait: "Fortress Region", fmod: -1, trig: 18, text: "When an Enemy appears in the 2nd Slot, its ability is blanked."};
+reg[41] = {type: "region", what: "fortress", title: "The Lonely Tower", trait: "Fortress Region", fmod: -1, trig: 29, text: "When an Enemy appears<br>in the 2nd Slot,<br>its ability is blanked."};
 reg[42] = {type: "region", what: "swamp", title: "The Sanguine Everglade", trait: "Swamp Region", fmod: -1, trig: 18, text: "At battle start, your commander gains +2 DMG here."};
-reg[43] = {type: "region", what: "mountain", title: "The Olden Quarry", trait: "Mountain Region", fmod: -1, trig: 18,  text: "At the start of each round, if you have any Skills in your hand, draw a random Unit that can use one."};
-reg[44] = {type: "region", what: "woodland", title: "Primeval Forest", trait: "Woodlands Region", fmod: 1, trig: 18, text: "When an Enemy dies, other present Enemies gain +1 DMG and +2 HP."};
-reg[45] = {type: "region", what: "plains", title: "Ancient Tombs", trait: "Plains Region", fmod: -1, trig: 18, text: "At battle start, your Ranger Units<br>gain +2 DMG here."};
-reg[46] = {type: "region", what: "fortress", title: "The Violet Bastion", trait: "Fortress Region", fmod: 1, trig: 18, text: "At the start of each round, if you have no Skills in your hand, discard your leftmost Unit from hand."};
-reg[47] = {type: "region", what: "swamp", title: "The Livid Fens", trait: "Swamp Region", fmod: -1, trig: 18, text: "When a Unit dies, other present Units gain +2 DMG for the rest of the battle."};
-reg[48] = {type: "region", what: "mountain", title: "Quartzshade Mountain", trait: "Mountain Region", fmod: -1, trig: 18,  text: "When an Enemy dies, the Unit that killed it is instantly promoted."};
-reg[49] = {type: "region", what: "woodland", title: "Sunlit Thicket", trait: "Woodlands Region", fmod: -1, trig: 18, text: "At battle start, give your Units with 20 or less Speed +2 DMG."};
-reg[50] = {type: "region", what: "plains", title: "Serpentine Grassland", trait: "Plains Region", fmod: 1, trig: 18, text: "When a Unit dies, other present Units lose all Experience."};
-reg[51] = {type: "region", what: "plains", title: "Blessed Fields", trait: "Plains Region", fmod: -1, trig: 18, text: "Before Combat:<br>Put a random Terrain Advantage into your Hand."};
-reg[52] = {type: "region", what: "plains", title: "Desolate Waste", trait: "Plains Region", fmod: -1, trig: 18, text: "Before Combat:<br>Put a random Terrain Disadvantage into your Hand."};
+reg[43] = {type: "region", what: "mountain", title: "The Olden Quarry", trait: "Mountain Region", fmod: -1, trig: 19,  text: "At the start of each round,<br>if you have any Skills in your hand,<br>draw a Unit that can use one."};
+reg[44] = {type: "region", what: "woodland", title: "Primeval Forest", trait: "Woodlands Region", fmod: 1, trig: 22, text: "When an Enemy dies,<br>other present Enemies gain<br>+1 DMG and regain 2 HP."};
+reg[45] = {type: "region", what: "plains", title: "Ancient Tombs", trait: "Plains Region", fmod: -1, trig: 18, text: "At battle start, your Ranger<br>Units gain +2 DMG here."};
+reg[46] = {type: "region", what: "fortress", title: "The Violet Bastion", trait: "Fortress Region", fmod: 1, trig: 18, text: "If there are less than<br>6 Skills in your deck,<br>start at Wave 0 here."};
+reg[47] = {type: "region", what: "swamp", title: "The Livid Fens", trait: "Swamp Region", fmod: -1, trig: 22, text: "When a Unit dies, other present Units gain +2 DMG for the rest of the battle."};
+reg[48] = {type: "region", what: "mountain", title: "Quartzshade Mountain", trait: "Mountain Region", fmod: -1, trig: 17,  text: "When a Unit gains Experience,<br>it is instantly promoted here."};
+reg[49] = {type: "region", what: "woodland", title: "Sunlit Thicket", trait: "Woodlands Region", fmod: -1, trig: 18, text: "At battle start,<br>give your Units with<br>20 or less Speed +2 DMG."};
+reg[50] = {type: "region", what: "plains", title: "Serpentine Grassland", trait: "Plains Region", fmod: 1, trig: 17, text: "When a Unit gains Experience,<br>it loses 8 Speed for the rest of<br>this battle."};
+reg[51] = {type: "region", what: "plains", title: "Blessed Fields", trait: "Plains Region", fmod: -1, trig: 1, text: "Before Combat:<br>Put a random<br>Terrain Advantage<br>into your Hand."};
+reg[52] = {type: "region", what: "plains", title: "Desolate Waste", trait: "Plains Region", fmod: -1, trig: 1, text: "Before Combat:<br>Put a random<br>Terrain Disadvantage<br>into your Hand."};
 
 ada[1] = {what: "ada", type: "adv", title: "Close Quarters", trait: "Terrain Advantage", trig: 9, text: "When Drawn:<br>Draw the first card from your deck into your Hand.", perc: 15};
 ada[2] = {what: "ada", type: "disadv", title: "Losing Ground", trait: "Terrain Disadvantage", trig: 9, text: "When Drawn:<br>The Monsters gain 4 Battlescore.", perc: 15};

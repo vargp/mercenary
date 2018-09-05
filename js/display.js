@@ -255,6 +255,7 @@ function startingdeck(){
         // cheat
         //recruit = 56;
         generate (1, "#deck");
+        //generate (4, "#deck");
         //adadraw = 2;
         //generate(7, "#deck");
     }
