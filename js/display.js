@@ -23,9 +23,9 @@ var writelog = (text) => {
 
 $('body').on( "mouseenter", "card", function( event ) {
     console.log("cardid:" + $(this).attr("id"));
-    if (!hold) {
+    //if (!hold) {
         showcard($(this).attr("id"));
-    }
+    //}
     
 });
 
@@ -253,10 +253,10 @@ function startingdeck(){
     
     for (let i = 1; i <= 6; i++) {
         // cheat
-        //recruit = 56;
-        generate (1, "#deck");
+        //recruit = 40;
+        //generate (1, "#deck");
         //generate (4, "#deck");
-        //adadraw = 2;
+        //adadraw = 16;
         //generate(7, "#deck");
     }
     
@@ -413,7 +413,7 @@ function showcard(lapid){
             break;
         case "comm":
             textcol = "rgb(59, 56, 14)";
-            textshad = "rgba(155, 150, 18, 1) 1px 1px 3px";
+            textshad = "rgba(155, 150, 18, 0.7) 1px 1px 3px";
             break;
         case "skred":
             textcol = "rgb(106, 0, 0)";
@@ -539,14 +539,19 @@ function showcard(lapid){
     }
     
     if (parseInt($(".cardtext").css("height")) < 55){
-        $(".cardtext").css("top", "398px");
-    } else if (parseInt($(".cardtext").css("height")) < 100){
-        $(".cardtext").css("top", "390px");
+        $(".cardtext").css("top", "400px");
+    } else if (parseInt($(".cardtext").css("height")) < 80){
+        $(".cardtext").css("top", "388px");
     } else if (parseInt($(".cardtext").css("height")) < 106){
-        $(".cardtext").css("top", "380px");
+        $(".cardtext").css("top", "376px");
     } else {
-        $(".cardtext").css("top", "368px");
+        $(".cardtext").css("top", "364px");
     }
     
+    if (shown.place!="#buy"){
+        var lejjebb = parseInt($(".cardtext").css("top"));
+        lejjebb += 4;
+        $(".cardtext").css("top", lejjebb);
+    }
     
 };

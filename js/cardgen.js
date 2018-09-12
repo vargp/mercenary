@@ -11,6 +11,10 @@ var recruit = 0;
 var adadraw = 0;
 var mondraw = 0;
 var bossnum = 0;
+var voltreg = [];
+voltreg[1] = 0;
+voltreg[2] = 0;
+voltreg[3] = 0;
 
 var generate = (mit, hova) => {
     
@@ -72,7 +76,7 @@ var generate = (mit, hova) => {
             numgen = mondraw;
             
             //cheat
-            // numgen = 80;
+            // numgen = 1;
             
             drawed = en[numgen];            
             cardbyid[hanylapvan].illus = "en";
@@ -92,7 +96,7 @@ var generate = (mit, hova) => {
             sumcard = skill.length-1;
             numgen = Math.floor((Math.random() * sumcard) + 1);
             //cheat
-            //numgen = 27;
+            //numgen = 25;
             drawed = skill[numgen];          
             cardbyid[hanylapvan].illus = "sk"; 
             cardbyid[hanylapvan].baseperc = drawed.perc;
@@ -113,10 +117,10 @@ var generate = (mit, hova) => {
             sumcard = reg.length-3;
             do {
                 numgen = Math.floor((Math.random() * sumcard) + 1);
-            } while ((numgen == reg[1]) || (numgen == reg[2]) || (numgen == reg[3]));
+            } while ((numgen == voltreg[1]) || (numgen == voltreg[2]) || (numgen == voltreg[3]));
             
             //cheat
-            //numgen = 50;
+            //numgen = 2;
             if (recruit > 0){
                 numgen = recruit;
             }
@@ -172,6 +176,8 @@ var generate = (mit, hova) => {
     cardbyid[hanylapvan].xp[2] = false;
     cardbyid[hanylapvan].xp[3] = false;
 	
+    //console.log("EZ HIBAS LESZ: "+drawed);
+    
     if ("dmg" in drawed){
         cardbyid[hanylapvan].basedmg = drawed.dmg;
         cardbyid[hanylapvan].basehp = drawed.hp;    

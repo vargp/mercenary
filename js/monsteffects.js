@@ -50,7 +50,7 @@ monsteff = (cid) => {
             // When Appears:<br>Every Unit in your Hand<br>loses 2 HP.
             if (monstapp == cid){
 
-                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> sends in his wolves to wreak havoc!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> sends in his wolves!</font>");
                 $("#avnow").children().each(function() {
                     if (cardbyid[$(this).attr("id")].what == "unit"){
                         damage($(this).attr("id"), 2);
@@ -244,7 +244,9 @@ monsteff = (cid) => {
                 getpresent();
                 writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> burns your units!</font>");
                 for (let i = 0; i < present.length; i++) {
-                    percdec(present[i], 2);
+                    if (cardbyid[present[i]].perc != undefined){
+                        percdec(present[i], 2);
+                    }
                 }
             }
             break;
@@ -484,7 +486,7 @@ monsteff = (cid) => {
             break;
         case 43:
             // Before Combat:<br>Discard the rightmost Unit in the Fray.
-            writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> lays a trap for your soldiers!</font>");
+            
             getpresent();
             var discff = 0;
             for (let i = 0; i < present.length; i++) {
@@ -492,18 +494,21 @@ monsteff = (cid) => {
                     discff = present[i];
                 }
             }
-            oppeff = true;
-            discfromhand(discff);
-            oppeff = false;
-            if (!canceled){
-                curfray += cardbyid[discff].dmg;
-                cardbyid[discff].assign = 0;
-                if (cardbyid[discff].assist != 0){
-                    cardbyid[cardbyid[discff].assist].assist = 0;
+            if (discff != 0){
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> lays a trap for your soldiers!</font>");
+                oppeff = true;
+                discfromhand(discff);
+                oppeff = false;
+                if (!canceled){
+                    curfray += cardbyid[discff].dmg;
+                    cardbyid[discff].assign = 0;
+                    if (cardbyid[discff].assist != 0){
+                        cardbyid[cardbyid[discff].assist].assist = 0;
+                    }
+                    cardbyid[discff].assist = 0;
+                    cardbyid[discff].place = "#deck";
+                    $(".cardc[id=\""+discff+"\"]").removeClass("attacking");
                 }
-                cardbyid[discff].assist = 0;
-                cardbyid[discff].place = "#deck";
-                $(".cardc[id=\""+discff+"\"]").removeClass("attacking");
             }
             break;
         case 44:

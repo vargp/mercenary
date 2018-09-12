@@ -13,6 +13,8 @@ var numskill = 0;
 var healable = 0;
 var monstapp = 0;
 var forcemon = "none";
+var bossapp = 5;
+var thisboss = 0;
 
 function choosecomm(){
     
@@ -83,16 +85,18 @@ function buycards(){
     var str = '<div class="cardf" id="buydone"><img class="smallcard" src="img/ready.jpg"></div>';
     $("#game").append(str);
     
-    if (battlenum == 2){
+    if (battlenum == bossapp){
         setTimeout(function(){
             writelog("<br><font color=\"red\">The Enemy Boss is revealed!</font>");
             generate(8, "#info");
             writelog("<br>It's <card id=\"" + hanylapvan + "\">" + cardbyid[hanylapvan].title + "</card>!");
-        }, 1000);
+            thisboss = hanylapvan;
+        }, 300);
     }
     
     if (battlenum > 2){
         generate(8, "#info");
+        thisboss = hanylapvan;
     }
     
     showcard(RecNum);
@@ -276,7 +280,7 @@ function regions(){
         console.log("basicfame: "+basicfame);
         basicfame += cardbyid[hanylapvan].fmod;
         console.log("after fmod: "+basicfame);
-        reg[i] = cardbyid[hanylapvan].abnum;
+        voltreg[i] = cardbyid[hanylapvan].abnum;
         recruit = 7;
         generate (5, battles[i]);
         cardbyid[hanylapvan].montype = Math.floor((Math.random() * 4) + 1);
@@ -370,14 +374,20 @@ function mongen(){
     forcemon = "none";
     trigger(28);
     
-	if ((!secmon) && (thirmon)){
+    if ($("#enc2").children().length > 0){
+        if ((cardbyid[$("#enc2").children()[0].id].type == "monst") && (forcemon != "none")){
             secmon = true;
-            thirmon = false;
-            console.log("csak harmadik ne legyen, akkor inkább csak második legyen.");
-	}
+        }
+    }
+    
+    if ((!secmon) && (thirmon)){
+        secmon = true;
+        thirmon = false;
+        console.log("csak harmadik ne legyen, akkor inkább csak második legyen.");
+    }
 	
     // second panel
-	    
+    
     
     if (($("#enc2").children().length == 0) || ((cardbyid[$("#enc2").children()[0].id].type != "monst") && (secmon))){
         if (secmon){
@@ -394,8 +404,6 @@ function mongen(){
     
         
     // third panel
-    
-    forcemon = "none";
     
     
     if (($("#enc3").children().length == 0) || (cardbyid[$("#enc3").children()[0].id].type != "monst")){
@@ -426,6 +434,8 @@ function mongen(){
             }
         }
     }
+    
+    forcemon = "none";
 	
     if ((cardbyid[enemies[2].children()[0].id].type == "fray") && (cardbyid[enemies[3].children()[0].id].type == "fray")){
         $("#enc3").empty();
@@ -466,6 +476,7 @@ newmon = (where) => {
     
     if (forcemon != "none"){
         getthis = forcemon;
+        forcemon = "none";
     }
     
     var monlen = en.length-1;

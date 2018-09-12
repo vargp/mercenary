@@ -17,7 +17,7 @@ uniteff = (cid) => {
             // When discarded from your hand:<br>Deal all enemies 3 Damage.
             if ((discthis == cid) && (handdisc)){
                 var damcount = 0;
-                writelog("<br><font color=\"orchid\">When Discarded: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses her special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> cuts throats from the darkness!</font>");
                 for (let i = 1; i < 4; i++) {
                     if ((cardbyid[enemies[i].children()[0].id].type == "monst") && (cardbyid[enemies[i].children()[0].id].hp > 0)){
                         damcount ++;
@@ -34,7 +34,7 @@ uniteff = (cid) => {
             // After Attacking:<br>If he killed his enemy,<br>he regains 5 Health.
             if ((attacked == cid) && (cardbyid[cardbyid[cid].assign].hp <= 0)){
                 
-                writelog("<br><font color=\"orchid\">After Attacking: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses his special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> prays for his opponent's soul.</font>");
                 heal(cid, 5);
                 writelog("<br>He regains "+actheal+" Health.");
                 
@@ -44,7 +44,7 @@ uniteff = (cid) => {
             // After Combat:<br>If her enemy is still alive,<br>she deals 3 damage to it
             if ((cardbyid[cardbyid[cid].assign].type == "monst") && (cardbyid[cardbyid[cid].assign].hp > 0)){
                 
-                writelog("<br><font color=\"orchid\">After Combat: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses her special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> freezes her opponent!</font>");
                 
                 damage (cardbyid[cid].assign, 3);
                 
@@ -62,7 +62,7 @@ uniteff = (cid) => {
             // After Attacking:<br>Gain 2 Gold.
             if (attacked == cid){
                 
-                writelog("<br><font color=\"orchid\">After Attacking: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses her special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> finds valuable loot!</font>");
                 gold += 2;
                 writelog("<br>You gain 2 Gold.");
             }
@@ -71,7 +71,7 @@ uniteff = (cid) => {
             // In the Fray:<br>He gives you +2 Battlescore
             if (cardbyid[cardbyid[cid].assign].type == "fray"){
                 
-                writelog("<br><font color=\"orchid\">In the Fray: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses his special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> rallies your troops!</font>");
                 bscorechange(2);
                 
             }
@@ -80,7 +80,7 @@ uniteff = (cid) => {
             // After Combat:<br>If she was fighting an Enemy,<br>she and her assisting Unit<br>regains 2 Health
             if (cardbyid[cardbyid[cid].assign].type == "monst"){
                 
-                writelog("<br><font color=\"orchid\">After Combat: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses her special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses her healing powers!</font>");
                 heal(cid, 2);
                 heal(cardbyid[cid].assist, 2);
                 
@@ -96,7 +96,7 @@ uniteff = (cid) => {
         case 10:
             // At the Healer:<br>Increase the Healer's Health restoring power by 1 for the rest of this battle
             if (healed == cid){
-                writelog("<br><font color=\"orchid\">At the Healer: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses her special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> makes the healer stronger!</font>");
                 healval[battlenum] ++;
                 writelog("<br>The Healer's healing power has gone up to "+healval[battlenum]+".");
             }
@@ -105,7 +105,7 @@ uniteff = (cid) => {
             // Before Combat:<br>The Enemy he's assigned to<br>loses 2 Health.
             if (cardbyid[cardbyid[cid].assign].type == "monst"){
                 
-                writelog("<br><font color=\"orchid\">Before Combat: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses his special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> casts magic missiles!</font>");
                 
                 damage (cardbyid[cid].assign, 2);
                 
@@ -115,7 +115,7 @@ uniteff = (cid) => {
             // Before Combat:<br>She gains +2 DMG for the<br>duration of this battle if assigned to<br>an Enemy on her own.
             if ((cardbyid[cardbyid[cid].assign].type == "monst") && (cardbyid[cid].assist == 0)){
                 
-                writelog("<br><font color=\"orchid\">Before Combat: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses her special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> becomes stronger alone!</font>");
                 cardbyid[cid].dmg += 2;
                 writelog("<br>Her DMG is now "+cardbyid[cid].dmg+".");
                 
@@ -132,13 +132,13 @@ uniteff = (cid) => {
                 }
             });
             if (hasada){
-                writelog("<br><font color=\"orchid\">Before Combat: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses her special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> prevents misfortune!</font>");
             }
             break;
         case 14:
             // At the Healer:<br>Place a current Terrain Advantage<br>into your hand.
             if ((cardbyid[cardbyid[cid].assign].type == "heal") && (enemies[fight].children()[attack].id == cid)) {
-                writelog("<br><font color=\"orchid\">At the Healer: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses her special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> guides you through the terrain!</font>");
                 terrada(true);
                 $("#avnow").append($(".cardc[id=\""+hanylapvan+"\"]"));
             }
@@ -147,7 +147,7 @@ uniteff = (cid) => {
             // When discarded from your hand:<br>Add an Ardent Recruit to your deck for the duration of this Battle.
             if ((discthis == cid) && (handdisc)){
                 
-                writelog("<br><font color=\"orchid\">When Discarded: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses his special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> brings reinforcements!</font>");
                 recruit = 1;
                 generate (1, "#deck");
                 recruit = 0;
@@ -159,7 +159,7 @@ uniteff = (cid) => {
             // Before Combat:<br>Lower this enemy's DMG by 1
             if (cardbyid[cardbyid[cid].assign].type == "monst"){
                
-                writelog("<br><font color=\"orchid\">Before Combat: <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> uses his special ability!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> weakens his opponent!</font>");
                 writelog("<br><card id=\"" + cardbyid[cid].assign + "\">" + cardbyid[cardbyid[cid].assign].title + "</card> loses 1 DMG.");
                 cardbyid[cardbyid[cid].assign].dmg -= 1;
                 if (cardbyid[cardbyid[cid].assign].dmg < 0){
@@ -170,7 +170,7 @@ uniteff = (cid) => {
         case 17:
             // In the Fray: If you've gained Battlescore in the Fray this turn, he gains +2 DMG for the rest of this Battle
             if ((cardbyid[cardbyid[cid].assign].type == "fray") && (curfray < 0)){
-                writelog("<br><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card><font color=\"orchid\"> gains +2 DMG.</font>");
+                writelog("<br><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card><font color=\"orchid\"> becomes stronger in the Fray!</font>");
                 cardbyid[cid].dmg += 2;
             }
             break;
@@ -233,8 +233,8 @@ uniteff = (cid) => {
             }
             break;
         case 26:
-            // If he has an assisting Unit, the Enemy he's assigned to doesn't fight your Commander
-            if ((attacked == cid) && (cardbyid[cid].assist != 0)){
+            // If he has no assisting Unit, the Enemy he's assigned to doesn't fight your Commander
+            if ((attacked == cid) && (cardbyid[cid].assist == 0)){
                 writelog("<br><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> <font color=\"orchid\"> lures the Enemy away from your Commander.</font>");
                 commfight = false;
             }
@@ -258,7 +258,7 @@ uniteff = (cid) => {
             if (justdrawn == cid){
                 setTimeout(function(){
                     writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> brings an aide!</font>");
-                    writelog("<br>You draw <card id=\"" + $("#deck").children()[0].id + "\">" + cardbyid[$("#deck").children()[0].id].title + "</card>.");
+                    
                     drawcard($("#deck").children()[0].id);
                 }, 50);
             }
@@ -443,16 +443,16 @@ uniteff = (cid) => {
             break;
         case 47:
             // After Combat<br>Units in your Hand regain 2 HP.
-            var voltunit = false;
+            writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> praises the gods!</font>");
             $("#avnow").children(".cardc").each(function() {
                 if (cardbyid[$(this).attr("id")].what=="unit"){
                     heal ($(this).attr("id"), 2);
                     voltunit = true;
                 }
             });
-            if (voltunit){
-                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> praises the gods!</font>");
-            }
+            
+            
+            
             break;
         case 48:
             // Before Battle:<br>He gains +6 HP for this Battle if the Battlefield is a Plains Region.
