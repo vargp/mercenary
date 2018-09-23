@@ -15,6 +15,12 @@ var voltreg = [];
 voltreg[1] = 0;
 voltreg[2] = 0;
 voltreg[3] = 0;
+var regemon = [];
+regemon[1] = 0;
+regemon[2] = 0;
+regemon[3] = 0;
+
+var noblob = false;
 
 var generate = (mit, hova) => {
     
@@ -61,7 +67,7 @@ var generate = (mit, hova) => {
             }
             
             // cheat
-            //numgen = 9;
+            // numgen = 19;
             //testgen++;
             
             drawed = char[numgen];
@@ -76,7 +82,11 @@ var generate = (mit, hova) => {
             numgen = mondraw;
             
             //cheat
-            // numgen = 1;
+            // numgen = 51;
+            
+            if ((noblob) && (numgen == 9)){
+                numgen = 10;
+            }
             
             drawed = en[numgen];            
             cardbyid[hanylapvan].illus = "en";
@@ -96,7 +106,7 @@ var generate = (mit, hova) => {
             sumcard = skill.length-1;
             numgen = Math.floor((Math.random() * sumcard) + 1);
             //cheat
-            //numgen = 25;
+            numgen = 23;
             drawed = skill[numgen];          
             cardbyid[hanylapvan].illus = "sk"; 
             cardbyid[hanylapvan].baseperc = drawed.perc;
@@ -117,10 +127,10 @@ var generate = (mit, hova) => {
             sumcard = reg.length-3;
             do {
                 numgen = Math.floor((Math.random() * sumcard) + 1);
-            } while ((numgen == voltreg[1]) || (numgen == voltreg[2]) || (numgen == voltreg[3]));
+            } while ((reg[numgen].trait == reg[voltreg[1]].trait) || (reg[numgen].trait == reg[voltreg[2]].trait) || (reg[numgen].trait == reg[voltreg[3]].trait));
             
             //cheat
-            //numgen = 2;
+            //numgen = 14;
             if (recruit > 0){
                 numgen = recruit;
             }

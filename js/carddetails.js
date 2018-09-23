@@ -21,15 +21,17 @@ reg[3] = 0;
 
 
 var startcards = [0, 7, 6, 3, 4];
-var secmonchance = [0, 20, 30, 15, 10];
+var secmonchance = [0, 22, 27, 17, 12];
 var thirmonchance = [0, 15, 20, 10, 5];
-var healval = [0, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8];
-var frayval = [0, 8, 8, 8, 10, 10, 12, 12, 14, 14, 16];
-var monplusdmg = [0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4];
-var monplushp = [0, 0, 0, 2, 2, 2, 4, 4, 4, 6, 8];
-var wavesnum = [0, 6, 6, 7, 7, 8, 8, 9, 9, 10];
-var bsbase = [0, 60, 60, 55, 55, 50, 50, 45, 45, 40, 30];
-var goldbase = [0, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140];
+var healval = [0, 4, 4, 5, 5, 6, 6, 7, 8, 8, 8];
+var frayval = [0, 8, 8, 8, 10, 10, 12, 12, 14, 14, 14];
+var monplusdmg = [0, 0, 0, 1, 1, 2, 2, 3, 4, 4, 4];
+var monplushp = [0, -2, -1, 0, 1, 2, 3, 4, 5, 5, 5];
+//var wavesnum = [0, 1, 1, 1, 1, 1, 1, 9, 10, 12];
+var wavesnum = [0, 5, 5, 6, 6, 7, 8, 9, 10, 12, 12];
+var bsbase = [0, 60, 60, 55, 50, 50, 45, 40, 35, 30, 30];
+var goldbase = [0, 50, 65, 80, 95, 110, 125, 140, 160, 180, 666];
+var expplus = [0, 0, 1, 2, 3, 4, 4, 5, 5, 6, 6];
 
 
 
@@ -64,149 +66,150 @@ var goldbase = [0, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140];
  * 27: Battlescore change
  * 28: additional monster
  * 29: blank before when appears
+ * 30: after draw, before keep
  *  
  */
 
 char[1] = {what: "unit", type: "neut", title: "Ardent Recruit", trait: "Basic Unit", dmg: 4, hp: 6, trig: 0, text: "No ability.", perc: 40, cost: 10};
-char[2] = {what: "unit", type: "neut", title: "Elven Assassin", trait: "Rogue Hero", dmg: 6, hp: 12, trig: 10, text: "When discarded from your hand:<br>Deal all enemies 3 Damage.", perc: 20, cost: 20};
-char[3] = {what: "unit", type: "neut", title: "Solemn Soulguide", trait: "Cleric Hero", dmg: 6, hp: 12, trig: 5, text: "After Attacking:<br>If he killed his enemy,<br>he regains 5 Health.", perc: 30, cost: 20};
-char[4] = {what: "unit", type: "neut", title: "Ice Witch", trait: "Mage Hero", dmg: 6, hp: 12, trig: 6, text: "After Combat:<br>If her enemy is still alive,<br>she deals 3 damage to it.", perc: 25, cost: 20};
-char[5] = {what: "unit", type: "neut", title: "Defender of Wisdom", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 12, text: "While Present:<br>Opponents can't remove your cards from the game.", perc: 20, cost: 20};
-char[6] = {what: "unit", type: "neut", title: "Raven Thief", trait: "Rogue Hero", dmg: 6, hp: 12, trig: 5, text: "After Attacking:<br>Gain 2 Gold.", perc: 25, cost: 20};
-char[7] = {what: "unit", type: "neut", title: "Stalwart Bannerman", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 7, text: "In the Fray:<br>He gives you +2 Battlescore.", perc: 25, cost: 20};
-char[8] = {what: "unit", type: "neut", title: "Holy Knight", trait: "Cleric Hero", dmg: 6, hp: 12, trig: 6, text: "After Combat:<br>If she was fighting an Enemy,<br>she and her assisting Unit<br>regains 2 Health.", perc: 20, cost: 20};
-char[9] = {what: "unit", type: "neut", title: "Stoic Partisan", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 14, text: "Can only lose Health<br>when attacked in Combat.", perc: 20, cost: 20};
-char[10] = {what: "unit", type: "neut", title: "Divine Harbinger", trait: "Cleric Hero", dmg: 6, hp: 8, trig: 8, text: "At the Healer:<br>Increase the Healer's Health restoring power by 1 for the rest of this battle.", perc: 25, cost: 20};
-char[11] = {what: "unit", type: "neut", title: "Ruthless Sorcerer", trait: "Mage Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>The Enemy he's assigned to<br>loses 2 Health.", perc: 25, cost: 20};
-char[12] = {what: "unit", type: "neut", title: "Valiant Pilgrim", trait: "Ranger Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>He gains +2 DMG for the<br>rest of this battle if assigned to<br>an Enemy on his own.", perc: 25, cost: 20};
-char[13] = {what: "unit", type: "neut", title: "Briar Warlock", trait: "Mage Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>If there are any Disadvantage cards in your hand, remove them from your deck.", perc: 15, cost: 20};
-char[14] = {what: "unit", type: "neut", title: "Forest Sentinel", trait: "Ranger Hero", dmg: 6, hp: 12, trig: 8, text: "At the Healer:<br>Place a current Terrain Advantage<br>into your hand.", perc: 25, cost: 20};
-char[15] = {what: "unit", type: "neut", title: "Fearless Messenger", trait: "Ranger Hero", dmg: 6, hp: 12, trig: 10, text: "When discarded from your hand:<br>Add an Ardent Recruit to your deck for the duration of this Battle.", perc: 25, cost: 20};
-char[16] = {what: "unit", type: "neut", title: "Skyward Templar", trait: "Cleric Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>Lower this enemy's DMG by 1.", perc: 20, cost: 20};
-char[17] = {what: "unit", type: "neut", title: "Guardian of Light", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 7, text: "In the Fray:<br>If you've gained Battlescore in the Fray this turn, he gains +2 DMG for the rest of this Battle.", perc: 20, cost: 20};
-char[18] = {what: "unit", type: "neut", title: "War Elephant", trait: "Support Unit", dmg: 6, hp: 20, trig: 14, text: "It takes any damage instead<br>of its assisting unit too.", perc: 30, cost: 20};
-char[19] = {what: "unit", type: "neut", title: "Sly Rascal", trait: "Rogue Hero", dmg: 6, hp: 12, trig: 17, text: "When he gains Experience:<br>He gains +1 permanent Health ", perc: 30, cost: 20};
-char[20] = {what: "unit", type: "neut", title: "Whirlwind Warrior", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 14, text: "She deals +3 Damage against<br>Orc Enemies.", perc: 30, cost: 20};
-char[21] = {what: "unit", type: "neut", title: "Brave Pathfinder", trait: "Ranger Hero", dmg: 6, hp: 12, trig: 14, text: "She deals +3 Damage against<br>Beast Enemies.", perc: 30, cost: 20};
-char[22] = {what: "unit", type: "neut", title: "Celestial Pioneer", trait: "Cleric Hero", dmg: 6, hp: 12, trig: 14, text: "He deals +3 Damage against<br>Undead Enemies.", perc: 30, cost: 20};
-char[23] = {what: "unit", type: "neut", title: "Thunder Wielder", trait: "Mage Hero", dmg: 6, hp: 12, trig: 14, text: "He deals +3 Damage against<br>Demon Enemies.", perc: 30, cost: 20};
-char[24] = {what: "unit", type: "neut", title: "Eager Burglar", trait: "Rogue Hero", dmg: 6, hp: 12, trig: 14, text: "She deals +3 Damage against Enemies if she has Experience.", perc: 30, cost: 20};
-char[25] = {what: "unit", type: "neut", title: "Altruist Spellbender", trait: "Cleric Hero", dmg: 6, hp: 12, trig: 8, text: "At the Healer:<br>Instead of healing her, heal your Commander for 4 HP.", perc: 15, cost: 20};
-char[26] = {what: "unit", type: "neut", title: "Radiant Lightbearer", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 5, text: "If he's assigned to an Enemy alone,<br>it doesn't fight your Commander<br>this round.", perc: 25, cost: 20};
-char[27] = {what: "unit", type: "neut", title: "Midnight Bandit", trait: "Rogue Hero", dmg: 6, hp: 12, trig: 10, text: "While Present:<br>Negative effects can't discard your cards.", perc: 20, cost: 20};
-char[28] = {what: "unit", type: "neut", title: "Humble Darter", trait: "Ranger Hero", dmg: 6, hp: 12, trig: 5, text: "After her assisting Unit attacks,<br>deal 4 Damage to this Enemy.", perc: 15, cost: 20};
-char[29] = {what: "unit", type: "neut", title: "Graceful Noble", trait: "Mage Hero", dmg: 6, hp: 12, trig: 9, text: "When you draw her:<br>Draw the first card from your deck.", perc: 15, cost: 20};
-char[30] = {what: "unit", type: "neut", title: "Heavenly Guide", trait: "Cleric Hero", dmg: 6, hp: 2, trig: 22, text: "When she dies:<br>Turn your current Region into \"Blessed Fields\".", perc: 25, cost: 20};
-char[31] = {what: "unit", type: "neut", title: "Pirate Captain", trait: "Rogue Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>Blank the ability of the non-Leader enemy she's assigned to.", perc: 15, cost: 20};
-char[32] = {what: "unit", type: "neut", title: "Fierce Escort", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 10, text: "When discarded:<br>Put him into your Hand<br>if his HP is above 8.", perc: 25, cost: 20};
-char[33] = {what: "unit", type: "neut", title: "Wizened Scholar", trait: "Mage Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>If he's at the Healer, draw a random Skill card from your deck into your hand.", perc: 20, cost: 20};
-char[34] = {what: "unit", type: "neut", title: "Swift Sharpshooter", trait: "Ranger Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>If she is in your hand, deal the Enemy in the middle slot<br>4 Damage.", perc: 20, cost: 20};
-char[35] = {what: "unit", type: "neut", title: "Scoundrel Agitator", trait: "Rogue Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>Give assisting Unit +5 Speed<br>for the rest of this battle.", perc: 25, cost: 20};
-char[36] = {what: "unit", type: "neut", title: "Wildfire Conjurer", trait: "Mage Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>Deal all Enemies 1 Damage.", perc: 20, cost: 20};
-char[37] = {what: "unit", type: "neut", title: "Cheerful Wanderer", trait: "Ranger Hero", dmg: 6, hp: 12, trig: 9, text: "When you draw her:<br>Give Advantage cards in your deck +5 Speed for the rest of this Battle.", perc: 20, cost: 20};
-char[38] = {what: "unit", type: "neut", title: "Ironclad Paladin", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 14, text: "When he takes damage:<br>He takes one less damage.", perc: 20, cost: 20};
-char[39] = {what: "unit", type: "neut", title: "Brave Shieldmaiden", trait: "Ranger Hero", dmg: 6, hp: 12, trig: 15, text: "When she regains HP during Combat, she regains 2 extra HP.", perc: 20, cost: 20};
-char[40] = {what: "unit", type: "neut", title: "Stealthy Slayer", trait: "Rogue Hero", dmg: 6, hp: 12, trig: 10, text: "When discarded from your hand:<br>She gains +4 DMG for the rest of this Battle.", perc: 20, cost: 20};
-char[41] = {what: "unit", type: "neut", title: "Inspiring Aide", trait: "Cleric Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>Heal her assisting Unit for 4 HP.", perc: 15, cost: 20};
-char[42] = {what: "unit", type: "neut", title: "Cinder Witch", trait: "Mage Hero", dmg: 6, hp: 12, trig: 6, text: "After Combat:<br>Place a \"Hail of Sparks\" Advantage card into your Deck.", perc: 25, cost: 20};
-char[43] = {what: "unit", type: "neut", title: "Gallant Enchanter", trait: "Mage Hero", dmg: 6, hp: 12, trig: 6, text: "After Combat:<br>Give any Units you Keep +1 DMG for the rest of this battle.", perc: 25, cost: 20};
-char[44] = {what: "unit", type: "neut", title: "Ambitious Wildling", trait: "Ranger Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>Deal the Enemy she's assigned to 1 Damage for each Unit in your Hand.", perc: 15, cost: 20};
-char[45] = {what: "unit", type: "neut", title: "Masked Cutthroat", trait: "Rogue Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>If he's in your Hand, deal all<br>Enemies 1 Damage for each Skill<br>in your Hand.", perc: 15, cost: 20};
-char[46] = {what: "unit", type: "neut", title: "Disdainful Barbarian", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>Deal 4 Damage to assigned Enemy if your Battlescore is at least 60.", perc: 15, cost: 20};
-char[47] = {what: "unit", type: "neut", title: "Faithful Duellist", trait: "Cleric Hero", dmg: 6, hp: 12, trig: 6, text: "After Combat:<br>Units in your Hand regain 2 HP.", perc: 15, cost: 20};
-char[48] = {what: "unit", type: "neut", title: "Keeper of Flames", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 18, text: "Before Battle:<br>He gains +6 HP for this Battle if the Battlefield is a Plains Region.", perc: 25, cost: 20};
-char[49] = {what: "unit", type: "neut", title: "Gryphon Rider", trait: "Cleric Hero", dmg: 6, hp: 12, trig: 18, text: "Before Battle:<br>He gains +8 Speed for this Battle<br>if the Battlefield is a Mountain Region.", perc: 25, cost: 20};
-char[50] = {what: "unit", type: "neut", title: "Sage of Nature", trait: "Ranger Hero", dmg: 6, hp: 12, trig: 23, text: "While in your Hand:<br>Disadvantage cards can't be added<br>to your deck if the Battlefield is a Woodlands Region.", perc: 25, cost: 20};
-char[51] = {what: "unit", type: "neut", title: "Cunning Spy", trait: "Rogue Hero", dmg: 6, hp: 12, trig: 19, text: "At round start:<br>Place a random Skill into your Hand for this battle if the Battlefield is a Fortress Region.", perc: 25, cost: 20};
-char[52] = {what: "unit", type: "neut", title: "Poison Wizard", trait: "Mage Hero", dmg: 6, hp: 12, trig: 18, text: "Before Battle:<br>She gains +2 Damage for this Battle<br>if the Battlefield is a Swamp Region.", perc: 25, cost: 20};
-char[53] = {what: "unit", type: "neut", title: "Purifier of Spirit", trait: "Cleric Hero", dmg: 6, hp: 12, trig: 15, text: "While Present:<br>Enemies can't regain Health.", perc: 25, cost: 20};
-char[54] = {what: "unit", type: "neut", title: "Shimmering Champion", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 24, text: "While Present:<br>Enemies can't increase their DMG.", perc: 25, cost: 20};
-char[55] = {what: "unit", type: "neut", title: "Steadfast Archmage", trait: "Mage Hero", dmg: 6, hp: 12, trig: 25, text: "While Present:<br>The Speed of your cards can't be decreased.", perc: 20, cost: 20};
-char[56] = {what: "unit", type: "neut", title: "Soldier of Fortune", trait: "Rogue Hero", dmg: 6, hp: 12, trig: 14, text: "While Present:<br>Your Commander can only lose Health when attacked in Combat.", perc: 20, cost: 20};
-char[57] = {what: "unit", type: "neut", title: "Fjord Rover", trait: "Ranger Hero", dmg: 6, hp: 12, trig: 26, text: "While Present:<br>The DMG of your Units can't be decreased.", perc: 25, cost: 20};
+char[2] = {what: "unit", type: "neut", title: "Elven Assassin", trait: "Rogue Hero", dmg: 3, hp: 10, trig: 10, text: "When discarded from your hand:<br>Deal all enemies 3 Damage.", perc: 20, cost: 20};
+char[3] = {what: "unit", type: "neut", title: "Solemn Soulguide", trait: "Cleric Hero", dmg: 5, hp: 12, trig: 5, text: "After Attacking:<br>If he killed his enemy,<br>he regains 5 Health.", perc: 30, cost: 20};
+char[4] = {what: "unit", type: "neut", title: "Ice Witch", trait: "Mage Hero", dmg: 4, hp: 10, trig: 6, text: "After Combat:<br>If her enemy is still alive,<br>she deals 3 damage to it.", perc: 25, cost: 15};
+char[5] = {what: "unit", type: "neut", title: "Defender of Wisdom", trait: "Warrior Hero", dmg: 6, hp: 10, trig: 12, text: "While Present:<br>Opponents can't remove your cards from the game.", perc: 20, cost: 20};
+char[6] = {what: "unit", type: "neut", title: "Raven Thief", trait: "Rogue Hero", dmg: 3, hp: 14, trig: 5, text: "After Attacking:<br>Gain 4 Gold.", perc: 25, cost: 15};
+char[7] = {what: "unit", type: "neut", title: "Stalwart Bannerman", trait: "Warrior Hero", dmg: 5, hp: 14, trig: 7, text: "In the Fray:<br>He gives you +2 Battlescore.", perc: 25, cost: 20};
+char[8] = {what: "unit", type: "neut", title: "Holy Knight", trait: "Cleric Hero", dmg: 3, hp: 12, trig: 6, text: "After Combat:<br>If she was fighting an Enemy,<br>she and her assisting Unit<br>regains 2 Health.", perc: 20, cost: 15};
+char[9] = {what: "unit", type: "neut", title: "Stoic Partisan", trait: "Warrior Hero", dmg: 6, hp: 10, trig: 14, text: "Can only lose Health<br>when attacked in Combat.", perc: 20, cost: 20};
+char[10] = {what: "unit", type: "neut", title: "Divine Harbinger", trait: "Cleric Hero", dmg: 4, hp: 10, trig: 8, text: "At the Healer:<br>Increase the Healer's Health restoring power by 1 for the rest of this battle.", perc: 25, cost: 15};
+char[11] = {what: "unit", type: "neut", title: "Ruthless Sorcerer", trait: "Mage Hero", dmg: 4, hp: 10, trig: 1, text: "Before Combat:<br>The Enemy he's assigned to<br>loses 2 Health.", perc: 25, cost: 20};
+char[12] = {what: "unit", type: "neut", title: "Valiant Pilgrim", trait: "Ranger Hero", dmg: 4, hp: 12, trig: 1, text: "Before Combat:<br>He gains +2 DMG for the<br>rest of this battle if assigned to<br>an Enemy on his own.", perc: 25, cost: 15};
+char[13] = {what: "unit", type: "neut", title: "Briar Warlock", trait: "Mage Hero", dmg: 3, hp: 14, trig: 8, text: "At the Healer:<br>If there are any Disadvantage cards in your hand, remove them from your deck.", perc: 15, cost: 15};
+char[14] = {what: "unit", type: "neut", title: "Forest Sentinel", trait: "Ranger Hero", dmg: 5, hp: 12, trig: 8, text: "At the Healer:<br>Place a current <ccheat id=\"0\">Terrain Advantage</ccheat><br>into your hand.", perc: 25, cost: 20};
+char[15] = {what: "unit", type: "neut", title: "Fearless Messenger", trait: "Ranger Hero", dmg: 4, hp: 14, trig: 10, text: "When discarded from your hand:<br>Add an Ardent Recruit to your deck for the duration of this Battle.", perc: 25, cost: 15};
+char[16] = {what: "unit", type: "neut", title: "Skyward Templar", trait: "Cleric Hero", dmg: 4, hp: 10, trig: 1, text: "Before Combat:<br>Lower this enemy's DMG by 1.", perc: 20, cost: 15};
+char[17] = {what: "unit", type: "neut", title: "Guardian of Light", trait: "Warrior Hero", dmg: 4, hp: 14, trig: 7, text: "In the Fray:<br>If you've gained Battlescore in the Fray this turn, he gains +2 DMG for the rest of this Battle.", perc: 20, cost: 15};
+char[18] = {what: "unit", type: "neut", title: "War Elephant", trait: "Support Unit", dmg: 3, hp: 16, trig: 14, text: "It takes any damage instead<br>of its assisting unit too.", perc: 30, cost: 15};
+char[19] = {what: "unit", type: "neut", title: "Sly Rascal", trait: "Rogue Hero", dmg: 5, hp: 10, trig: 17, text: "When he gains Experience:<br>He gains +1 permanent Health ", perc: 30, cost: 20};
+char[20] = {what: "unit", type: "neut", title: "Whirlwind Warrior", trait: "Warrior Hero", dmg: 5, hp: 12, trig: 14, text: "She deals +3 Damage against<br>Orc Enemies.", perc: 30, cost: 20};
+char[21] = {what: "unit", type: "neut", title: "Brave Pathfinder", trait: "Ranger Hero", dmg: 5, hp: 12, trig: 14, text: "She deals +3 Damage against<br>Beast Enemies.", perc: 30, cost: 20};
+char[22] = {what: "unit", type: "neut", title: "Celestial Pioneer", trait: "Cleric Hero", dmg: 5, hp: 12, trig: 14, text: "He deals +3 Damage against<br>Undead Enemies.", perc: 30, cost: 20};
+char[23] = {what: "unit", type: "neut", title: "Thunder Wielder", trait: "Mage Hero", dmg: 5, hp: 12, trig: 14, text: "He deals +3 Damage against<br>Demon Enemies.", perc: 30, cost: 20};
+char[24] = {what: "unit", type: "neut", title: "Eager Burglar", trait: "Rogue Hero", dmg: 5, hp: 12, trig: 14, text: "She deals +3 Damage against Enemies if she has Experience.", perc: 30, cost: 20};
+char[25] = {what: "unit", type: "neut", title: "Altruist Spellbender", trait: "Cleric Hero", dmg: 3, hp: 14, trig: 8, text: "At the Healer:<br>Instead of healing her, heal your Commander for 4 HP.", perc: 15, cost: 20};
+char[26] = {what: "unit", type: "neut", title: "Radiant Lightbearer", trait: "Warrior Hero", dmg: 6, hp: 10, trig: 5, text: "If he's assigned to an Enemy alone,<br>it doesn't fight your Commander<br>this round.", perc: 25, cost: 25};
+char[27] = {what: "unit", type: "neut", title: "Midnight Bandit", trait: "Rogue Hero", dmg: 5, hp: 12, trig: 10, text: "While Present:<br>Negative effects can't discard your cards.", perc: 20, cost: 20};
+char[28] = {what: "unit", type: "neut", title: "Humble Darter", trait: "Ranger Hero", dmg: 4, hp: 14, trig: 5, text: "After her assisting Unit attacks,<br>deal 4 Damage to this Enemy.", perc: 15, cost: 20};
+char[29] = {what: "unit", type: "neut", title: "Graceful Noble", trait: "Mage Hero", dmg: 3, hp: 14, trig: 9, text: "When you draw her:<br>Draw the first card from your deck.", perc: 15, cost: 20};
+char[30] = {what: "unit", type: "neut", title: "Heavenly Guide", trait: "Cleric Hero", dmg: 6, hp: 8, trig: 22, text: "When she dies:<br>Turn your current Region into <ccheat id=\"-2\">\"Blessed Fields\"</ccheat>.", perc: 25, cost: 20};
+char[31] = {what: "unit", type: "neut", title: "Pirate Captain", trait: "Rogue Hero", dmg: 3, hp: 14, trig: 4, text: "Before Attacking:<br>Blank the ability of the non-Leader enemy she's assigned to.", perc: 15, cost: 15};
+char[32] = {what: "unit", type: "neut", title: "Fierce Escort", trait: "Warrior Hero", dmg: 5, hp: 14, trig: 10, text: "When discarded:<br>Put him into your Hand<br>if his HP is above 8.", perc: 25, cost: 20};
+char[33] = {what: "unit", type: "neut", title: "Wizened Scholar", trait: "Mage Hero", dmg: 5, hp: 12, trig: 1, text: "Before Combat:<br>If he's at the Healer, draw a random Skill card from your deck into your hand.", perc: 20, cost: 20};
+char[34] = {what: "unit", type: "neut", title: "Swift Sharpshooter", trait: "Ranger Hero", dmg: 4, hp: 14, trig: 1, text: "Before Combat:<br>If she is in your hand, deal the Enemy in the middle slot<br>4 Damage.", perc: 20, cost: 20};
+char[35] = {what: "unit", type: "neut", title: "Scoundrel Agitator", trait: "Rogue Hero", dmg: 5, hp: 12, trig: 1, text: "Before Combat:<br>Give assisting Unit +5 Speed<br>for the rest of this battle.", perc: 25, cost: 20};
+char[36] = {what: "unit", type: "neut", title: "Wildfire Conjurer", trait: "Mage Hero", dmg: 6, hp: 10, trig: 1, text: "Before Combat:<br>Deal all Enemies 1 Damage.", perc: 20, cost: 25};
+char[37] = {what: "unit", type: "neut", title: "Cheerful Wanderer", trait: "Ranger Hero", dmg: 5, hp: 14, trig: 9, text: "When you draw her:<br>Give Advantage cards in your deck +5 Speed for the rest of this Battle.", perc: 20, cost: 20};
+char[38] = {what: "unit", type: "neut", title: "Ironclad Paladin", trait: "Warrior Hero", dmg: 6, hp: 10, trig: 14, text: "When he takes damage:<br>He takes one less damage.", perc: 20, cost: 25};
+char[39] = {what: "unit", type: "neut", title: "Brave Shieldmaiden", trait: "Ranger Hero", dmg: 5, hp: 12, trig: 15, text: "When she regains HP during Combat, she regains 2 extra HP.", perc: 20, cost: 20};
+char[40] = {what: "unit", type: "neut", title: "Stealthy Slayer", trait: "Rogue Hero", dmg: 4, hp: 14, trig: 10, text: "When discarded from your hand:<br>She gains +4 DMG for the rest of this Battle.", perc: 20, cost: 20};
+char[41] = {what: "unit", type: "neut", title: "Inspiring Aide", trait: "Cleric Hero", dmg: 3, hp: 14, trig: 1, text: "Before Combat:<br>Heal her assisting Unit for 4 HP.", perc: 15, cost: 20};
+char[42] = {what: "unit", type: "neut", title: "Cinder Witch", trait: "Mage Hero", dmg: 5, hp: 12, trig: 6, text: "After Combat:<br>Place a <ccheat id=\"11\">\"Hail of Sparks\"</ccheat> Advantage card into your Deck.", perc: 20, cost: 20};
+char[43] = {what: "unit", type: "neut", title: "Gallant Enchanter", trait: "Mage Hero", dmg: 5, hp: 12, trig: 6, text: "After Combat:<br>Give any Units you Keep +1 DMG for the rest of this battle.", perc: 25, cost: 20};
+char[44] = {what: "unit", type: "neut", title: "Ambitious Wildling", trait: "Ranger Hero", dmg: 5, hp: 14, trig: 1, text: "Before Combat:<br>Deal the Enemy she's assigned to 1 Damage for each Unit in your Hand.", perc: 15, cost: 20};
+char[45] = {what: "unit", type: "neut", title: "Masked Cutthroat", trait: "Rogue Hero", dmg: 4, hp: 12, trig: 1, text: "Before Combat:<br>If he's in your Hand, deal all<br>Enemies 1 Damage for each Skill<br>in your Hand.", perc: 15, cost: 15};
+char[46] = {what: "unit", type: "neut", title: "Disdainful Barbarian", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>Deal 4 Damage to assigned Enemy if your Battlescore is at least 60.", perc: 15, cost: 25};
+char[47] = {what: "unit", type: "neut", title: "Faithful Duellist", trait: "Cleric Hero", dmg: 5, hp: 12, trig: 6, text: "After Combat:<br>Units in your Hand regain 2 HP.", perc: 15, cost: 20};
+char[48] = {what: "unit", type: "neut", title: "Keeper of Flames", trait: "Warrior Hero", dmg: 7, hp: 10, trig: 18, text: "Before Battle:<br>He gains +6 HP for this Battle if the Battlefield is a Plains Region.", perc: 25, cost: 25};
+char[49] = {what: "unit", type: "neut", title: "Gryphon Rider", trait: "Cleric Hero", dmg: 7, hp: 10, trig: 18, text: "Before Battle:<br>He gains +8 Speed for this Battle<br>if the Battlefield is a Mountain Region.", perc: 25, cost: 25};
+char[50] = {what: "unit", type: "neut", title: "Sage of Nature", trait: "Ranger Hero", dmg: 7, hp: 10, trig: 23, text: "While in your Hand:<br>Disadvantage cards can't be added<br>to your deck if the Battlefield is a Woodlands Region.", perc: 25, cost: 25};
+char[51] = {what: "unit", type: "neut", title: "Cunning Spy", trait: "Rogue Hero", dmg: 7, hp: 10, trig: 19, text: "At round start:<br>Place a random Skill into your Hand for this battle if the Battlefield is a Fortress Region.", perc: 25, cost: 25};
+char[52] = {what: "unit", type: "neut", title: "Poison Wizard", trait: "Mage Hero", dmg: 6, hp: 14, trig: 18, text: "Before Battle:<br>She gains +2 Damage for this Battle<br>if the Battlefield is a Swamp Region.", perc: 25, cost: 25};
+char[53] = {what: "unit", type: "neut", title: "Purifier of Spirit", trait: "Cleric Hero", dmg: 6, hp: 12, trig: 15, text: "While Present:<br>Enemies can't regain Health.", perc: 25, cost: 25};
+char[54] = {what: "unit", type: "neut", title: "Shimmering Champion", trait: "Warrior Hero", dmg: 6, hp: 12, trig: 24, text: "While Present:<br>Enemies can't increase their DMG.", perc: 25, cost: 25};
+char[55] = {what: "unit", type: "neut", title: "Steadfast Archmage", trait: "Mage Hero", dmg: 7, hp: 10, trig: 25, text: "While Present:<br>The Speed of your cards can't be decreased.", perc: 20, cost: 25};
+char[56] = {what: "unit", type: "neut", title: "Soldier of Fortune", trait: "Rogue Hero", dmg: 6, hp: 12, trig: 14, text: "While Present:<br>Your Commander can only lose Health when attacked in Combat.", perc: 20, cost: 25};
+char[57] = {what: "unit", type: "neut", title: "Fjord Rover", trait: "Ranger Hero", dmg: 6, hp: 12, trig: 26, text: "While Present:<br>The DMG of your Units can't be decreased.", perc: 25, cost: 25};
 
 // mon / hero regio: type marad de bef com: put a random ada into hand
 
-en[1] = {what: "monst", type: "monst", title: "Goblin Shaman", trait: "Orc Enemy", dmg: 2, hp: 10, trig: 6, text: "After Combat:<br>Remove a random Skill from your deck for the rest of this battle." };
-en[2] = {what: "monst", type: "monst", title: "Orc Chieftain", trait: "Orc Enemy", dmg: 3, hp: 14, trig: 3, text: "After Attacking:<br>Remove all Experience from<br>the attacked unit." };
-en[3] = {what: "monst", type: "monst", title: "Troll Champion", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 3, text: "After Attacking:<br>If attacked unit's Health is below 5,<br>it can't retaliate." };
-en[4] = {what: "monst", type: "monst", title: "Wolfpack Howler", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Every Unit in your Hand<br>loses 2 HP." };
-en[5] = {what: "monst", type: "monst", title: "Raider Horde", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 6, text: "After Combat:<br>Increase the number of Waves in this Battle by 1." };
-en[6] = {what: "monst", type: "monst", title: "Duskling Rogue", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Each Unit assigned to him<br>loses 3 HP." };
-en[7] = {what: "monst", type: "monst", title: "Tribal Spearman", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 3, text: "After Attacking:<br>Deals 2 additional DMG to the second Unit assigned to him." };
-en[8] = {what: "monst", type: "monst", title: "Deadly Wardancer", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Gains +2 DMG for each Unit assigned to her." };
-en[9] = {what: "monst", type: "monst", title: "Blob Dragon", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Place a new Enemy into the<br>third slot." };
-en[10] = {what: "monst", type: "monst", title: "Ghastly Werewolf", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Discard the first card from your hand." };
-en[11] = {what: "monst", type: "monst", title: "Werebeast Brawler", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 5, text: "After first unit retaliates:<br>If it has 8 or more Health left,<br>discard the second unit<br>assigned to it." };
-en[12] = {what: "monst", type: "monst", title: "Haunting Banshee", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 22, text: "When she dies:<br>She immediately reappears in the next slot, replacing what's there already. (Doesn't work in the rightmost slot.)" };
-en[13] = {what: "monst", type: "monst", title: "Wily Succubus", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Remove a random unit from your deck for the duration of this battle." };
-en[14] = {what: "monst", type: "monst", title: "Smirking Hellspawn", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Exchange a random unit from<br>your hand with the second unit<br>assigned to him." };
-en[15] = {what: "monst", type: "monst", title: "Hellish Brute", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>The Monsters gain 8 Battlescore." };
-en[16] = {what: "monst", type: "monst", title: "Lava Elemental", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 5, text: "After a Unit retaliates against it:<br>That Unit loses 2 HP and 1 DMG." };
-en[17] = {what: "monst", type: "monst", title: "Vile Gargoyle", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 3, text: "After Attacking:<br>The Monsters gain 3 Battlescore." };
-en[18] = {what: "monst", type: "monst", title: "Magma Dragon", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Decrease the Speed of all Units by 4 for the rest of this battle." };
-en[19] = {what: "monst", type: "monst", title: "Cinder Demon", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 3, text: "After Attacking:<br>Decrease the Speed of all present Units by 2 for the rest of this battle." };
-en[20] = {what: "monst", type: "monst", title: "Souleater Vixen", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 6, text: "After Combat:<br>Remove the leftmost Unit assigned to her from the game for the rest of this battle." };
-en[21] = {what: "monst", type: "monst", title: "Fiery Hobgoblin", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Remove the Skills in your Hand for the rest of this battle." };
-en[22] = {what: "monst", type: "monst", title: "Raging Archfiend", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 3, text: "After Attacking:<br>If the Monsters have more Battlescore, deal 2 Damage to all present Units." };
-en[23] = {what: "monst", type: "monst", title: "Ashen Harpy", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Lower your Commander's DMG by 1 for the rest of this Battle." };
-en[24] = {what: "monst", type: "monst", title: "Servant of the Abyss", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Place a \"Dread of Doom\"<br>Disadvantage card<br>into your Hand." };
-en[25] = {what: "monst", type: "monst", title: "Mystic Boar", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 6, text: "After Combat:<br>Discard the cards that you<br>wanted to Keep." };
-en[26] = {what: "monst", type: "monst", title: "Caiman Priest", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 14, text: "When any of your Units takes Damage, that Unit takes 2 extra Damage." };
-en[27] = {what: "monst", type: "monst", title: "Earth Shatterer", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 3, text: "After Attacking:<br>Place a \"Losing Ground\"<br>Disadvantage card<br>into your Deck." };
-en[28] = {what: "monst", type: "monst", title: "Unholy Bloodpriest", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Place a \"Curse of Weakness\"<br>Disadvantage card<br>into your Hand." };
-en[29] = {what: "monst", type: "monst", title: "Darkfire Summoner", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>A new Enemy appears<br>in the 2nd slot, replacing what's already there." };
-en[30] = {what: "monst", type: "monst", title: "Infernal Shapeshifter", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>If her Health is lower than 16,<br>she turns into a random Enemy." };
-en[31] = {what: "monst", type: "monst", title: "Nightmare Tormentor", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 15, text: "Your Units<br>can't regain Health." };
-en[32] = {what: "monst", type: "monst", title: "Twilight Siren", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Decrease the Healer's Health restoring power by 2 for the rest of this battle." };
-en[33] = {what: "monst", type: "monst", title: "Whitefang Huntress", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>She deals your Commander<br>4 Damage." };
-en[34] = {what: "monst", type: "monst", title: "Savage Tracker", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Place an \"Ambush from the Shadows\" Disadvantage card<br>into your Hand." };
-en[35] = {what: "monst", type: "monst", title: "Venomtusk Tamer", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 6, text: "After Combat:<br>All present Units are dealt<br>2 Damage." };
-en[36] = {what: "monst", type: "monst", title: "Ruthless Torturer", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 2, text: "Before Attacking:<br>He gains +1 DMG." };
-en[37] = {what: "monst", type: "monst", title: "Vicious Soothsayer", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 27, text: "When you lose Battlescore:<br>Your Commander loses 3 HP." };
-en[38] = {what: "monst", type: "monst", title: "Cavedweller Gladiator", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 3, text: "After Attacking:<br>He deals 2 Damage<br>to your Commander." };
-en[39] = {what: "monst", type: "monst", title: "Swamp Hag", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Place a \"Chaos Curse\"<br>Disadvantage card<br>into your deck."};
-en[40] = {what: "monst", type: "monst", title: "Troglodyte Berserk", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Units in the Fray<br>lose 2 Health each." };
-en[41] = {what: "monst", type: "monst", title: "Sharptooth Warleader", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Place a \"War Cry\" disadvantage<br>card into your Hand." };
-en[42] = {what: "monst", type: "monst", title: "Goblin Pickpocket", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 6, text: "After Combat:<br>Lose 5 Gold." };
-en[43] = {what: "monst", type: "monst", title: "Jungle Raider", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Discard the rightmost Unit<br>in the Fray." };
-en[44] = {what: "monst", type: "monst", title: "Vermin Archer", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Discard the Skill cards from<br>your Hand." };
-en[45] = {what: "monst", type: "monst", title: "Lycanthrope Terror", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>If you have any Units with<br>less than 8 Health left in your Hand, discard them." };
-en[46] = {what: "monst", type: "monst", title: "Bloodfeast Spider", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Put a \"Lost in the Woods\"<br>Disadvantage card<br>into your Deck." };
-en[47] = {what: "monst", type: "monst", title: "Stalking Wolf", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Put an \"Overwhelming Numbers\"<br>Disadvantage card<br>into your Deck." };
-en[48] = {what: "monst", type: "monst", title: "White Stag of Legends", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 22, text: "When Killed:<br>Lose 2 Fame." };
-en[49] = {what: "monst", type: "monst", title: "Nimble Rougarou", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Place a \"Hunted Down\"<br>Disadvantage card<br>into your Deck." };
-en[50] = {what: "monst", type: "monst", title: "Winged Chimera", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 10, text: "When you discard a card<br>from your Hand:<br>This gains +1 DMG." };
-en[51] = {what: "monst", type: "monst", title: "Stoneskin Behemoth", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 2, text: "Before Attacking:<br>Discard a random card from your Hand. If it's a Unit, it loses 1 DMG for the rest of this battle." };
-en[52] = {what: "monst", type: "monst", title: "Vengeful Howler", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 14, text: "When another Enemy loses HP,<br>this gains +1 DMG." };
-en[53] = {what: "monst", type: "monst", title: "Insectoid Queen", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Units assigned to it lose 5 Speed." };
-en[54] = {what: "monst", type: "monst", title: "Maelstrom Hydra", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Discard the 1st Unit assigned to it." };
-en[55] = {what: "monst", type: "monst", title: "Rabid Wolfman", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 2, text: "Before Attacking:<br>Instead of the 2nd Unit assigned<br>to it, it attacks the 1st one again<br>(if it's still alive)." };
-en[56] = {what: "monst", type: "monst", title: "Moss Carcass", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Give Disadvantages in<br>your deck +8 Speed." };
-en[57] = {what: "monst", type: "monst", title: "Shambling Cadaver", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Draw the last Disadvantage card from your deck." };
-en[58] = {what: "monst", type: "monst", title: "Graveyard Remains", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 22, text: "When Killed:<br>Put a \"Poison Cloud\"<br>Disadvantage card<br>into your Deck." };
-en[59] = {what: "monst", type: "monst", title: "Bone Collector", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>She gains +1 DMG and +2 HP<br>for each Disadvantage card<br>in your Hand and Deck." };
-en[60] = {what: "monst", type: "monst", title: "Shade of the Netherworld", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 22, text: "When Killed:<br>Turn this Region into a<br>\"Desolate Waste\"." };
-en[61] = {what: "monst", type: "monst", title: "Herald of Misery", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Double the Disadvantages<br>in your Deck." };
-en[62] = {what: "monst", type: "monst", title: "Lord of Death", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 22, text: "When a different,<br>non-Leader Enemy dies:<br>Resurrect that Enemy." };
-en[63] = {what: "monst", type: "monst", title: "Blasphemous Lich", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 16, text: "When Appears:<br>Put a \"Curse of Weakness\"<br>Disadvantage card<br>into your Deck." };
-en[64] = {what: "monst", type: "monst", title: "Cataclysm Rider", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Put a \"Dark Forces\"<br>Disadvantage card<br>into your Hand." };
-en[65] = {what: "monst", type: "monst", title: "Liege of Darkness", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Remove all Advantage cards from your Deck." };
-en[66] = {what: "monst", type: "monst", title: "Baneful Necromancer", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 15, text: "When a Unit regains Health:<br>That Unit takes that much Damage instead." };
-en[67] = {what: "monst", type: "monst", title: "Bone Dragon", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 14, text: "When it takes Damage:<br>It takes 2 less Damage." };
-en[68] = {what: "monst", type: "monst", title: "Unburied Revenant", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Its Health is restored to its maximum." };
-en[69] = {what: "monst", type: "monst", title: "Skeleton Ranger", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Put a current<br>Terrain Disadvantage card<br>into your deck." };
-en[70] = {what: "monst", type: "monst", title: "Firebeard Pirate", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 22, text: "When it dies:<br>non-Rogue Units assigned to it take 4 Damage." };
-en[71] = {what: "monst", type: "monst", title: "Abhorrent Wraith", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>All Enemies (including himself)<br>are healed 3 HP." };
-en[72] = {what: "monst", type: "monst", title: "Vampire Monarch", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Put a \"Vampiric Vines\"<br>Disadvantage card<br>into your Hand." };
-en[73] = {what: "monst", type: "monst", title: "Repugnant Ghoul", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 5, text: "After a Unit attacks it:<br>It regains 3 Health unless<br>that Unit is a Cleric." };
-en[74] = {what: "monst", type: "monst", title: "Ominous Corruptor", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Non-Mage Units assigned to it<br>lose 2 DMG for the rest of<br>this battle." };
-en[75] = {what: "monst", type: "monst", title: "Angry Ogre", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>It gains +4 DMG unless you have a Warrior assigned to it." };
-en[76] = {what: "monst", type: "monst", title: "Steelclaw Bear", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 19, text: "At the start of the Round:<br>Draw the last Ranger<br>from your deck." };
-en[77] = {what: "monst", type: "monst", title: "Unyielding Wight", trait: "Undead Enemy", dmg: 4, hp: 16, trig: 14, text: "After it takes Damage:<br>If it has 4 or less HP, it regains 4 HP." };
-en[78] = {what: "monst", type: "monst", title: "Beguiling Temptress", trait: "Demon Enemy", dmg: 4, hp: 16, trig: 27, text: "When you gain Battlescore:<br>Units in your Deck lose<br>that much Speed." };
-en[79] = {what: "monst", type: "monst", title: "Resentful Provocateur", trait: "Orc Enemy", dmg: 4, hp: 16, trig: 1, text: "Before Combat:<br>Units in your Hand lose 1 DMG." };
-en[80] = {what: "monst", type: "monst", title: "Feral Dragon", trait: "Beast Enemy", dmg: 4, hp: 16, trig: 16, text: "When another Enemy appears:<br>This gains +2 DMG." };
+en[1] = {what: "monst", type: "monst", title: "Goblin Shaman", trait: "Orc Enemy", dmg: 2, hp: 14, trig: 6, text: "After Combat:<br>Remove a random Skill from your deck for the rest of this battle." };
+en[2] = {what: "monst", type: "monst", title: "Orc Chieftain", trait: "Orc Enemy", dmg: 4, hp: 14, trig: 3, text: "After Attacking:<br>Remove all Experience from<br>the attacked unit." };
+en[3] = {what: "monst", type: "monst", title: "Troll Champion", trait: "Orc Enemy", dmg: 4, hp: 10, trig: 3, text: "After Attacking:<br>If attacked unit's Health is below 5,<br>it can't retaliate." };
+en[4] = {what: "monst", type: "monst", title: "Wolfpack Howler", trait: "Orc Enemy", dmg: 3, hp: 10, trig: 16, text: "When Appears:<br>Every Unit in your Hand<br>loses 2 HP." };
+en[5] = {what: "monst", type: "monst", title: "Raider Horde", trait: "Orc Enemy", dmg: 4, hp: 12, trig: 6, text: "After Combat:<br>Increase the number of Waves in this Battle by 1." };
+en[6] = {what: "monst", type: "monst", title: "Duskling Rogue", trait: "Orc Enemy", dmg: 2, hp: 12, trig: 1, text: "Before Combat:<br>Each Unit assigned to him<br>loses 3 HP." };
+en[7] = {what: "monst", type: "monst", title: "Tribal Spearman", trait: "Orc Enemy", dmg: 3, hp: 12, trig: 3, text: "After Attacking:<br>Deals 2 additional DMG to the second Unit assigned to him." };
+en[8] = {what: "monst", type: "monst", title: "Deadly Wardancer", trait: "Orc Enemy", dmg: 2, hp: 10, trig: 1, text: "Before Combat:<br>Gains +2 DMG for each Unit assigned to her." };
+en[9] = {what: "monst", type: "monst", title: "Blob Dragon", trait: "Beast Enemy", dmg: 3, hp: 10, trig: 16, text: "When Appears:<br>Place a new Enemy into the<br>third slot." };
+en[10] = {what: "monst", type: "monst", title: "Ghastly Werewolf", trait: "Beast Enemy", dmg: 3, hp: 12, trig: 16, text: "When Appears:<br>Discard the first card from your hand." };
+en[11] = {what: "monst", type: "monst", title: "Werebeast Brawler", trait: "Beast Enemy", dmg: 3, hp: 14, trig: 5, text: "After first unit retaliates:<br>If this has 5 or less Health left,<br>discard the second unit<br>assigned to it." };
+en[12] = {what: "monst", type: "monst", title: "Haunting Banshee", trait: "Undead Enemy", dmg: 3, hp: 12, trig: 22, text: "When she dies:<br>She immediately reappears in the next slot, replacing what's there already. (Doesn't work in the rightmost slot.)" };
+en[13] = {what: "monst", type: "monst", title: "Wily Succubus", trait: "Demon Enemy", dmg: 4, hp: 14, trig: 16, text: "When Appears:<br>Remove a random unit from your deck for the duration of this battle." };
+en[14] = {what: "monst", type: "monst", title: "Smirking Hellspawn", trait: "Demon Enemy", dmg: 5, hp: 12, trig: 1, text: "Before Combat:<br>Exchange a random unit from<br>your hand with the second unit<br>assigned to him." };
+en[15] = {what: "monst", type: "monst", title: "Hellish Brute", trait: "Demon Enemy", dmg: 5, hp: 10, trig: 16, text: "When Appears:<br>The Monsters gain 8 Battlescore." };
+en[16] = {what: "monst", type: "monst", title: "Lava Elemental", trait: "Demon Enemy", dmg: 4, hp: 12, trig: 5, text: "After a Unit retaliates against it:<br>That Unit loses 2 HP and 1 DMG." };
+en[17] = {what: "monst", type: "monst", title: "Vile Gargoyle", trait: "Demon Enemy", dmg: 6, hp: 10, trig: 3, text: "After Attacking:<br>The Monsters gain 3 Battlescore." };
+en[18] = {what: "monst", type: "monst", title: "Magma Dragon", trait: "Demon Enemy", dmg: 5, hp: 10, trig: 16, text: "When Appears:<br>Decrease the Speed of all Units by 4 for the rest of this battle." };
+en[19] = {what: "monst", type: "monst", title: "Cinder Demon", trait: "Demon Enemy", dmg: 4, hp: 14, trig: 3, text: "After Attacking:<br>Decrease the Speed of all present Units by 2 for the rest of this battle." };
+en[20] = {what: "monst", type: "monst", title: "Souleater Vixen", trait: "Demon Enemy", dmg: 4, hp: 14, trig: 6, text: "After Combat:<br>Remove the leftmost Unit assigned to her from the game for the rest of this battle." };
+en[21] = {what: "monst", type: "monst", title: "Fiery Hobgoblin", trait: "Demon Enemy", dmg: 6, hp: 12, trig: 16, text: "When Appears:<br>Remove the Skills in your Hand for the rest of this battle." };
+en[22] = {what: "monst", type: "monst", title: "Raging Archfiend", trait: "Demon Enemy", dmg: 5, hp: 10, trig: 3, text: "After Attacking:<br>If the Monsters have more Battlescore, deal 2 Damage to all present Units." };
+en[23] = {what: "monst", type: "monst", title: "Ashen Harpy", trait: "Demon Enemy", dmg: 4, hp: 14, trig: 1, text: "Before Combat:<br>Lower your Commander's DMG by 1 for the rest of this Battle." };
+en[24] = {what: "monst", type: "monst", title: "Servant of the Abyss", trait: "Demon Enemy", dmg: 4, hp: 14, trig: 1, text: "Before Combat:<br>Place a <ccheat id=\"12\">\"Dread of Doom\"</ccheat><br>Disadvantage card<br>into your Hand." };
+en[25] = {what: "monst", type: "monst", title: "Mystic Boar", trait: "Beast Enemy", dmg: 3, hp: 14, trig: 1, text: "Before Combat:<br>Discard the cards that you<br>wanted to Keep." };
+en[26] = {what: "monst", type: "monst", title: "Caiman Priest", trait: "Beast Enemy", dmg: 2, hp: 12, trig: 14, text: "When any of your Units takes Damage, that Unit takes 2 extra Damage." };
+en[27] = {what: "monst", type: "monst", title: "Earth Shatterer", trait: "Demon Enemy", dmg: 6, hp: 10, trig: 3, text: "After Attacking:<br>Place a <ccheat id=\"2\">\"Losing Ground\"</ccheat><br>Disadvantage card<br>into your Deck." };
+en[28] = {what: "monst", type: "monst", title: "Unholy Bloodpriest", trait: "Demon Enemy", dmg: 4, hp: 14, trig: 1, text: "Before Combat:<br>Place a <ccheat id=\"13\">\"Curse of Weakness\"</ccheat><br>Disadvantage card<br>into your Hand." };
+en[29] = {what: "monst", type: "monst", title: "Darkfire Summoner", trait: "Demon Enemy", dmg: 4, hp: 12, trig: 1, text: "Before Combat:<br>A new Enemy appears<br>in the 2nd slot, replacing what's already there." };
+en[30] = {what: "monst", type: "monst", title: "Infernal Shapeshifter", trait: "Demon Enemy", dmg: 2, hp: 16, trig: 1, text: "Before Combat:<br>If her Health is lower than 14,<br>she turns into a random Enemy." };
+en[31] = {what: "monst", type: "monst", title: "Nightmare Tormentor", trait: "Demon Enemy", dmg: 3, hp: 14, trig: 15, text: "Your Units<br>can't regain Health." };
+en[32] = {what: "monst", type: "monst", title: "Twilight Siren", trait: "Demon Enemy", dmg: 3, hp: 14, trig: 16, text: "When Appears:<br>Decrease the Healer's Health restoring power by 2 for the rest of this battle." };
+en[33] = {what: "monst", type: "monst", title: "Whitefang Huntress", trait: "Orc Enemy", dmg: 3, hp: 10, trig: 16, text: "When Appears:<br>She deals your Commander<br>4 Damage." };
+en[34] = {what: "monst", type: "monst", title: "Savage Tracker", trait: "Orc Enemy", dmg: 3, hp: 14, trig: 1, text: "Before Combat:<br>Place an <ccheat id=\"10\">\"Ambush from the Shadows\"</ccheat> Disadvantage card<br>into your Hand." };
+en[35] = {what: "monst", type: "monst", title: "Venomtusk Tamer", trait: "Orc Enemy", dmg: 2, hp: 12, trig: 6, text: "After Combat:<br>All present Units are dealt<br>2 Damage." };
+en[36] = {what: "monst", type: "monst", title: "Ruthless Torturer", trait: "Orc Enemy", dmg: 2, hp: 12, trig: 2, text: "Before Attacking:<br>He gains +1 DMG." };
+en[37] = {what: "monst", type: "monst", title: "Vicious Soothsayer", trait: "Orc Enemy", dmg: 5, hp: 12, trig: 27, text: "When you lose Battlescore:<br>Your Commander loses 3 HP." };
+en[38] = {what: "monst", type: "monst", title: "Cavedweller Gladiator", trait: "Orc Enemy", dmg: 3, hp: 10, trig: 3, text: "After Attacking:<br>He deals 2 Damage<br>to your Commander." };
+en[39] = {what: "monst", type: "monst", title: "Swamp Hag", trait: "Orc Enemy", dmg: 4, hp: 12, trig: 16, text: "When Appears:<br>Place a <ccheat id=\"14\">\"Chaos Curse\"</ccheat><br>Disadvantage card<br>into your deck."};
+en[40] = {what: "monst", type: "monst", title: "Troglodyte Berserk", trait: "Orc Enemy", dmg: 5, hp: 10, trig: 1, text: "Before Combat:<br>Units in the Fray<br>lose 2 Health each." };
+en[41] = {what: "monst", type: "monst", title: "Sharptooth Warleader", trait: "Orc Enemy", dmg: 4, hp: 12, trig: 1, text: "Before Combat:<br>Place an <ccheat id=\"15\">\"Orcish War Cry\"</ccheat> disadvantage<br>card into your Hand." };
+en[42] = {what: "monst", type: "monst", title: "Goblin Pickpocket", trait: "Orc Enemy", dmg: 2, hp: 16, trig: 6, text: "After Combat:<br>Lose 10 Gold." };
+en[43] = {what: "monst", type: "monst", title: "Jungle Raider", trait: "Beast Enemy", dmg: 4, hp: 12, trig: 1, text: "Before Combat:<br>Discard the rightmost Unit<br>in the Fray." };
+en[44] = {what: "monst", type: "monst", title: "Vermin Archer", trait: "Beast Enemy", dmg: 4, hp: 10, trig: 1, text: "Before Combat:<br>Discard the Skill cards from<br>your Hand." };
+en[45] = {what: "monst", type: "monst", title: "Lycanthrope Terror", trait: "Beast Enemy", dmg: 2, hp: 12, trig: 16, text: "When Appears:<br>If you have any Units with<br>less than 8 Health left in your Hand, discard them." };
+en[46] = {what: "monst", type: "monst", title: "Bloodfeast Spider", trait: "Beast Enemy", dmg: 4, hp: 10, trig: 16, text: "When Appears:<br>Put a <ccheat id=\"4\">\"Lost in the Woods\"</ccheat><br>Disadvantage card<br>into your Deck." };
+en[47] = {what: "monst", type: "monst", title: "Stalking Wolf", trait: "Beast Enemy", dmg: 2, hp: 14, trig: 1, text: "Before Combat:<br>Put an <ccheat id=\"16\">\"Overwhelming Numbers\"</ccheat><br>Disadvantage card<br>into your Deck." };
+en[48] = {what: "monst", type: "monst", title: "White Stag of Legends", trait: "Beast Enemy", dmg: 4, hp: 12, trig: 22, text: "When Killed:<br>Lose 2 Fame." };
+en[49] = {what: "monst", type: "monst", title: "Nimble Rougarou", trait: "Beast Enemy", dmg: 3, hp: 12, trig: 16, text: "When Appears:<br>Place a <ccheat id=\"17\">\"Hunted Down\"</ccheat><br>Disadvantage card<br>into your Deck." };
+en[50] = {what: "monst", type: "monst", title: "Winged Chimera", trait: "Beast Enemy", dmg: 2, hp: 12, trig: 10, text: "When you discard a card<br>from your Hand:<br>This gains +1 DMG." };
+en[51] = {what: "monst", type: "monst", title: "Stoneskin Behemoth", trait: "Beast Enemy", dmg: 2, hp: 14, trig: 2, text: "Before Attacking:<br>Discard a random card from your Hand. If it's a Unit, it loses 1 DMG for the rest of this battle." };
+en[52] = {what: "monst", type: "monst", title: "Vengeful Howler", trait: "Beast Enemy", dmg: 4, hp: 10, trig: 14, text: "When another Enemy loses HP,<br>this gains +1 DMG." };
+en[53] = {what: "monst", type: "monst", title: "Insectoid Queen", trait: "Beast Enemy", dmg: 3, hp: 12, trig: 1, text: "Before Combat:<br>Units assigned to it lose 5 Speed." };
+en[54] = {what: "monst", type: "monst", title: "Maelstrom Hydra", trait: "Beast Enemy", dmg: 3, hp: 10, trig: 1, text: "Before Combat:<br>Discard the 1st Unit assigned to it." };
+en[55] = {what: "monst", type: "monst", title: "Rabid Wolfman", trait: "Beast Enemy", dmg: 3, hp: 12, trig: 2, text: "Before Attacking:<br>Instead of the 2nd Unit assigned<br>to it, it attacks the 1st one again<br>(if it's still alive)." };
+en[56] = {what: "monst", type: "monst", title: "Moss Carcass", trait: "Undead Enemy", dmg: 3, hp: 12, trig: 16, text: "When Appears:<br>Give Disadvantages in<br>your deck +8 Speed." };
+en[57] = {what: "monst", type: "monst", title: "Shambling Cadaver", trait: "Undead Enemy", dmg: 4, hp: 12, trig: 1, text: "Before Combat:<br>Draw the last Disadvantage card from your deck." };
+en[58] = {what: "monst", type: "monst", title: "Graveyard Remains", trait: "Undead Enemy", dmg: 5, hp: 10, trig: 22, text: "When Killed:<br>Put a <ccheat id=\"18\">\"Poison Cloud\"</ccheat><br>Disadvantage card<br>into your Deck." };
+en[59] = {what: "monst", type: "monst", title: "Bone Collector", trait: "Undead Enemy", dmg: 2, hp: 8, trig: 16, text: "When Appears:<br>She gains +1 DMG and +2 HP<br>for each Disadvantage card<br>in your Hand and Deck." };
+en[60] = {what: "monst", type: "monst", title: "Shade of the Netherworld", trait: "Undead Enemy", dmg: 4, hp: 10, trig: 22, text: "When Killed:<br>Turn this Region into a<br><ccheat id=\"-3\">\"Desolate Waste\"</ccheat>." };
+en[61] = {what: "monst", type: "monst", title: "Herald of Misery", trait: "Undead Enemy", dmg: 3, hp: 14, trig: 16, text: "When Appears:<br>Double the Disadvantages<br>in your Deck." };
+en[62] = {what: "monst", type: "monst", title: "Lord of Death", trait: "Undead Enemy", dmg: 3, hp: 12, trig: 22, text: "When a different,<br>non-Leader Enemy dies:<br>Resurrect that Enemy." };
+en[63] = {what: "monst", type: "monst", title: "Blasphemous Lich", trait: "Undead Enemy", dmg: 5, hp: 12, trig: 16, text: "When Appears:<br>Put a <ccheat id=\"19\">\"Curse of Weakness\"</ccheat><br>Disadvantage card<br>into your Deck." };
+en[64] = {what: "monst", type: "monst", title: "Cataclysm Rider", trait: "Undead Enemy", dmg: 4, hp: 14, trig: 1, text: "Before Combat:<br>Put a <ccheat id=\"20\">\"Dark Forces\"</ccheat><br>Disadvantage card<br>into your Hand." };
+en[65] = {what: "monst", type: "monst", title: "Liege of Darkness", trait: "Undead Enemy", dmg: 6, hp: 12, trig: 1, text: "Before Combat:<br>Remove all Advantage cards from your Deck." };
+en[66] = {what: "monst", type: "monst", title: "Baneful Necromancer", trait: "Undead Enemy", dmg: 4, hp: 12, trig: 15, text: "When a Unit regains Health:<br>That Unit takes that much Damage instead." };
+en[67] = {what: "monst", type: "monst", title: "Bone Dragon", trait: "Undead Enemy", dmg: 5, hp: 10, trig: 14, text: "When it takes Damage:<br>It takes 2 less Damage." };
+en[68] = {what: "monst", type: "monst", title: "Unburied Revenant", trait: "Undead Enemy", dmg: 2, hp: 14, trig: 1, text: "Before Combat:<br>Its Health is restored to its maximum." };
+en[69] = {what: "monst", type: "monst", title: "Skeleton Ranger", trait: "Undead Enemy", dmg: 5, hp: 14, trig: 1, text: "Before Combat:<br>Put a current<br><ccheat id=\"-1\">Terrain Disadvantage</ccheat> card<br>into your deck." };
+en[70] = {what: "monst", type: "monst", title: "Firebeard Pirate", trait: "Undead Enemy", dmg: 4, hp: 10, trig: 22, text: "When it dies:<br>non-Rogue Units assigned to it take 4 Damage." };
+en[71] = {what: "monst", type: "monst", title: "Abhorrent Wraith", trait: "Undead Enemy", dmg: 3, hp: 14, trig: 1, text: "Before Combat:<br>All Enemies (including himself)<br>are healed 3 HP." };
+en[72] = {what: "monst", type: "monst", title: "Vampire Monarch", trait: "Undead Enemy", dmg: 4, hp: 14, trig: 1, text: "Before Combat:<br>Put a <ccheat id=\"21\">\"Vampiric Vines\"</ccheat><br>Disadvantage card<br>into your Hand." };
+en[73] = {what: "monst", type: "monst", title: "Repugnant Ghoul", trait: "Undead Enemy", dmg: 3, hp: 12, trig: 5, text: "After a Unit attacks it:<br>This regains 3 Health unless<br>that Unit is a Cleric." };
+en[74] = {what: "monst", type: "monst", title: "Ominous Corruptor", trait: "Demon Enemy", dmg: 4, hp: 14, trig: 1, text: "Before Combat:<br>Non-Mage Units assigned to it<br>lose 2 DMG for the rest of<br>this battle." };
+en[75] = {what: "monst", type: "monst", title: "Angry Ogre", trait: "Orc Enemy", dmg: 2, hp: 14, trig: 1, text: "Before Combat:<br>It gains +4 DMG unless you have a Warrior assigned to it." };
+en[76] = {what: "monst", type: "monst", title: "Steelclaw Bear", trait: "Beast Enemy", dmg: 4, hp: 12, trig: 19, text: "At the start of the Round:<br>Draw the last Ranger<br>from your deck." };
+en[77] = {what: "monst", type: "monst", title: "Unyielding Wight", trait: "Undead Enemy", dmg: 5, hp: 12, trig: 14, text: "After it takes Damage:<br>If it has 4 or less HP, it regains 4 HP." };
+en[78] = {what: "monst", type: "monst", title: "Beguiling Temptress", trait: "Demon Enemy", dmg: 5, hp: 14, trig: 27, text: "When you gain Battlescore:<br>Units in your Deck lose<br>that much Speed." };
+en[79] = {what: "monst", type: "monst", title: "Resentful Provocateur", trait: "Orc Enemy", dmg: 4, hp: 10, trig: 1, text: "Before Combat:<br>Units in your Hand lose 1 DMG." };
+en[80] = {what: "monst", type: "monst", title: "Feral Dragon", trait: "Beast Enemy", dmg: 2, hp: 12, trig: 16, text: "When another Enemy appears:<br>This gains +2 DMG." };
 
 
 
@@ -214,18 +217,19 @@ en[80] = {what: "monst", type: "monst", title: "Feral Dragon", trait: "Beast Ene
 // boss: mon gain bs for erach unit in hand
 
 
-co[1] = {what: "unit", type: "comm", title: "Logan Hawkthorne", trait: "Commander", dmg: 6, hp: 24, trig: 18, text: "Gain +2 Terrain Advantage<br>cards for Battles."};
-co[2] = {what: "unit", type: "comm", title: "Aruna Wildbloom", trait: "Commander", dmg: 6, hp: 24, trig: 18, text: "You can keep<br>up to 2 cards per round."};
-co[3] = {what: "unit", type: "comm", title: "Brendan Shadowcloak", trait: "Commander", dmg: 6, hp: 24, trig: 19, text: "At the start of a combat round:<br>If you have less than 4 cards in your hand, draw until you have 4 cards."};
-co[4] = {what: "unit", type: "comm", title: "Kiera Silkeye", trait: "Commander", dmg: 6, hp: 24, trig: 18, text: "Your Skills have +7 Speed during Battles."};
-co[5] = {what: "unit", type: "comm", title: "Jaylin Duskleaf", trait: "Commander", dmg: 6, hp: 24, trig: 18, text: "You get 30 extra gold<br>after each battle."};
-co[6] = {what: "unit", type: "comm", title: "Wardell Redbraid", trait: "Commander", dmg: 6, hp: 24, trig: 20, text: "If an enemy has 3 or less<br>Health at the end of a round,<br>it dies."};
-co[7] = {what: "unit", type: "comm", title: "Selina Oldsong", trait: "Commander", dmg: 6, hp: 24, trig: 18, text: "Start each battle with<br>+10 Battlescore."};
-co[8] = {what: "unit", type: "comm", title: "Jakobe Stonegrave", trait: "Commander", dmg: 6, hp: 24, trig: 18, text: "Your units have<br>+2 Health during Battles."};
+co[1] = {what: "unit", type: "comm", title: "Logan Hawkthorne", trait: "Commander", dmg: 5, hp: 22, trig: 18, text: "Gain +2 Terrain Advantage<br>cards for Battles."};
+co[2] = {what: "unit", type: "comm", title: "Aruna Wildbloom", trait: "Commander", dmg: 6, hp: 20, trig: 18, text: "You can keep<br>up to 2 cards per round."};
+co[3] = {what: "unit", type: "comm", title: "Brendan Shadowcloak", trait: "Commander", dmg: 4, hp: 26, trig: 30, text: "At round start:<br>If you have less than 4 cards in your hand without the cards you Kept, draw until you have 4 cards."};
+co[4] = {what: "unit", type: "comm", title: "Kiera Silkeye", trait: "Commander", dmg: 4, hp: 24, trig: 18, text: "Your Skills have +7 Speed during Battles."};
+co[5] = {what: "unit", type: "comm", title: "Jaylin Duskleaf", trait: "Commander", dmg: 5, hp: 20, trig: 18, text: "You get 30 extra gold<br>after each battle."};
+co[6] = {what: "unit", type: "comm", title: "Wardell Redbraid", trait: "Commander", dmg: 6, hp: 18, trig: 20, text: "If an enemy has 2 or less<br>Health at the end of a round,<br>it dies."};
+co[7] = {what: "unit", type: "comm", title: "Selina Oldsong", trait: "Commander", dmg: 3, hp: 26, trig: 18, text: "Start each battle with<br>+10 Battlescore."};
+co[8] = {what: "unit", type: "comm", title: "Jakobe Stonegrave", trait: "Commander", dmg: 3, hp: 24, trig: 18, text: "Your units have<br>+2 Health during Battles."};
 
+reg[0] = {type: "region", what: "mountain", title: "XXX", trait: "xxx", fmod: 1, trig: 18,  text: "At battle start, your Ranger<br>units gain -2 DMG here."};
 reg[1] = {type: "region", what: "mountain", title: "Coldstone Mountains", trait: "Mountain Region", fmod: 1, trig: 18,  text: "At battle start, your Ranger<br>units gain -2 DMG here."};
 reg[2] = {type: "region", what: "woodland", title: "Northern Woods", trait: "Woodlands Region", fmod: 1, trig: 28, text: "Additional Beasts<br>may attack you here."};
-reg[3] = {type: "region", what: "woodland", title: "Quona River Shallows", trait: "Woodlands Region", fmod: -1, trig: 18, text: "Start the battle with<br>+2 Swamp Terrain<br>Advantage in your deck."};
+reg[3] = {type: "region", what: "woodland", title: "Quona River Shallows", trait: "Woodlands Region", fmod: -1, trig: 18, text: "Start the battle with +2<br><ccheat id=\"5\">Swamp Terrain Advantage</ccheat><br>in your deck."};
 reg[4] = {type: "region", what: "swamp", title: "The Frozen Marshes", trait: "Swamp Region", fmod: 1, trig: 18, text: "At battle start,<br>your cards with more than<br>20 Speed lose 5 Speed here."};
 reg[5] = {type: "region", what: "plains", title: "The Golden Savannah", trait: "Plains Region", fmod: -1, trig: 18, text: "You start at the<br>2nd Wave here."};
 reg[6] = {type: "region", what: "mountain", title: "The Green Giants", trait: "Mountain Region", fmod: -1, trig: 27, text: "When you gain Battlescore,<br>you gain 1 more here."};
@@ -236,28 +240,28 @@ reg[10] = {type: "region", what: "fortress", title: "Island Stronghold", trait: 
 reg[11] = {type: "region", what: "fortress", title: "Sky Citadel", trait: "Fortress Region", fmod: 1, trig: 27, text: "When you gain Battlescore,<br>you gain 1 less here."};
 reg[12] = {type: "region", what: "swamp", title: "The Deadmire", trait: "Swamp Region", fmod: 1, trig: 28, text: "Additional Undead<br>may attack you here."};
 reg[13] = {type: "region", what: "mountain", title: "The Barren Peaks", trait: "Mountain Region", fmod: 1, trig: 28,  text: "Additional Demons<br>may attack you here."};
-reg[14] = {type: "region", what: "woodland", title: "Abandoned Settlement", trait: "Woodlands Region", fmod: 1, trig: 18, text: "Start the battle with<br>+2 Fortress Terrain<br>Disadvantage in your deck."};
-reg[15] = {type: "region", what: "plains", title: "Fertile Fiefdoms", trait: "Plains Region", fmod: -1, trig: 18, text: "At battle start, your cards with less than 20 Speed gain 5 Speed here (except Disadvantages)."};
+reg[14] = {type: "region", what: "woodland", title: "Abandoned Settlement", trait: "Woodlands Region", fmod: 1, trig: 18, text: "Start the battle with +2<br><ccheat id=\"10\">Fortress Terrain Disadvantage</ccheat><br>in your deck."};
+reg[15] = {type: "region", what: "plains", title: "Fertile Fiefdoms", trait: "Plains Region", fmod: -1, trig: 18, text: "At battle start, your cards with 20 or less Speed gain 5 Speed here (except Disadvantages)."};
 reg[16] = {type: "region", what: "fortress", title: "Elevated Garrison", trait: "Fortress Region", fmod: -1, trig: 16, text: "Enemies have -2 Health here."};
-reg[17] = {type: "region", what: "swamp", title: "Eastern Floodplains", trait: "Swamp Region", fmod: -1, trig: 18, text: "Start the battle with<br>+2 Plains Terrain<br>Advantage in your deck."};
-reg[18] = {type: "region", what: "mountain", title: "Eagle Cliff", trait: "Mountain Region", fmod: -1, trig: 18,  text: "Start the battle with<br>+2 Fortress Terrain<br>Advantage in your deck."};
+reg[17] = {type: "region", what: "swamp", title: "Eastern Floodplains", trait: "Swamp Region", fmod: -1, trig: 18, text: "Start the battle with +2<br><ccheat id=\"7\">Plains Terrain Advantage</ccheat><br> in your deck."};
+reg[18] = {type: "region", what: "mountain", title: "Eagle Cliff", trait: "Mountain Region", fmod: -1, trig: 18,  text: "Start the battle with +2<br><ccheat id=\"9\">Fortress Terrain Advantage</ccheat><br> in your deck."};
 reg[19] = {type: "region", what: "woodland", title: "Runehewn Wildwoods", trait: "Woodlands Region", fmod: -1, trig: 6, text: "After Combat:<br>If you have no Units in your Hand,<br>deal each Enemy 2 Damage."};
 reg[20] = {type: "region", what: "plains", title: "The Enchanted Plateau", trait: "Plains Region", fmod: -1, trig: 18, text: "At the start of battle,<br>your Units gain 2 Health here."};
 reg[21] = {type: "region", what: "fortress", title: "Alabaster Ramparts", trait: "Fortress Region", fmod: -1, trig: 28, text: "2nd and 3rd Enemies<br>are less likely to appear here."};
-reg[22] = {type: "region", what: "swamp", title: "The Greenmoor", trait: "Swamp Region", fmod: 1, trig: 18, text: "Start the battle with<br>+2 Woodlands Terrain<br>Disadvantage in your deck."};
-reg[23] = {type: "region", what: "mountain", title: "The Crimson Ridge", trait: "Mountain Region", fmod: 1, trig: 18,  text: "Start the battle with<br>+2 Swamp Terrain<br>Disadvantage in your deck."};
+reg[22] = {type: "region", what: "swamp", title: "The Greenmoor", trait: "Swamp Region", fmod: 1, trig: 18, text: "Start the battle with +2<br><ccheat id=\"4\">Woodlands Terrain Disadvantage</ccheat><br>in your deck."};
+reg[23] = {type: "region", what: "mountain", title: "The Crimson Ridge", trait: "Mountain Region", fmod: 1, trig: 18,  text: "Start the battle with +2<br><ccheat id=\"6\">Swamp Terrain Disadvantage</ccheat><br>in your deck."};
 reg[24] = {type: "region", what: "woodland", title: "The Corpse Jungle", trait: "Woodlands Region", fmod: 1, trig: 6, text: "After Combat:<br>if there are no Enemies alive,<br>deal each present Unit 1 Damage."};
 reg[25] = {type: "region", what: "plains", title: "Tribal Territories", trait: "Plains Region", fmod: 1, trig: 28, text: "Additional Orcs<br>may attack you here."};
-reg[26] = {type: "region", what: "fortress", title: "Elven Hamlet", trait: "Fortress Region", fmod: -1, trig: 18, text: "Start the battle with<br>+2 Woodlands Terrain<br>Advantage in your deck."};
+reg[26] = {type: "region", what: "fortress", title: "Elven Hamlet", trait: "Fortress Region", fmod: -1, trig: 18, text: "Start the battle with +2<br><ccheat id=\"3\">Woodlands Terrain Advantage</ccheat><br>in your deck."};
 reg[27] = {type: "region", what: "swamp", title: "The Dragon Morass", trait: "Swamp Region", fmod: -1, trig: 18, text: "At battle start, your Mage Units<br>gain +2 DMG here."};
 reg[28] = {type: "region", what: "mountain", title: "The Gates of Oblivion", trait: "Mountain Region", fmod: -1, trig: 18,  text: "At battle start, your Cleric Units<br>gain +2 DMG here."};
 reg[29] = {type: "region", what: "woodland", title: "Outlaw Hideout", trait: "Woodlands Region", fmod: -1, trig: 18, text: "At battle start, your Rogue<br>Units gain +2 DMG here."};
-reg[30] = {type: "region", what: "plains", title: "The Broken Land", trait: "Plains Region", fmod: -1, trig: 18, text: "Start the battle with<br>+2 Mountains Terrain<br>Advantage in your deck."};
-reg[31] = {type: "region", what: "fortress", title: "Neglected Cathedral", trait: "Fortress Region", fmod: 1, trig: 18, text: "Start the battle with<br>+2 Plains Terrain<br>Disadvantage in your deck."};
+reg[30] = {type: "region", what: "plains", title: "The Broken Land", trait: "Plains Region", fmod: -1, trig: 18, text: "Start the battle with +2<br><ccheat id=\"1\">Mountains Terrain Advantage</ccheat><br>in your deck."};
+reg[31] = {type: "region", what: "fortress", title: "Neglected Cathedral", trait: "Fortress Region", fmod: 1, trig: 18, text: "Start the battle with +2<br><ccheat id=\"8\">Plains Terrain Disadvantage</ccheat><br>in your deck."};
 reg[32] = {type: "region", what: "swamp", title: "Treacherous Muskeg", trait: "Swamp Region", fmod: 1, trig: 18, text: "At battle start, your Warrior<br>Units gain -2 DMG here."};
 reg[33] = {type: "region", what: "mountain", title: "Hermit Hill", trait: "Mountain Region", fmod: 1, trig: 19,  text: "At the start of each round,<br>if there is only 1 Enemy present,<br>it gains +1 DMG and +3 HP."};
 reg[34] = {type: "region", what: "woodland", title: "Rust Grove", trait: "Woodlands Region", fmod: 1, trig: 18, text: "At battle start, your Mage Units<br>gain -2 DMG here."};
-reg[35] = {type: "region", what: "plains", title: "The Crystal Rapids", trait: "Plains Region", fmod: 1, trig: 18, text: "Start the battle with<br>+2 Mountains Terrain<br>Disadvantage in your deck."};
+reg[35] = {type: "region", what: "plains", title: "The Crystal Rapids", trait: "Plains Region", fmod: 1, trig: 18, text: "Start the battle with +2<br><ccheat id=\"2\">Mountains Terrain Disadvantage</ccheat><br>in your deck."};
 reg[36] = {type: "region", what: "fortress", title: "Heathen Village", trait: "Fortress Region", fmod: 1, trig: 18, text: "At battle start, your Cleric<br>Units gain -2 DMG here."};
 reg[37] = {type: "region", what: "swamp", title: "Foul Slough", trait: "Swamp Region", fmod: 1, trig: 18, text: "At battle start, your Commander gains -2 DMG here."};
 reg[38] = {type: "region", what: "mountain", title: "The Crippled Pike", trait: "Mountain Region", fmod: 1, trig: 18,  text: "The Healer's healing power is decreased by 2 here."};
@@ -286,7 +290,7 @@ ada[7] = {what: "ada", type: "adv", title: "Level Fields", trait: "Terrain Advan
 ada[8] = {what: "ada", type: "disadv", title: "Caught in the Crossfire", trait: "Terrain Disadvantage", trig: 9, text: "When Drawn:<br>Units in your Hand lose 2 Health.", perc: 15};
 ada[9] = {what: "ada", type: "adv", title: "Defend the Walls", trait: "Terrain Advantage", trig: 9, text: "When Drawn:<br>You gain 4 Battlescore.", perc: 15};
 ada[10] = {what: "ada", type: "disadv", title: "Ambush from the Shadows", trait: "Terrain Disadvantage", trig: 1, text: "Before Combat:<br>Present Enemies gain +1 DMG.", perc: 15};
-ada[11] = {what: "ada", type: "adv", title: "Hail of Sparks", trait: "Hero Advantage", trig: 9, text: "When Drawn:<br>Deal all Enemies 1 Damage.", perc: 40};
+ada[11] = {what: "ada", type: "adv", title: "Hail of Sparks", trait: "Hero Advantage", trig: 16, text: "When a Monster Appears:<br>Deal it 1 Damage.<br>This triggers from your deck too.", perc: 0};
 ada[12] = {what: "ada", type: "disadv", title: "Dread of Doom", trait: "Curse Disadvantage", trig: 6, text: "After Combat:<br>Every present Unit loses 1 Health and 1 DMG", perc: 20};
 ada[13] = {what: "ada", type: "disadv", title: "Curse of Weakness", trait: "Curse Disadvantage", trig: 6, text: "After Combat:<br>All present Units lose 1 DMG<br>and 4 Speed", perc: 20};
 ada[14] = {what: "ada", type: "disadv", title: "Chaos Curse", trait: "Curse Disadvantage", trig: 3, text: "This round, the 1st Units<br>assigned to Enemies can't retaliate.", perc: 15};
@@ -296,20 +300,20 @@ ada[17] = {what: "ada", type: "disadv", title: "Hunted Down", trait: "Battle Dis
 ada[18] = {what: "ada", type: "disadv", title: "Poison Cloud", trait: "Battle Disadvantage", trig: 9, text: "When Drawn:<br>Units in your hand and deck each lose 1 Health.", perc: 25};
 ada[19] = {what: "ada", type: "disadv", title: "Curse of Weakness", trait: "Curse Disadvantage", trig: 3, text: "Your Commander can't retaliate against Enemies.", perc: 15};
 ada[20] = {what: "ada", type: "disadv", title: "Dark Forces", trait: "Curse Disadvantage", trig: 6, text: "After Combat:<br>Present Enemies regain 3 Health.", perc: 15};
-ada[21] = {what: "ada", type: "disadv", title: "Vampiric Vines", trait: "Battle Disadvantage", trig: 1, text: "Before Combat:<br>Present Units lose 1 HP and present Enemies regain 1 HP.", perc: 20};
+ada[21] = {what: "ada", type: "disadv", title: "Vampiric Vines", trait: "Battle Disadvantage", trig: 6, text: "After Combat:<br>Present Units lose 1 HP and present Enemies regain 1 HP.", perc: 20};
 // undead vampiric vines: before combat: present units lose 1 HP and present enemies gain 1 HP. 
 
 skill[1] = {what: "skill", type: "skred", title: "Inspiring Charge", trait: "Warrior Skill", trig: 1, text: "Before Combat:<br>Your attacking Warriors and their assisting Units gain +1 DMG for the rest of this battle.", perc: 10, cost: 10};
 skill[2] = {what: "skill", type: "skblue", title: "Quiet Prayer", trait: "Cleric Skill", trig: 1, text: "Before Combat:<br>If you have a Cleric in your hand, your Units assigned to Enemies regain 3 Health.", perc: 10, cost: 20};
-skill[3] = {what: "skill", type: "skpurp", title: "Melt Weapons", trait: "Mage Skill", trig: 1, text: "Before Combat:<br>If you have a Mage in your hand, all Enemies lose 2 DMG.", perc: 10, cost: 15};
+skill[3] = {what: "skill", type: "skpurp", title: "Melt Weapons", trait: "Mage Skill", trig: 1, text: "Before Combat:<br>If you have a Mage in your hand,<br>all Enemies lose 2 DMG.", perc: 10, cost: 15};
 skill[4] = {what: "skill", type: "skgreen", title: "Taunting Foes", trait: "Ranger Skill", trig: 2, text: "The first Ranger assigned to an Enemy fights it again instead of your Commander.", perc: 10, cost: 10};
-skill[5] = {what: "skill", type: "skred", title: "Siege Tactics", trait: "Warrior Skill", trig: 1, text: "Before Combat:<br>if you have a Warrior in the Fray, gain 5 Battlescore.", perc: 10, cost: 15};
+skill[5] = {what: "skill", type: "skred", title: "Siege Tactics", trait: "Warrior Skill", trig: 7, text: "In The Fray:<br>if you have a Warrior in the Fray, gain 5 Battlescore.", perc: 10, cost: 15};
 skill[6] = {what: "skill", type: "skblue", title: "Holy Shield", trait: "Cleric Skill", trig: 14, text: "If you have a Cleric present, each Damage your units take is decreased by 1.", perc: 10, cost: 10};
 skill[7] = {what: "skill", type: "skindi", title: "Sabotage the Enemy", trait: "Rogue Skill", trig: 5, text: "After Attacking: If one of your Rogues kills an Enemy in Combat, decrease the maximum number<br>of Waves by 1.", perc: 10, cost: 20};
 skill[8] = {what: "skill", type: "skpurp", title: "Channel Power", trait: "Mage Skill", trig: 1, text: "Before Combat:<br>If you have a Mage in your hand, your Commander gains +1 DMG for the rest of this Combat.", perc: 10, cost: 10};
 skill[9] = {what: "skill", type: "skgreen", title: "Expose Weakness", trait: "Ranger Skill", trig: 1, text: "Before Combat:<br>Your Rangers deal 3 Damage<br>to their assigned Enemy.", perc: 10, cost: 20};
 skill[10] = {what: "skill", type: "skindi", title: "Learn by Example", trait: "Rogue Skill", trig: 17, text: "If a Rogue's Assisting Unit gains Experience in Combat, so does the Rogue.", perc: 10, cost: 10};
-skill[11] = {what: "skill", type: "skred", title: "Renowned Leadership", trait: "Warrior Skill", trig: 6, text: "After Combat:<br>For each Warrior in your Hand, give 3 random Units in your deck<br>+1 DMG and +2 HP for the rest of this battle.", perc: 10, cost: 15};
+skill[11] = {what: "skill", type: "skindi", title: "Inciting Speech", trait: "Rogue Skill", trig: 6, text: "After Combat:<br>For each Rogue in your Hand,<br>give 3 random Units in your deck<br>+1 DMG and +2 HP for the rest of this battle.", perc: 10, cost: 15};
 skill[12] = {what: "skill", type: "skblue", title: "Shield of Faith", trait: "Cleric Skill", trig: 6, text: "After Combat:<br>For each Cleric in your Hand, your Commander regains 2 Health.", perc: 10, cost: 20};
 skill[13] = {what: "skill", type: "skpurp", title: "Study Your Adversary", trait: "Mage Skill", trig: 1, text: "Before Combat: If you have<br>a Mage in your Hand, and the<br>Enemy Leader is visible, lower its<br>HP by 2 (to a minimum of 10).", perc: 10, cost: 20};
 skill[14] = {what: "skill", type: "skgreen", title: "Setting up an Ambush", trait: "Ranger Skill", trig: 16, text: "When an Enemy appears:<br>If you have a Ranger in your hand, deal that Enemy 2 Damage.", perc: 10, cost: 10};
@@ -323,8 +327,8 @@ skill[21] = {what: "skill", type: "skred", title: "Hurricane Barrage", trait: "W
 skill[22] = {what: "skill", type: "skblue", title: "Light in the Darkness", trait: "Cleric Skill", trig: 1, text: "Before Combat:<br>If you have a Cleric in your Hand, make the Healer appear in the 3rd slot even if there's something else there currently.", perc: 10, cost: 20};
 skill[23] = {what: "skill", type: "skpurp", title: "Mirror Image", trait: "Mage Skill", trig: 1, text: "Before Combat:<br>Create a copy of a random Mage in your hand (for this battle only).", perc: 10, cost: 10};
 skill[24] = {what: "skill", type: "skgreen", title: "Desperate Rally", trait: "Ranger Skill", trig: 1, text: "Before Combat:<br>For each Ranger present, give<br>each present Unit with 8 or less HP<br>+1 DMG for the rest of this battle.", perc: 10, cost: 15};
-skill[25] = {what: "skill", type: "skindi", title: "Dodge Enemies", trait: "Rogue Skill", trig: 1, text: "Before Combat: If you have a Rogue present and didn't assign any cards, Combat is skipped this round and new Enemies appear instead of the current ones.", perc: 10, cost: 20};
-skill[26] = {what: "skill", type: "skindi", title: "Clearing a Path", trait: "Rogue Skill", trig: 1, text: "Before Combat: If you have a Rogue in your Hand and The Fray is not visible, make The Fray appear in the 2nd slot even if there's something else there currently.", perc: 10, cost: 15};
+skill[25] = {what: "skill", type: "skindi", title: "Dodge Enemies", trait: "Rogue Skill", trig: 1, text: "Before Combat: If you have a Rogue present and didn't assign any cards, Combat is skipped this round and refresh all enemy slots.", perc: 10, cost: 20};
+skill[26] = {what: "skill", type: "skred", title: "Clearing a Path", trait: "Warrior Skill", trig: 1, text: "Before Combat: If you have a Warrior in your Hand and The Fray is not visible, make The Fray appear in the 2nd slot, replacing what's there already.", perc: 10, cost: 15};
 skill[27] = {what: "skill", type: "skred", title: "Relentless Attack", trait: "Warrior Skill", trig: 5, text: "After Attacking:<br>If a Warrior is assigned alone to<br>an Enemy, he gains 2 HP and attacks that Enemy again.", perc: 10, cost: 10};
 skill[28] = {what: "skill", type: "skblue", title: "Call for Assistance", trait: "Cleric Skill", trig: 19, text: "At the start of a Round:<br>If you have a Cleric in your Hand, draw your slowest Unit.", perc: 10, cost: 15};
 skill[29] = {what: "skill", type: "skpurp", title: "Phantom Blades", trait: "Mage Skill", trig: 1, text: "After Combat:<br>For each Mage in your Hand,<br>deal each enemy 2 Damage.", perc: 10, cost: 20};
@@ -333,7 +337,7 @@ skill[30] = {what: "skill", type: "skgreen", title: "Agile Maneuvers", trait: "R
 // warrior duplázó skill: 1st slotba a skill lap kerüljön
 
 
-buyable[1] = {what: "rest", type: "buy", trait: "Garrison Action", title: "Rest", text: "Each of your wounded units<br>(and your Commander)<br>regains 4 Health.", cost: 15};
+buyable[1] = {what: "rest", type: "buy", trait: "Garrison Action", title: "Rest", text: "Each of your wounded units<br>regains 4 Health.", cost: 15};
 buyable[2] = {what: "train", type: "buy", trait: "Garrison Action", title: "Train", text: "Your Commander gains<br>+1 DMG and +2 Health.", cost: 20};
 buyable[3] = {what: "promote", type: "buy", trait: "Garrison Action", title: "Promote", text: "Your experienced units<br>get every promotion<br>they've earned.", cost: 25};
 buyable[4] = {what: "info", type: "neut", trait: "Commander Information", title: "War Room", text: "All kinds of info.", cost: 20};
@@ -342,7 +346,7 @@ buyable[6] = {what: "ng", type: "heal", trait: "Health Regeneration", title: "Re
 buyable[7] = {what: "battinf", type: "neut", trait: "Battlefield Information", title: "Battle Details", text: "Info about the battle.", cost: 20};
 buyable[8] = {what: "drill", type: "buy", trait: "Garrison Action", title: "Drill", text: "Your Skills gain +5 Speed.", cost: 15};
 
-boss[1] = {what: "boss", type: "monst", title: "Minotaur Demon", trait: "Enemy Leader", dmg: 10, hp: 30, trig: 6, text: "After Attacking:<br>Only your Commander can retaliate against him." };
+boss[1] = {what: "boss", type: "monst", title: "Minotaur Demon", trait: "Enemy Leader", dmg: 10, hp: 30, trig: 3, text: "Only your Commander can<br>retaliate against him." };
 
 // Oldsong / Stonegrave
 
@@ -377,12 +381,50 @@ var showhint = (event, num) => {
             break;
     }
     
+    if ($( event.target ).is("ccheat")){
+        if ($(event.target).attr("id") == 0){
+            if (!inbattle){
+                hintgen = "Not in Battle currently.";
+            } else {
+                terrada(true);
+                hintgen = ada[adadraw].text;
+                $(".cardc[id=\""+hanylapvan+"\"]").remove();
+            }
+        } else if ($(event.target).attr("id") == -1){
+            if (!inbattle){
+                hintgen = "Not in Battle currently.";
+            } else {
+                terrada(false);
+                hintgen = ada[adadraw].text;
+                $(".cardc[id=\""+hanylapvan+"\"]").remove();
+            }
+        } else if ($(event.target).attr("id") == -2){
+            hintgen = reg[51].text;
+        } else if ($(event.target).attr("id") == -3){
+            hintgen = reg[52].text;
+        } else {
+            hintgen = ada[$(event.target).attr("id")].text;
+        }
+    }
+    
     $(".hintdiv").html(hintgen);
 };
 
 $( "#battlescore" ).on( "mouseenter", function( event ) {
     showhint(event, 1);    
 });
+
+$('body').on( "mouseenter", "ccheat", function( event ) {
+    
+    showhint(event, 0); 
+    
+});
+
+$('body').on( "mouseleave", "ccheat", function( event ) {
+    $(".hintdiv").css('display',"none"); 
+    
+});
+
 
 $( "#battlescore" ).on( "mouseleave",  function( event ) {
     $(".hintdiv").css('display',"none");

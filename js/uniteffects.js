@@ -63,8 +63,8 @@ uniteff = (cid) => {
             if (attacked == cid){
                 
                 writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> finds valuable loot!</font>");
-                gold += 2;
-                writelog("<br>You gain 2 Gold.");
+                gold += 4;
+                writelog("<br>You gain 4 Gold.");
             }
             break;
         case 7:
@@ -117,22 +117,24 @@ uniteff = (cid) => {
                 
                 writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> becomes stronger alone!</font>");
                 cardbyid[cid].dmg += 2;
-                writelog("<br>Her DMG is now "+cardbyid[cid].dmg+".");
+                writelog("<br>His DMG is now "+cardbyid[cid].dmg+".");
                 
             }
             break;
         case 13:
-            // Before Combat:<br>If there are any Disadvantage cards in your hand, remove them from your deck.
-            var hasada = false;
-            $("#avnow").children().each(function() {
-                if (cardbyid[$(this).attr("id")].type == "disadv"){
-                    hasada = true;
-                    cardbyid[$(this).attr("id")].place="#oop";
-                    $(this).remove();
+            // At the Healer:<br>If there are any Disadvantage cards in your hand, remove them from your deck.
+            if ((cardbyid[cardbyid[cid].assign].type == "heal") && (enemies[fight].children()[attack].id == cid)) {
+                var hasada = false;
+                $("#avnow").children().each(function() {
+                    if (cardbyid[$(this).attr("id")].type == "disadv"){
+                        hasada = true;
+                        cardbyid[$(this).attr("id")].place="#oop";
+                        $(this).remove();
+                    }
+                });
+                if (hasada){
+                    writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> prevents misfortune!</font>");
                 }
-            });
-            if (hasada){
-                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> prevents misfortune!</font>");
             }
             break;
         case 14:
@@ -417,26 +419,28 @@ uniteff = (cid) => {
             break;
         case 45:
             // Before Combat:<br>If he's in your Hand, deal all Enemies 1 Damage for each Skill in your Hand.
-            var dodam = 0;
-            $("#avnow").children(".cardc").each(function() {
-                if (cardbyid[$(this).attr("id")].what=="skill"){
-                    dodam ++;
-                }
-            });
-            if (dodam > 0){
-                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> attacks from the shadows!</font>");
-                damage(enemies[1].children()[0].id, dodam);
-                if (cardbyid[enemies[2].children()[0].id].type == "monst"){
-                    damage(enemies[2].children()[0].id, dodam);
-                }
-                if (cardbyid[enemies[3].children()[0].id].type == "monst"){
-                    damage(enemies[3].children()[0].id, dodam);
+            if (cardbyid[cid].assign == 0){
+                var dodam = 0;
+                $("#avnow").children(".cardc").each(function() {
+                    if (cardbyid[$(this).attr("id")].what=="skill"){
+                        dodam ++;
+                    }
+                });
+                if (dodam > 0){
+                    writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> attacks from the shadows!</font>");
+                    damage(enemies[1].children()[0].id, dodam);
+                    if (cardbyid[enemies[2].children()[0].id].type == "monst"){
+                        damage(enemies[2].children()[0].id, dodam);
+                    }
+                    if (cardbyid[enemies[3].children()[0].id].type == "monst"){
+                        damage(enemies[3].children()[0].id, dodam);
+                    }
                 }
             }
             break;
         case 46:
             // Before Combat:<br>Deal 4 Damage to assigned Enemy if your Battlescore is at least 60
-            if ((bscore >= 60) && cardbyid[cid].assign != 0){
+            if ((bscore >= 60) && (cardbyid[cid].assign != 0)){
                 writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> shows no mercy!</font>");
                 damage (cardbyid[cid].assign, 4);
             }

@@ -262,6 +262,10 @@ div::-webkit-scrollbar {
     height: auto;
 }
 
+.cardtext ccheat {
+    color: rgb(255, 255, 0);
+}
+
 .cardtrait {
     text-align: center;
     

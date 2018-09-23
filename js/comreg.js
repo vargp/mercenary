@@ -24,7 +24,7 @@ commeff = (cid) => {
             if ($("#avnow").children().length < 4){
                 writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> lets you draw up to 4 cards.</font>");
                 do {
-                    writelog("<br>You draw <card id=\"" + $("#deck").children()[0].id + "\">" + cardbyid[$("#deck").children()[0].id].title + "</card>.");
+                    
                     drawcard($("#deck").children()[0].id);
                 } while ($("#avnow").children().length < 4)
             }
@@ -45,11 +45,11 @@ commeff = (cid) => {
             cardbyid[bfdetails].goldlose += 30;
             break;
         case 6:
-            // If an enemy has 3 or less<br>Health at the end of a round,<br>it dies.
+            // If an enemy has 2 or less<br>Health at the end of a round,<br>it dies.
             for (let i = 1; i < 4; i++) {
                 if (enemies[i].children()[0] != undefined){ 
                     // console.log("type: "+cardbyid[enemies[i].children()[0].id].type+", trig: "+cardbyid[enemies[i].children()[0].id].trig)
-                    if ((cardbyid[enemies[i].children()[0].id].what == "monst") && (cardbyid[enemies[i].children()[0].id].hp < 4)){
+                    if ((cardbyid[enemies[i].children()[0].id].what == "monst") && (cardbyid[enemies[i].children()[0].id].hp < 3) && (cardbyid[enemies[i].children()[0].id].hp > 0) ){
                         writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> kills <card id=\"" + enemies[i].children()[0].id + "\">" + cardbyid[enemies[i].children()[0].id].title + "</card>.</font>");
                         cardbyid[enemies[i].children()[0].id].hp = 0;
                         checkdead(enemies[i].children()[0].id, 0);
@@ -203,7 +203,7 @@ regeff = (cid) => {
             // At battle start, your cards with less than 20 Speed gain 5 Speed here (except Disadvantages).
             writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you.</font>");
             $("#deck").children(".cardc").each(function() {
-                if ((cardbyid[$(this).attr("id")].perc < 20) && (cardbyid[$(this).attr("id")].type != "disadv")){
+                if ((cardbyid[$(this).attr("id")].perc <= 20) && (cardbyid[$(this).attr("id")].type != "disadv")){
                     cardbyid[$(this).attr("id")].perc += 5;
                 }
             });
@@ -519,7 +519,7 @@ regeff = (cid) => {
             // At battle start, give your Units with 20 or less Speed +2 DMG.
             writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you.</font>");
             $("#deck").children(".cardc").each(function() {
-                if ((cardbyid[$(this).attr("id")].perc <= 20) && (cardbyid[$(this).attr("id")].type != "disadv")){
+                if ((cardbyid[$(this).attr("id")].perc <= 20) && (cardbyid[$(this).attr("id")].what == "unit")){
                     cardbyid[$(this).attr("id")].dmg += 2;
                 }
             });
@@ -534,7 +534,7 @@ regeff = (cid) => {
             writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you.</font>");
             var randad = 0;
             do {
-                    randad = Math.floor((Math.random() * ada.length) + 1);
+                    randad = Math.floor((Math.random() * (ada.length-1)) + 1);
             } while (ada[randad].trait != "Terrain Advantage");
             adadraw = randad;
             generate(7, "#avnow");
@@ -544,7 +544,7 @@ regeff = (cid) => {
             writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you.</font>");
             var randad = 0;
             do {
-                    randad = Math.floor((Math.random() * ada.length) + 1);
+                    randad = Math.floor((Math.random() * (ada.length-1)) + 1);
             } while (ada[randad].trait != "Terrain Disadvantage");
             adadraw = randad;
             disadvadd();
@@ -555,4 +555,20 @@ regeff = (cid) => {
             break;
     }
     
+};
+
+
+bosseff = (cid) => {
+    
+    
+    switch (cardbyid[cid].abnum){
+        case 1:
+            // After Combat:<br>remove a random Skill from your deck for the duration of this battle.
+            if ((attmonst == cid) && (attacked != commander)){
+                retaliate = false;
+                writelog("<br><font color=\"orchid\">Your soldier is unable to wound <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>!</font>");
+            }
+        break;
+    }
+
 };

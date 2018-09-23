@@ -133,7 +133,8 @@ skilleff = (cid) => {
             if ((cardbyid[attacked].trait == "Rogue Hero") && (cardbyid[attmonst].hp <= 0)){
                 writelog("<br><font color=\"orchid\">After Attacking: Your Rogue finds the chance to <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>.</font>");
                 maxwave --;
-                showbscore();
+                $("#wave").html("Wave "+curwave+" / "+maxwave);
+                
                 writelog("<br>Number of maximum waves decreased to "+maxwave+".");
             }
             break;
@@ -174,17 +175,17 @@ skilleff = (cid) => {
             }
             break;
         case 11:
-            // After Combat:<br>for each Warrior in your Hand, give 3 random Units in your deck<br>+1 DMG and +2 HP for the rest of this battle.
+            // After Combat:<br>for each Rogue in your Hand, give 3 random Units in your deck<br>+1 DMG and +2 HP for the rest of this battle.
             var haswar = 0;
             $("#avnow").children().each(function() {
-                if (cardbyid[$(this).attr("id")].trait == "Warrior Hero"){
+                if (cardbyid[$(this).attr("id")].trait == "Rogue Hero"){
                     haswar ++;
                 }
             });
             if (haswar > 0){
                 var decku = [];
                 var randu = 0;
-                writelog("<br><font color=\"orchid\">Your Warriors have <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>.</font>");
+                writelog("<br><font color=\"orchid\">Your Rogues give an <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>.</font>");
                 $("#deck").children(".cardc").each(function() {
                     if (cardbyid[$(this).attr("id")].what == "unit"){
                         decku.push($(this).attr("id"));
@@ -192,7 +193,7 @@ skilleff = (cid) => {
                 });
                 for (let i = 1; i <= haswar; i++) {
                     
-                    for (let j = 1; i <= 3; i++) {
+                    for (let j = 1; j <= 3; j++) {
                         randu = Math.floor(Math.random() * decku.length);
                         cardbyid[decku[randu]].dmg++;
                         cardbyid[decku[randu]].hp++;
@@ -419,6 +420,9 @@ skilleff = (cid) => {
                 generate(1, "#avnow");
                 recruit = 0;
                 cardbyid[hanylapvan].temp = true;
+                cardbyid[hanylapvan].dmg = cardbyid[mages[randm]].dmg;
+                cardbyid[hanylapvan].hp = cardbyid[mages[randm]].hp;
+                cardbyid[hanylapvan].perc = cardbyid[mages[randm]].perc;
             }
             break;
         case 24:
@@ -472,7 +476,7 @@ skilleff = (cid) => {
             // Before Combat:<br>If you have a Rogue in your Hand and The Fray is not visible, make The Fray appear in the 2nd slot even if there's something else there currently."
             var hasrog = false;
             $("#avnow").children().each(function() {
-                if (cardbyid[$(this).attr("id")].trait == "Rogue Hero"){
+                if (cardbyid[$(this).attr("id")].trait == "Warrior Hero"){
                     hasrog = true;
                 }
             });
@@ -480,7 +484,7 @@ skilleff = (cid) => {
                 hasrog = false;
             }
             if (hasrog){
-                writelog("<br><font color=\"orchid\">Your Rogue is <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>!</font>");
+                writelog("<br><font color=\"orchid\">Your Warrior is <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>!</font>");
                 $("#enc2").find('.cardc:first').remove();
                 recruit = 5;
                 generate (5, "#enc3");
@@ -574,7 +578,7 @@ adaeff = (cid) => {
             if (justdrawn == cid){
                 setTimeout(function(){
                     writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
-                    writelog("<br>You draw <card id=\"" + $("#deck").children()[0].id + "\">" + cardbyid[$("#deck").children()[0].id].title + "</card>.");
+                    
                     drawcard($("#deck").children()[0].id);
                 }, 50);
             }
@@ -610,7 +614,7 @@ adaeff = (cid) => {
                     });
                     if (leftu > 0){
                         writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects you!</font>");
-                        writelog("<br>You discard <card id=\"" + leftu + "\">" + cardbyid[leftu].title + "</card>.");
+                        
                         discfromhand(leftu);
                     }
                 }, 50);
@@ -696,16 +700,9 @@ adaeff = (cid) => {
             break;
         case 11:
             // When Drawn:<br>Deal all Enemies 1 Damage
-            if (justdrawn == cid){
-                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects your enemies!</font>");
-                for (let i = 1; i < 4; i++) {
-                    if (enemies[i].children().length > 0){
-                        if ((cardbyid[enemies[i].children()[0].id].type == "monst") && (cardbyid[enemies[i].children()[0].id].hp > 0)){
-                            damage (enemies[i].children()[0].id, 1);
-                        }
-                    }
-                }
-            }
+            writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> affects your enemies!</font>");
+            damage (monstapp, 1);
+            
             break;
         case 12:
             // After Combat:<br>Every present Unit loses 1 Health and 1 DMG

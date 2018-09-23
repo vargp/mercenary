@@ -13,8 +13,10 @@ var numskill = 0;
 var healable = 0;
 var monstapp = 0;
 var forcemon = "none";
-var bossapp = 5;
+var bossapp = 4;
 var thisboss = 0;
+var rewardunit = 0;
+var lastround = 8;
 
 function choosecomm(){
     
@@ -94,10 +96,10 @@ function buycards(){
         }, 300);
     }
     
-    if (battlenum > 2){
-        generate(8, "#info");
-        thisboss = hanylapvan;
-    }
+    //if (battlenum > bossapp){
+    //    generate(8, "#info");
+    //    thisboss = hanylapvan;
+    //}
     
     showcard(RecNum);
     
@@ -106,18 +108,48 @@ function buycards(){
     
 }
 
-function resetbuy(){
+function extraxp(){
     
-    $("#buycap").html("You still have: "+gold+" Gold");
-    $("#buy").empty();
-    for (let i = 1; i < 7; i++) { 
-        var skillchance = Math.floor((Math.random() * 5) + 1);
-        if (skillchance == 1){
-            generate (4, "#buy");
-        } else {
-            generate (1, "#buy");
+    var lvlnum = 1;
+    
+    // fix balance?
+    // cardbyid[hanylapvan].dmg ++;
+    // cardbyid[hanylapvan].hp += 2;
+    
+    for (let i = 0; i < expplus[battlenum]; i++) {
+        
+        var xpchance = Math.floor((Math.random() * 2) + 1);
+        if (xpchance == 1){
+            var extracost = Math.floor((Math.random() * 2) + 1);
+            if (extracost == 1){
+                cardbyid[hanylapvan].cost += 1;
+            }
+            lvlnum ++;
+            var miplus = Math.floor((Math.random() * 3) + 1);
+            if (miplus == 1){
+                cardbyid[hanylapvan].dmg ++;
+                cardbyid[hanylapvan].cost += 3;
+            }
+            if (miplus == 2){
+                cardbyid[hanylapvan].hp += 2;
+                cardbyid[hanylapvan].cost += 2;
+            }
+            if (miplus == 3){
+                cardbyid[hanylapvan].perc += 3;
+                cardbyid[hanylapvan].cost += 2;
+            }
         }
     }
+    
+    if (lvlnum > 1){
+        cardbyid[hanylapvan].trait += " / lvl "+lvlnum;
+    }
+    
+}
+
+function refreshbuy(){
+    $("#buycap").html("You still have: "+gold+" Gold");
+    
     $("#buy, #basicbuy").children().each(function() {
         $(this).removeClass("hide");
         if (cardbyid[$(this).attr("id")].cost > gold){
@@ -152,22 +184,60 @@ function resetbuy(){
     
 }
 
+function addonebuy(){
+    
+    var skillchance = Math.floor((Math.random() * 5) + 1);
+    if (skillchance == 1){
+        generate (4, "#buy");
+    } else {
+        generate (1, "#buy");
+        extraxp();
+    }
+    refreshbuy();
+    
+}
+
+function resetbuy(){
+    
+    
+    $("#buy").empty();
+    for (let i = 1; i < 7; i++) { 
+        var skillchance = Math.floor((Math.random() * 5) + 1);
+        if (skillchance == 1){
+            generate (4, "#buy");
+        } else {
+            generate (1, "#buy");
+            extraxp();
+        }
+    }
+    
+    refreshbuy();     
+    
+}
+
 
 $('#buy, #basicbuy').on( "click", ".cardc", function( event ) {
     
     if ($(this).hasClass("hide")){
         writelog("<br>You can't purchase that.");
     } else {
-        gold -= cardbyid[$(this).attr("id")].cost;
-        if ("dmg" in cardbyid[$(this).attr("id")]){
-            writelog("<br>You recruited <card id=\"" + $(this).attr("id") + "\">" + cardbyid[$(this).attr("id")].title + "</card> into your army.");
-        } else {
-            writelog("<br>You purchased <card id=\"" + $(this).attr("id") + "\">" + cardbyid[$(this).attr("id")].title + "</card>.");
+        if ((cardbyid[$(this).attr("id")].what == "unit") && (cardbyid[$(this).attr("id")].trait != char[cardbyid[$(this).attr("id")].abnum].trait)){
+            cardbyid[$(this).attr("id")].trait = cardbyid[$(this).attr("id")].trait.split('/')[0].slice(0, -1);
         }
+        gold -= cardbyid[$(this).attr("id")].cost;
+        var buytext = "";
+        if ("dmg" in cardbyid[$(this).attr("id")]){
+            buytext = "You recruited <card id=\"" + $(this).attr("id") + "\">" + cardbyid[$(this).attr("id")].title + "</card> into your army.";
+        } else {
+            buytext = "You purchased <card id=\"" + $(this).attr("id") + "\">" + cardbyid[$(this).attr("id")].title + "</card>.";
+        }
+        writelog("<br>"+buytext);
+        $("#reminder").html(buytext);
         if (cardbyid[$(this).attr("id")].place == "#buy"){
             $("#seedeck").append($(this));
             cardbyid[$(this).attr("id")].place = "#deck";
             var data = cardbyid[$(this).attr("id")].what+cardbyid[$(this).attr("id")].abnum+"*";
+            addonebuy();
             $.ajax({
                 type: 'POST',
                 url: "savedata2.php",
@@ -182,17 +252,13 @@ $('#buy, #basicbuy').on( "click", ".cardc", function( event ) {
             cardbyid[hanylapvan].place="#deck";
         }
         if (cardbyid[$(this).attr("id")].what == "rest"){
-            writelog("<br>Your wounded units and your Commander regain 4 Health.");
+            writelog("<br>Your wounded units regain 4 Health.");
             $("#seedeck").children(".cardc").each(function() {
                 cardbyid[$(this).attr("id")].hp += 4;
                 if (cardbyid[$(this).attr("id")].hp > cardbyid[$(this).attr("id")].basehp){
                     cardbyid[$(this).attr("id")].hp = cardbyid[$(this).attr("id")].basehp;
                 }
             });
-            cardbyid[commander].hp += 4;
-            if (cardbyid[commander].hp > cardbyid[commander].basehp){
-                cardbyid[commander].hp = cardbyid[commander].basehp;
-            }
         }
         if (cardbyid[$(this).attr("id")].what == "train"){
             writelog("<br><card id=\"" + commander + "\">" + cardbyid[commander].title + "</card> has gained 1 DMG and 2 Health.");
@@ -201,11 +267,13 @@ $('#buy, #basicbuy').on( "click", ".cardc", function( event ) {
             cardbyid[commander].basehp += 2;
             cardbyid[commander].dmg += 1;
             cardbyid[commander].basedmg += 1;
+            buyable[2].cost += 5;
+            cardbyid[$(this).attr("id")].cost += 5;
             setTimeout(function(){
                 showcard(commander);
                 $( ".stats" ).css("display", "none");
                 $( ".stats" ).fadeIn(1000);
-            }, 500);
+            }, 200);
             
         }
         if (cardbyid[$(this).attr("id")].what == "promote"){
@@ -223,7 +291,9 @@ $('#buy, #basicbuy').on( "click", ".cardc", function( event ) {
                 }
             });
         }
-        resetbuy();
+        
+        refreshbuy();
+        showcard($(this).attr("id"));
     }
     
 });
@@ -283,10 +353,15 @@ function regions(){
         voltreg[i] = cardbyid[hanylapvan].abnum;
         recruit = 7;
         generate (5, battles[i]);
-        cardbyid[hanylapvan].montype = Math.floor((Math.random() * 4) + 1);
-        modif =  3 - Math.floor((Math.random() * 5) + 1);
+        var letmon;
+        do {
+            letmon = Math.floor((Math.random() * 4) + 1);
+        } while ((letmon == regemon[1]) || (letmon == regemon[2]) || (letmon == regemon[3]));
+        cardbyid[hanylapvan].montype = letmon;
+        regemon[i] = letmon;
+        modif =  2 - Math.floor((Math.random() * 3) + 1);
         cardbyid[hanylapvan].waves = wavesnum[battlenum] + modif;
-        basicfame += modif;
+        basicfame += 2*modif;
         console.log(modif+" waves, basicfame: "+basicfame);
         modif =  3 - Math.floor((Math.random() * 5) + 1);
         cardbyid[hanylapvan].bsbase = bsbase[battlenum] + (modif * 8);
@@ -315,6 +390,10 @@ function regions(){
         if (cardbyid[hanylapvan].famelose < 0){
             cardbyid[hanylapvan].famelose = 0;
         }
+        
+        recruit = 0;
+        generate (1, battles[i]);
+        rewardunit = cardbyid[hanylapvan].abnum;
         
     }
     
@@ -486,11 +565,20 @@ newmon = (where) => {
     } while (en[mondraw].trait != getthis);
         
     generate (2, where);
+    
+    // fix balance?
+    // cardbyid[hanylapvan].dmg ++;
+    // cardbyid[hanylapvan].hp += 2;
+    
     monstapp = hanylapvan;
     writelog("<br>A new Enemy appears: <card id=\"" + monstapp + "\">" + cardbyid[monstapp].title + "</card>.");
     
     trigger(29);
     
-    trigger(16);
+    if (noblob){
+        noblob = false;
+    } else {
+        trigger(16);
+    }
     
 };

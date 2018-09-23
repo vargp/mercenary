@@ -112,6 +112,7 @@ monsteff = (cid) => {
             if (monstapp == cid){
                 $("#enc3").empty();
                 writelog("<br><font color=\"orchid\">Another enemy crawls out of <card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>!</font>");
+                noblob = true;
                 newmon ("#enc3");
             }
             break;
@@ -126,7 +127,7 @@ monsteff = (cid) => {
             break;
         case 11:
             // After first unit retaliates:<br>If it has 8 or more Health left,<br>discard the second unit<br>assigned to it.
-            if ((attmonst == cid) && (cardbyid[cid].hp > 7) && (cardbyid[cid].assist != 0)){
+            if ((attmonst == cid) && (cardbyid[cid].hp <6) && (cardbyid[cid].assist != 0)){
                 writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> hurls away your other unit!</font>");
                 oppeff = true;
                 discfromhand(cardbyid[cid].assist);
@@ -151,6 +152,7 @@ monsteff = (cid) => {
                     $('#enc3 img:first').attr("class", "doublecard");
                     $('#enc3 .cardc:first').css("height", "184px");
                 }
+                checkass();
             }
             break;
         case 13:
@@ -303,7 +305,7 @@ monsteff = (cid) => {
             }
             break;
         case 25:
-            // after Combat:<br>Discard the cards that you<br>wanted to Keep.
+            // before Combat:<br>Discard the cards that you<br>wanted to Keep.
             writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> knocks over your soldiers!</font>");
             oppeff = true;
             $("#keep").children(".cardc").each(function() {
@@ -358,10 +360,11 @@ monsteff = (cid) => {
             $("#enc2").prepend($(".cardc[id=\""+hanylapvan+"\"]"));
             $('#enc2 img:first').attr("class", "doublecard");
             $('#enc2 .cardc:first').css("height", "184px");
+            checkass();
             break;
         case 30:
             // Before Combat:<br>If her Health is lower than 16,<br>she turns into a random Enemy.
-            if (cardbyid[cid].hp < 16){
+            if (cardbyid[cid].hp < 14){
                 writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>becomes something else!</font>");
                 newmon (cardbyid[cid].place);
                 if ( cardbyid[$(cardbyid[cid].place+' .cardc:first').attr("id")].assign != 0){
@@ -479,10 +482,10 @@ monsteff = (cid) => {
             }
             break;
         case 42:
-            // After Combat:<br>Lose 5 Gold.
+            // After Combat:<br>Lose 10 Gold.
             writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> steals from you!</font>");
-            gold -= 5;
-            writelog("<br>You lose 5 Gold.");
+            gold -= 10;
+            writelog("<br>You lose 10 Gold.");
             break;
         case 43:
             // Before Combat:<br>Discard the rightmost Unit in the Fray.
@@ -572,13 +575,15 @@ monsteff = (cid) => {
             break;
         case 50:
             // When you discard a card<br>from your Hand:<br>This gains +1 DMG.
-            writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> is getting stornger!</font>");
-            cardbyid[cid].dmg ++;
+            if (handdisc){
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> is getting stornger!</font>");
+                cardbyid[cid].dmg ++;
+            }
             break;
         case 51:
             // Before Attacking:<br>Discard a random card from your Hand. If it's a Unit, it loses 1 DMG for the rest of this battle.
             if ((attmonst == cid) && ($("#avnow").children().length > 0)){
-                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> whisks your soldiers away!</font>");
+                writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> lashes out!</font>");
                 var rndhand = Math.floor(Math.random() * $("#avnow").children().length);
                 var thisdsc = $("#avnow").children()[rndhand].id;
                 if (cardbyid[thisdsc].what == "unit"){
@@ -708,8 +713,7 @@ monsteff = (cid) => {
             // When another Enemy dies:<br>Resurrect that Enemy.
             if ((whodies != cid) && (cardbyid[whodies].what == "monst") && (cardbyid[whodies].abnum != 62)){
                 writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card> resurrects the fallen enemy!</font>");
-                cardbyid[whodies].hp = 0;
-                heal (whodies, en[cardbyid[whodies].abnum].hp);
+                cardbyid[whodies].hp = en[cardbyid[whodies].abnum].hp;
             }
             break;
         case 63:
@@ -807,7 +811,7 @@ monsteff = (cid) => {
             break;
         case 73:
             // After a Unit attacks it:<br>It regains 3 Health unless that Unit is a Cleric.
-            if (cardbyid[attacked].trait != "Cleric Hero"){
+            if ((cardbyid[attacked].trait != "Cleric Hero") && (attmonst == cid)){
                 writelog("<br><font color=\"orchid\"><card id=\"" + cid + "\">" + cardbyid[cid].title + "</card>'s flesh mends itself!</font>");
                 heal (cid, 3);
             }

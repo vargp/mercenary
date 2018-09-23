@@ -22,7 +22,7 @@ var enemies = new Array();
 var battles = new Array();
 var hold = false;
 var commander = 0;
-var gold = 200;
+var gold = 150;
 var fame = 0;
 var curwave;
 var maxwave = 10;
@@ -56,6 +56,8 @@ var slayer = 0;
 var hdouble = false;
 var rounddraw = false;
 var skipcomb = false;
+var inbattle = false;
+
 
 $(document).on( "click", "#endturn", function( event ) {
     
@@ -137,19 +139,18 @@ function endofturn(){
         cardbyid[$(this).attr("id")].assist=0;
         
     });
-    
-    
-    
+            
     $("#wave").html("Wave "+curwave+" / "+maxwave);
+        
     
-    if ((curwave > maxwave) || (bscore > 99) || (bscore < 1)){
-        writelog("<br>The battle is over!");
-        $("#keep").children(".cardc").each(function() {
-            cardbyid[$(this).attr("id")].place="#deck";
-            $("#deck").append($(this));
-            $("#wave").html("Battle over!");
-        });
+    if ((bscore > 99) || (bscore < 1)){
+        
         endbattle();
+    
+    } else if ((curwave > maxwave) && (battlenum < lastround)){
+        
+        endbattle();
+        
     } else {
         
         startturn();
@@ -169,15 +170,38 @@ function startturn(){
     rollchance();
 
     sortdeck();
+    
+    trigger(30);
 
     $("#keep").children(".cardc").each(function() {
         cardbyid[$(this).attr("id")].place="#avnow";
         makedrag($(this));
         $("#avnow").append($(this));
-
+        if ($("#avnow").children().length > 12){
+            discfromhand($("#avnow").children()[0].id);
+        } 
     });
     
+    if ((battlenum == lastround) && (curwave > maxwave)) {
+        curwave = 0;
+        maxwave = 1000;
+        $("#wave").css("display", "none");
+        writelog("<br><font color=\"orchid\">The Enemy Leader joins the battle!</font>");
+        if ($("#enc1").children().length > 0){
+            $("#enc1").find('.cardc:first').remove();
+        }
+        generate (8, "#enc1");
+        $("#info").children()[1].remove();
+        $('#enc1 img:first').attr("class", "doublecard");
+        $('#enc1 .cardc:first').css("height", "184px");
+        
+        monstapp = hanylapvan;
+        trigger(16);
+        
+    }
+    
     mongen();
+    
     
     trigger(19);
 
@@ -295,6 +319,7 @@ function combatstart(){
     
     delay = 0;
     
+    
     fight = 1;
     attack = 1;
     hold = true;
@@ -317,6 +342,8 @@ function combatstart(){
 }
 
 function nextstep() {
+    
+    checkass();
     
     delay = 0;
     //console.log("fight: "+fight+", attack: "+attack);
@@ -366,9 +393,7 @@ function nextstep() {
             trigger (7);
             fight ++;
             //console.log("fray volt, fight ++");
-            
-            checkass();
-            
+                        
             curfray = curfray * -1;
             bscorechange (curfray);
             curfray = frayval[battlenum];
@@ -447,8 +472,8 @@ function nextstep() {
 
 function combat() {
     
-    retaliate = true;
-    
+    retaliate = true; 
+        
     
     $(".cardc").css("box-shadow", "0 0 10px 2px #000");
     $("#takedmg").css("display", "none");
@@ -456,7 +481,7 @@ function combat() {
     trigger(2);
     combattime = true;
     
-    writelog("<br><card id=\"" + attmonst + "\">" + cardbyid[attmonst].title + "</card><font color=\"red\"> attacks <card id=\"" + attacked + "\">" + cardbyid[attacked].title + "</card></font>!");
+    writelog("<br><card id=\"" + attmonst + "\">" + cardbyid[attmonst].title + " (" + cardbyid[attmonst].dmg + "/" + cardbyid[attmonst].hp + ")" + "</card><font color=\"red\"> attacks <card id=\"" + attacked + "\">" + cardbyid[attacked].title + " (" + cardbyid[attacked].dmg + "/" + cardbyid[attacked].hp + ")" + "</card></font>!");
     //writelog("<br><card id=\"" + attacked + "\">" + cardbyid[attacked].title + "</card> has lost "+cardbyid[attmonst].dmg+" health.");
     
     
@@ -481,7 +506,7 @@ function combat() {
             trigger (4);
             combattime = true;
             
-            writelog("<br><card id=\"" + attacked + "\">" + cardbyid[attacked].title + "</card><font color=\"springgreen\"> retaliates!</font>");
+            writelog("<br><card id=\"" + attacked + "\">" + cardbyid[attacked].title + " (" + cardbyid[attacked].dmg + "/" + cardbyid[attacked].hp + ")" + "</card><font color=\"springgreen\"> retaliates!</font>");
                         
             damage(attmonst, cardbyid[attacked].dmg);
             
@@ -565,7 +590,7 @@ var checkdead = (who, bywhom) => {
     
     
     if (cardbyid[who].hp <= 0) {
-        writelog("<br><card id=\"" + who + "\">" + cardbyid[who].title + "</card><font color=\"SlateGrey\"> has died!");
+        writelog("<br><card id=\"" + who + "\">" + cardbyid[who].title + "</card><font color=\"SlateGrey\"> suffers a lethal wound!");
         whodies = who;
         slayer = bywhom;
         cardbyid[who].hp = 99;
@@ -575,11 +600,36 @@ var checkdead = (who, bywhom) => {
         }
     }
     
+    if ((cardbyid[who].hp <= 0) && (who == commander)){
+        var dunits = new Array();
+        dunits = [];
+        $("#avnow").children(".cardc").each(function() {
+            if ((cardbyid[$(this).attr("id")].what == "unit") && (cardbyid[$(this).attr("id")].hp > 0)){
+                dunits.push($(this).attr("id"));
+            }
+        });
+        if (dunits.length > 0){
+            var saveu = Math.floor(Math.random() * dunits.length);
+            who = dunits[saveu];
+            cardbyid[who].hp = 0;
+            writelog("<br><font color=\"orchid\">But <card id=\"" + who + "\">" + cardbyid[who].title + "</card> makes a valiant sacrifice!");
+            trigger (22);
+            cardbyid[commander].hp = 1;
+            retaliate = false;
+        }
+    }
+    
     if (cardbyid[who].hp <= 0) {
         $(".cardc[id=\""+who+"\"]").addClass("dead");
         cardbyid[who].illus = "skull";
         cardbyid[who].trait = "dead";
         $(".cardc[id=\""+who+"\"]").children("img").attr("src", "img/illus/skull.jpg");
+        
+        if ($(".cardc[id=\""+who+"\"]").hasClass("ui-draggable")){
+            $(".cardc[id=\""+who+"\"]").draggable( "destroy" );
+        }
+        
+        writelog("<br><card id=\"" + who + "\">" + cardbyid[who].title + "</card><font color=\"SlateGrey\"> dies.");
         
         if (cardbyid[who].type == "monst"){
             writelog("<br>For killing a Monster:</font>");
@@ -598,10 +648,23 @@ var checkdead = (who, bywhom) => {
                     sadend();
                 }, 1000);
             } else {
+                if (cardbyid[who].assign == 0){
+                    setTimeout(function(){
+                        $(".cardc[id=\""+who+"\"]").remove();
+                    }, 1200);
+                }
                 writelog("<br>For killing a Unit:</font>");
                 bscorechange(-2);
                                 
             }
+            
+        }
+        
+        if (cardbyid[who].what == "boss"){
+            writelog("<br><font color=\"orange\">You killed the Enemy Leader!</font>");
+            writelog("<br><font color=\"orange\">The rest of the enemy army flees!</font>");
+            theend = true;
+            victory();
             
         }
     }
@@ -713,20 +776,26 @@ var trigger = (trig) => {
         trigdeck(trig);
     }
     
+    
+    $("#deck").children().each(function() {
+        if ((cardbyid[$(this).attr("id")].what == "ada") && (cardbyid[$(this).attr("id")].abnum == 11) && (trig == 16)){
+            adaeff($(this).attr("id"));
+        }
+    });
+    
 };
 
 trigassigned = (trig) => {
     for (let i = 1; i < 4; i++) {
         for (let j = 1; j < 3; j++) {
             if (enemies[i].children()[j] != undefined){   
-                if ((cardbyid[enemies[i].children()[j].id].trig == trig) && (cardbyid[enemies[i].children()[j].id].hp > 0)){
+                if ((cardbyid[enemies[i].children()[j].id].trig == trig) && ((cardbyid[enemies[i].children()[j].id].hp > 0) || (enemies[i].children()[j].id == attacked))){
                     uniteff(enemies[i].children()[j].id);
                 }
             }
         }
     }
 };
-
 
 
 trigmonst = (trig) => {
@@ -737,6 +806,10 @@ trigmonst = (trig) => {
                 //console.log("triggered!");
                 //setTimeout(monsteff, delay, enemies[i].children()[0].id);
                 monsteff(enemies[i].children()[0].id);
+            }
+            if ((cardbyid[enemies[i].children()[0].id].what == "boss") && (cardbyid[enemies[i].children()[0].id].trig == trig) && (cardbyid[enemies[i].children()[0].id].hp > 0)){
+                
+                bosseff(enemies[i].children()[0].id);
             }
         }
     }
@@ -784,15 +857,19 @@ trigdeck = (trig) => {
     
 };
 
+
 function startbattle(){
     
     writelog("<br><font color=\"orchid\">Battle starts.</font>");
     
+    inbattle = true;
+    
     showgame();
     $("#inf").css("left", "1500px");
-    if (battlenum >=2){
-        $("#info").children()[1].remove();
-    }
+    
+    //if (battlenum >=bossapp){
+    //    $("#info").children()[1].remove();
+    //}
     
     
     $("#game").append($(".cardc[id=\""+bfield+"\"]"));
@@ -880,6 +957,16 @@ terrada = (adv) => {
 
 function endbattle(){
     
+    inbattle = false;
+    
+    writelog("<br>The battle is over!");
+    
+    $("#keep").children(".cardc").each(function() {
+        cardbyid[$(this).attr("id")].place="#deck";
+        $("#deck").append($(this));
+        $("#wave").html("Battle over!");
+    });
+    
     hidegame();
     $("#battlescore").css("display", "inline-block");
     $("#winbattle").css("display", "inline-block");
@@ -900,11 +987,18 @@ function endbattle(){
 
         cardbyid[$(this).attr("id")].assign=0;
         cardbyid[$(this).attr("id")].assist=0;
-        cardbyid[$(this).attr("id")].dmg = cardbyid[$(this).attr("id")].basedmg;
         cardbyid[$(this).attr("id")].perc = cardbyid[$(this).attr("id")].baseperc;
-        if (cardbyid[$(this).attr("id")].hp > cardbyid[$(this).attr("id")].basehp){
-            cardbyid[$(this).attr("id")].hp = cardbyid[$(this).attr("id")].basehp;
+        
+        if (cardbyid[$(this).attr("id")].dmg != undefined){          
+
+            cardbyid[$(this).attr("id")].dmg = cardbyid[$(this).attr("id")].basedmg;
+
+            if (cardbyid[$(this).attr("id")].hp > cardbyid[$(this).attr("id")].basehp){
+                cardbyid[$(this).attr("id")].hp = cardbyid[$(this).attr("id")].basehp;
+            }
+
         }
+        
         if (cardbyid[$(this).attr("id")].temp){
             //console.log("remove: "+$(this));
             cardbyid[$(this).attr("id")].place = "oog";
@@ -938,24 +1032,33 @@ function endbattle(){
         writelog("<br><font color=\"orchid\">Retreat! You lost the battle.</font>");
     }
     
-    writelog("<br>Your units and Commander regain half their lost Health in the camp.");
-    var difference = 0;
-    $("#deck").children(".cardc").each(function() {
-        difference = Math.floor((cardbyid[$(this).attr("id")].basehp - cardbyid[$(this).attr("id")].hp)/2);
-        if (difference > 0){
-            cardbyid[$(this).attr("id")].hp += difference;
+    recruit = rewardunit;
+    generate (1, "#deck");
+    recruit = 0;
+    writelog("<br><card id=\"" + hanylapvan + "\">" + cardbyid[hanylapvan].title + "</card> joins you!");
+    
+    //  writelog("<br>Your units regain half their health.");
+    writelog("<br>Your Commander is fully healed.");
+     cardbyid[commander].hp = cardbyid[commander].basehp;
+    //var difference = 0;
+    //$("#deck").children(".cardc").each(function() {
+    //    difference = Math.floor((cardbyid[$(this).attr("id")].basehp - cardbyid[$(this).attr("id")].hp)/2);
+    //    if (difference > 0){
+    //        cardbyid[$(this).attr("id")].hp += difference;
             //console.log(cardbyid[$(this).attr("id")].title+" healed "+difference);
-        }
-    });
-    difference = Math.floor((cardbyid[commander].basehp - cardbyid[commander].hp)/2);
-    if (difference > 0){
-        cardbyid[commander].hp += difference;
+    //    }
+    //});
+    //difference = Math.floor((cardbyid[commander].basehp - cardbyid[commander].hp)/2);
+    //if (difference > 0){
+    //    cardbyid[commander].hp += difference;
         //console.log("Commander healed "+difference);
-    }
+    //}
     
     $("#game").children()[2].remove();
     var str = '<div class="cardf" id="chosen"><img class="smallcard" src="img/ready.jpg"></div>';
     $("#game").append(str);
+    
+    
     
 }
 
@@ -1061,7 +1164,19 @@ function sadend(){
     $("#game").append(str);
     $(".endim").css("display", "inline-block");
     $(".endimage").attr("src", "img/dead.jpg");
+    writelog("<br><font color=\"orange\">You gained "+fame+" Fame.</font>");
     
+}
+
+function victory(){
+    hidegame();
+    $("#endturn").remove()
+    var str = '<div class="cardf" id="restart"><img class="smallcard" src="img/restart.jpg"></div>';
+    $("#game").append(str);
+    $(".endim").css("display", "inline-block");
+    $(".endimage").attr("src", "img/wongame.jpg");
+    writelog("<br><font color=\"orange\">Congratulations!</font>");
+    writelog("<br><font color=\"orange\">You gained "+fame+" Fame.</font>");
 }
 
 $(document).on( "click", "#restart", function( event ) {

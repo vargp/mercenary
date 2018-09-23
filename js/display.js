@@ -109,9 +109,9 @@ function arrange(){
     $("#battles").css("top", "20px");
     $("#battles").css("left", "600px");
     $("#battles").css("max-width", "500px");
-    $("#battle1").css("max-width", "240px");
-    $("#battle2").css("max-width", "240px");
-    $("#battle3").css("max-width", "240px");
+    $("#battle1").css("max-width", "360px");
+    $("#battle2").css("max-width", "360px");
+    $("#battle3").css("max-width", "360px");
     $("#battle1").addClass("bbox");
     $("#battle2").addClass("bbox");
     $("#battle3").addClass("bbox");
@@ -177,6 +177,7 @@ function arrange(){
                     }
                 //$('#keep').append($(".cardc[id=\""+dragid+"\"]"));
                 checkdropdisable();
+                checkass();
             }
         });
     }
@@ -191,6 +192,7 @@ function arrange(){
             $('#keep').append(ui.draggable);
             //$('#keep').append($(".cardc[id=\""+dragid+"\"]"));
             checkdropdisable();
+            checkass();
         }
     });
       
@@ -204,6 +206,7 @@ function arrange(){
             cardbyid[dragid].place="#avnow";
             $('#avnow').append(ui.draggable);
             checkdropdisable();
+            checkass();
         }
     });
     
@@ -253,9 +256,9 @@ function startingdeck(){
     
     for (let i = 1; i <= 6; i++) {
         // cheat
-        //recruit = 40;
-        //generate (1, "#deck");
-        //generate (4, "#deck");
+        recruit = 4;
+         generate (1, "#deck");
+        generate (4, "#deck");
         //adadraw = 16;
         //generate(7, "#deck");
     }
@@ -396,10 +399,13 @@ function showcard(lapid){
     
     $(".cardtitle").css("color", "white");
     
+    $(".cardtext ccheat").css("color", "darkviolet");
+    
     switch (shown.type){
         case "neut":
             textshad = "rgba(0, 0, 0, 0.6) 0px 0px 1px";
             textcol = "rgb(0, 0, 0)";
+            
             break;
         case "monst":
         case "buy":    
@@ -410,6 +416,7 @@ function showcard(lapid){
         case "disadv":
             textshad = "rgba(0, 0, 0, 1) 1px 1px 3px";
             textcol = "rgb(255, 255, 255)";
+            $(".cardtext ccheat").css("color", "rgb(255, 255, 0)");
             break;
         case "comm":
             textcol = "rgb(59, 56, 14)";
