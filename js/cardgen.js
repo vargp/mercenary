@@ -106,7 +106,7 @@ var generate = (mit, hova) => {
             sumcard = skill.length-1;
             numgen = Math.floor((Math.random() * sumcard) + 1);
             //cheat
-            numgen = 23;
+            //numgen = 23;
             drawed = skill[numgen];          
             cardbyid[hanylapvan].illus = "sk"; 
             cardbyid[hanylapvan].baseperc = drawed.perc;

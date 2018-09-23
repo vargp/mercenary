@@ -256,9 +256,9 @@ function startingdeck(){
     
     for (let i = 1; i <= 6; i++) {
         // cheat
-        recruit = 4;
-         generate (1, "#deck");
-        generate (4, "#deck");
+        //recruit = 4;
+        // generate (1, "#deck");
+        //generate (4, "#deck");
         //adadraw = 16;
         //generate(7, "#deck");
     }
